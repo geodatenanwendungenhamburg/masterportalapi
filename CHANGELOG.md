@@ -3,6 +3,13 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2.1.1 - 2022-04-20
+
+### Fixed
+- Allow searchAddress to find street names with a prefix.
+
+---
+
 ## 2.1.0 - 2022-04-04
 ### Added
 - Add a new layer type OAf (Open API Features).
