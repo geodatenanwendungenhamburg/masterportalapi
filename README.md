@@ -29,3 +29,6 @@ Both methods may be required for useful user feedback. For example, a WMS may an
 ## About Babel
 
 The Babel dev dependencies are purely added for development tests and jest tests. Babel is required for testing since Node does not support ES6 in .js files so far.
+
+## TODOs
+- WFST
