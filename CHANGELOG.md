@@ -3,16 +3,164 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+
 ## Unreleased - in development
 ### Added
+### Changed
+- GeoJSON now also register a featuresloadend function if the source is a cluster.
+### Deprecated
+### Removed
+### Fixed
+
+---
+
+## 2.12.0 - 2022-01-24
+### Added
+- Added support for Node LTS version 18.
+- Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
+- Add possibility to make a 3DTilset layer transparent/opaque.
+- In the gazetteer search the prefix `*` can now be switched off with the attribute `searchStreetBeforeWord`
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.24.0 to 3.27.1
+        - proj4: 2.8.0 to 2.8.1
+    - devDependencies:
+        - @babel/core: 7.18.9 to 7.20.12
+        - @babel/plugin-transform-modules-commonjs: 7.18.6 to 7.20.11
+        - canvas: 2.9.3 to 2.11.0
+        - eslint: 8.20.0 to 8.31.0
+        - husky: 8.0.1 to 8.0.3
+        - jest: 28.1.3 to 29.3.1
+        - jest-environment-jsdom: 28.1.3 to 29.3.1
+        - jsdoc: 3.6.11 to 4.0.0
+        - sass: 1.54.0 to 1.57.1
 
-### Deprecated
+---
 
-### Removed
+## 2.11.0 - 2022-11-24
+### Added
+- crossOrigin settings can now be passed to WMSSources (TileWMS, ImageWMS) via config.json or services.json
 
 ### Fixed
+- Issue #847(Masterportal): searchAddress now keeps searching for house numbers if a digit was entered at the end of the search string
+
+---
+
+## 2.10.0 - 2022-11-03
+### Added
+- DPS-1313: Added custom DragPan interaction to add ability to use 2-Finger-Pan instead of 1-Finger-Pan on mobile devices
+
+### Changed
+- Exports in src/rawLayerList, src/crs.js and src/lib/load3DScript.js changed to export default {} to provide  ES-Syntax.
+
+---
+
+## 2.9.0 - 2022-10-25
+### Changed
+- Exports in src/rawLayerList and src/crs.js changed to module.exports to provide the possibility to stub the functions with sinon in masterportal.
+
+---
+
+## 2.8.0 - 2022-10-04
+### Added
+- Issue #814: Adding optional error callbacks and availability detection to layers.
+- Added possibility to set initial features for layer vectorBase.
+
+---
+
+## 2.7.0 - 2022-09-14
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 6.15.1 to 7.1.0
+        - olcs: 2.13.0 to 2.13.1
+
+---
+
+## 2.6.0 - 2022-09-06
+### Added
+- Added possibility to set initial features for layer vectorBase.
+
+### Changed
+- OAF: Fixed oaf recursion and a possibility to disable the CRS parameter is added.
+
+---
+
+## 2.5.1 - 2022-08-05
+### Fixed
+- Remove import of `defaultResolutions` for the vectorStyle layer
+
+---
+
+## 2.5.0 - 2022-08-05
+### Added
+- The following packages have been installed:
+    - jest-environment-jsdom: 28.1.3
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.16.1 to 3.24.0
+        - ol: 6.14.1 to 6.15.1 (This also raised ol-mapbox-style from 7 to version 8)
+        - proj4: 2.7.5 to 2.8.0
+    - devDependencies:
+        - @babel/core: 7.16.7 to 7.18.9
+        - @babel/plugin-transform-modules-commonjs: 7.16.8 to 7.18.6
+        - @parcel/transformer-sass: 2.2.0 to 2.6.2
+        - canvas: 2.8.0 to 2.9.3
+        - eslint: 7.32.0 to 8.20.0
+        - husky: 7.0.1 to 8.0.1
+        - jest: 27.4.0 to 28.1.3
+        - jest-canvas-mock: 2.3.1 to 2.4.0
+        - jsdoc: 3.6.7 to 3.6.11
+        - parcel: 2.2.0 to 2.6.2
+        - sass: 1.37.5 to 1.54.0
+    - peerDependencies:
+        - cesium: 1.88.0 to 1.95.0
+
+---
+
+## 2.4.0 - 2022-07-06
+### Added
+- Issue 776: Add 3D mode for WMTS layers.
+
+### Fixed
+- 3D: Handling of camera parameters at olcsmap are adapted.
+
+---
+
+## 2.3.0 - 2022-05-27
+### Added
+- Add a new layer type WMTS.
+- A new layer typ Entities3D (e.g. layer with glb-files) is implemented and integrated into MaterportalAPI.
+
+### Changed
+- The following packages have been updated
+    - ol: from 6.13.0 to version 6.14.1
+- 3D Mode:
+    - Default values are now set for the 3D Scene when creating the 3D Map.
+    - Default values for the 3D Scene can be overwritten with the attribute `sceneOptions` any.
+    - Default values of the 3D Scene are always set first. After that, attributes configured by the user are set.
+
+### Fixed
+- 3D Mode:
+    - Vector layers like WFS, GeoJSON or OAF (OGC API - Features) are now displayed in 3D mode.
+    - WMS layers of type `TileWMS` are now also displayed in 3D.
+    - In 3D mode a pick position is now provided for clicked billboards.
+
+---
+
+## 2.2.0 - 2022-04-25
+### Added
+- Add a new layer type Vector tile layer.
+
+---
+
+## 2.1.1 - 2022-04-20
+### Fixed
+- Allow searchAddress to find street names with a prefix.
 
 ---
 
@@ -38,7 +186,7 @@
 - Gazetteer search:
     - Previous gazetteer searches can now be aborted by means of an `AbortController`.
     - Added the possibility to use the `geographicIdentifier` to display the search result.
-- A new layer typ OAF (OGC API features) is implemented and integrated into MaterportalAPI
+- A new layer typ OAF (OGC API - Features) is implemented and integrated into MaterportalAPI
     - Features as parameter can be parsed as filter
 - A new parameter "doNotLoadInitially" for WFS layer so that for the external filter, the filtering of feature will be first loaded
 

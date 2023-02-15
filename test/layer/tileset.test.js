@@ -7,6 +7,7 @@ describe("tileset.js", function () {
     beforeEach(() => {
         global.Cesium = {};
         global.Cesium.Cesium3DTileset = jest.fn();
+        global.Cesium.Cesium3DTileStyle = jest.fn(color => color);
         attr = {
             id: "4002",
             name: "Gebäude LoD2",
@@ -45,22 +46,15 @@ describe("tileset.js", function () {
     }
 
     describe("createLayer", function () {
-        it("creates tileset layer without map and not selected", function () {
+        it("creates tileset layer without map", function () {
             const layer = new Tileset(attr);
 
             checkAttributes(layer, attr);
             expect(layer.tileSet).toEqual(undefined);
+            expect(layer.tileset.show).toEqual(undefined);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
         });
-        it("creates tileset layer with map and selected", function () {
-            attr.isSelected = true;
-            const layer = new Tileset(attr, map);
-
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(true);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-        });
-        it("creates 2 tileset layers  with map and selected and checks attributes", function () {
+        it("creates 2 tileset layers  with map and checks attributes", function () {
             const attr2 = {
                     id: "4003",
                     name: "name",
@@ -73,6 +67,15 @@ describe("tileset.js", function () {
             checkAttributes(layer, attr);
             checkAttributes(layer2, attr2);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(2);
+        });
+    });
+    describe("setOpacity", function () {
+        it("calls setOpacity sets opacity to terrain style", function () {
+            const layer = new Tileset(attr, map);
+
+            layer.setOpacity(0.5);
+
+            expect(layer.tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
         });
     });
     describe("setVisible", function () {

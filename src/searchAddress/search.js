@@ -10,16 +10,20 @@ let abortController = null;
  * Chains gazetteer request and response parser.
  * @param {string} type from searchTypes
  * @param {(string|string[])} values one or multiple strings, depending on type
+ * @param {function} sortFunction a function with two parameters which can be used to sort all results
+ * @param {function} filterFunction a function which will be executed to filter results
+ * @param {boolean} searchStreetBeforeWord whether to put an star in front of the search for streets (full text search)
  * @returns {Promise<SearchResult[]>} parsed response
  * @ignore
  */
-function searchAndParse (type, values) {
+function searchAndParse (type, values, sortFunction = (a, b) => a.name.localeCompare(b.name), filterFunction = () => true, searchStreetBeforeWord) {
     return new Promise((resolve, reject) => {
-        searchGazetteer(type, values, abortController)
+        searchGazetteer(type, values, abortController, searchStreetBeforeWord)
             .then(results => {
-                const parsed = parse(type, results);
-
-                resolve(parsed);
+                parse(type, results).then(parsed => {
+                    resolve(parsed.filter(filterFunction)
+                        .sort(sortFunction));
+                });
             })
             .catch(e => reject(e));
     });
@@ -30,22 +34,32 @@ function searchAndParse (type, values) {
  * Combines streets with their available house numbers before returning.
  * @param {string} searchstring string to search for
  * @param {boolean} searchHouseNumbers whether to additionally search for house numbers
+ * @param {boolean} searchStreetBeforeWord whether to put an star in front of the search for streets (full text search)
  * @returns {Promise<SearchResult[]>} parsed response
  * @ignore
  */
-function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers) {
+function searchAndParseStreetAndHouseNumber (searchstring, searchHouseNumbers, searchStreetBeforeWord) {
     return new Promise((resolve, reject) => {
-        searchGazetteer(searchTypes.STREET, searchstring, abortController)
+        searchGazetteer(searchTypes.STREET, searchstring, abortController, searchStreetBeforeWord)
             .then(streetResults => parse(searchTypes.STREET, streetResults))
             .then(parsedStreetResults => {
-                const allSearches = [];
+                const allSearches = [],
+                    matches = searchstring.match(new RegExp("^(.+)[\\s,](\\d+|\\d.*)$"));
 
                 for (let i = 0; i < parsedStreetResults.length; i++) {
                     // put street in front of street's street+hnr as ordering
                     allSearches.push([parsedStreetResults[i]]);
                     if (searchHouseNumbers) {
-                        allSearches.push(searchAndParse(searchTypes.HOUSE_NUMBERS_FOR_STREET, parsedStreetResults[i].name));
+                        allSearches.push(searchAndParse(searchTypes.HOUSE_NUMBERS_FOR_STREET, parsedStreetResults[i].name, undefined, undefined, searchStreetBeforeWord));
                     }
+                }
+
+                if (!parsedStreetResults.length && matches?.length && searchHouseNumbers) {
+                    allSearches.push(searchAndParse(searchTypes.HOUSE_NUMBERS_FOR_STREET,
+                        matches[1],
+                        (a, b) => parseInt(a.properties?.hausnummer, 10) - parseInt(b.properties?.hausnummer, 10),
+                        item => item.properties?.hausnummerkomplett?.indexOf(matches[2]) === 0, // check longer housenumbers and suffixes!,
+                        searchStreetBeforeWord));
                 }
 
                 return Promise.all(allSearches);
@@ -87,6 +101,7 @@ export function search (searchstring, params, abortPreviousSearch = false) {
                 zoomToParams,
                 searchAddress = false,
                 searchStreets = false,
+                searchStreetBeforeWord = true,
                 searchDistricts = false,
                 searchParcels = false,
                 searchStreetKey = false,
@@ -122,14 +137,23 @@ export function search (searchstring, params, abortPreviousSearch = false) {
         }
 
         if (searchStreets) {
-            searches.push(searchAndParseStreetAndHouseNumber(searchstring, searchHouseNumbers));
+            searches.push(searchAndParseStreetAndHouseNumber(searchstring, searchHouseNumbers, searchStreetBeforeWord));
         }
 
         if (searchAddress) {
             // assume pattern like "Streetname 41b", split to ["Streetname", "41", "b"]
-            const values = searchstring.split(/(\d+)/).map(s => s.trim()).filter(x => x),
-                // if neither two (no affix like b) or three (with affix like b) parts found, not enough (or too many) params for method - don't search
-                type = [false, false, searchTypes.ADDRESS_UNAFFIXED, searchTypes.ADDRESS_AFFIXED][values.length];
+            let values = searchstring.split(/(\d+)/).map(s => s.trim()).filter(x => x);
+
+            if (values.length > 3) {
+                const streetName = values[0],
+                    houseNum = values[1],
+                    appendix = searchstring.replace(values[0], "").replace(values[1], "").trim();
+
+                values = [streetName, houseNum, appendix];
+            }
+
+            // if neither two (no affix like b) or three (with affix like b) parts found, not enough (or too many) params for method - don't search
+            const type = [false, false, searchTypes.ADDRESS_UNAFFIXED, searchTypes.ADDRESS_AFFIXED][values.length];
 
             if (type) {
                 searches.push(searchAndParse(type, values));
