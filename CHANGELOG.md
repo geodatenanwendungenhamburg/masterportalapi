@@ -3,18 +3,74 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-
 ## Unreleased - in development
 ### Added
 ### Changed
-- GeoJSON now also register a featuresloadend function if the source is a cluster.
+- Added support for `npm` version ^9.1.3.
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.27.1 to 3.29.1
+        - ol: 7.2.2 to 7.3.0
+        - proj4: 2.8.1 to 2.9.0
+    - devDependencies:
+        - @babel/core: 7.20.12 to 7.21.3
+        - @babel/plugin-transform-modules-commonjs: 7.20.11 to 7.21.2
+        - eslint: 8.31.0 to 8.36.0
+        - jest: 29.3.1 to 29.5.0
+        - jest-environment-jsdom: 29.3.1 to 29.5.0
+        - jsdoc: 4.0.0 to 4.0.2
+        - sass: 1.57.1 to 1.59.3
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---
 
-## 2.12.0 - 2022-01-24
+## 2.15.2 - 2023-03-14
+### Changed
+- Update parameters for getGeometryTypeFromService.getGeometryTypeFromWFS and getGeometryTypeFromService.getGeometryTypeFromOAF to pass wfsImgPath.
+
+### Fixed
+- Fix imports in createLegendInfo.js
+
+---
+
+## 2.15.1 - 2023-03-09
+### Fixed
+- The `labelField` attribute is now evaluated correctly for a text style.
+- The styling for clustered features works now.
+
+---
+
+## 2.15.0 - 2023-02-28
+### Added
+- WebGL Render-Pipeline for all VectorLayer types can be called using {"renderer": "webgl"} in config.json
+
+---
+
+## 2.14.0 - 2023-02-22
+### Added
+- VectorStyle is now part of the masterportalAPI.
+- The following packages have been installed:
+    - use-resize-observer: 9.1.0
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.1.0 to 7.2.2
+
+---
+
+## 2.13.0 - 2023-02-16
+### Changed
+- GeoJSON now also register a featuresloadend function if the source is a cluster.
+
+---
+
+## 2.12.0 - 2023-01-24
 ### Added
 - Added support for Node LTS version 18.
 - Add possibility to specify additional layerparams for a wmts layer, like opacity for example.
