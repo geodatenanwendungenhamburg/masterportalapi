@@ -5,8 +5,22 @@
 
 ## Unreleased - in development
 ### Added
+
 ### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.16.0 - 2023-03-28
+### Added
 - Added support for `npm` version ^9.1.3.
+
+### Changed
 - The following packages have been updated:
     - dependencies:
         - core-js: 3.27.1 to 3.29.1
@@ -21,11 +35,9 @@
         - jsdoc: 4.0.0 to 4.0.2
         - sass: 1.57.1 to 1.59.3
 
-### Deprecated
-
-### Removed
-
 ### Fixed
+- Issue Masterportal.#870: Features with `null` style were shown with default style. However, the default style is only supposed to be used for fallbacks; `null` style features must explicitly be invisible. This has been resolved.
+- Style of legend is now always not clustered.
 
 ---
 
