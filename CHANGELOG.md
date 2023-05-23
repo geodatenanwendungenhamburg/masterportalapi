@@ -9,7 +9,7 @@
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
 
 ### Changed
-
+- Changed peerDependency from cesium 1.95.0 to @cesium/engine 2.4.1.
 ### Deprecated
 
 ### Removed
