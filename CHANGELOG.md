@@ -5,14 +5,71 @@
 
 ## Unreleased - in development
 ### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+## 2.19.1 - 2023-06-02
+### Added
+### Changed
+- Exports in src/layer/wmts.js changed to export default {} to provide  ES-Syntax.
+### Deprecated
+### Removed
+### Fixed
+
+---
+
+## 2.19.0 - 2023-05-26
+### Added
+- The following package has been added:
+    - dependencies:
+        - dayjs: "^1.11.7"
 
 ### Changed
-
-### Deprecated
-
-### Removed
+- AttributeMapper: Object keys are supported with dot notation.
+- WFS: hardcoded URL changed to dynamic url creation.
+- Issue Masterportal #1021: extend vectorStyle in order to handle geometryCollections.
+- Issue Masterportal #1022: attributeMapper supports additional time formats.
 
 ### Fixed
+- Issue Masterportal # 1028: set cesium scene parameter recursively.
+
+---
+
+## 2.18.0 - 2023-05-10
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.29.1 to 3.30.2
+        - olcs: 2.13.1 to 2.14.0
+    - devDependencies:
+        - @babel/core: 7.21.3 to 7.21.8
+        - @babel/plugin-transform-modules-commonjs: 7.21.2 to 7.21.5
+        - @parcel/transformer-sass: 2.6.0 to 2.8.3
+        - canvas: 2.11.0 to 2.11.2
+        - eslint: 8.36.0 to 8.40.0
+        - jest-canvas-mock: 2.4.0 to 2.5.0
+        - parcel: 2.6.0 to 2.8.3
+        - sass: 1.59.3 to 1.62.1
+- The devDependency `buffer` ist downgrade from 6.0.3 to 5.7.1 because parcel requires a version 5.
+
+---
+
+## 2.17.0 - 2023-04-27
+### Added
+- Added functionality for mapbox style raster sources for vector tile layer.
+- Added possibility to use zoomToFeatureId in vectorStyle.
+
+### Changed
+- ol map default interactions and keyboardEventTarget can now be set by config parameters.
+- The following packages have been updated:
+    - dependencies:
+        - xml2js: 0.4.23 to 0.5.0
+
+### Fix
+- Fix vectorStyle for circlesegments.
 
 ---
 
