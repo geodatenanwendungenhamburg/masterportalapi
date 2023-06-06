@@ -182,12 +182,24 @@ export function formatFeatureData (feature, excludeTypes = ["boolean"]) {
  * @param {module:ol/Feature[]} features - the features loaded by the layer
  * @param {String} styleId - The layer's styleId
  * @param {String[]} excludeTypesFromParsing - types that should not be parsed from strings, only necessary for webgl
+ * @param {Boolean} isPointLayer - whether the layer source should consist only of points (or multi points)
  * @returns {void}
  */
-export function afterLoading (features, styleId, excludeTypesFromParsing) {
+export function afterLoading (features, styleId, excludeTypesFromParsing, isPointLayer) {
     const styleObject = styleList.returnStyleObject(styleId); // load styleModel to extract rules per feature
 
     if (Array.isArray(features)) {
+        /**
+         * @deprecated will probably not be necessary anymore in release version
+         */
+        if (isPointLayer) {
+            features.forEach(feature => {
+                if (feature.getGeometry().getType() === "MultiPoint") {
+                    feature.setGeometry(feature.getGeometry().getPoint(0)); // other points in the multi point will be ignored for now
+                }
+            });
+        }
+
         features.forEach(feature => {
             formatFeatureGeometry(feature); /** @deprecated will propbably not be necessary anymore in release version */
             formatFeatureStyles(feature, styleObject); /** @todo needs refactoring in release version  */

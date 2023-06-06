@@ -15,7 +15,7 @@ export function createLayerSource (attrs) {
 
     // perform necessary feature operations if renderer is webgl
     if (attrs.renderer === "webgl") {
-        webgl.afterLoading(source.getFeatures(), attrs.styleId, attrs.excludeTypesFromParsing);
+        webgl.afterLoading(source.getFeatures(), attrs.styleId, attrs.excludeTypesFromParsing, attrs.isPointLayer);
     }
 
     return source;
@@ -30,7 +30,7 @@ export function createLayerSource (attrs) {
 export function updateSource (layer, features) {
     // perform necessary feature operations if renderer is webgl
     if (layer.get("renderer") === "webgl") {
-        webgl.afterLoading(features, layer.get("styleId"), layer.get("excludeTypesFromParsing"));
+        webgl.afterLoading(features, layer.get("styleId"), layer.get("excludeTypesFromParsing"), layer.get("isPointLayer"));
     }
 
     layer.getSource().clear(true);

@@ -188,7 +188,7 @@ export function createLayerSource (rawLayer, options = {}) {
 
     if (rawLayer.renderer === "webgl") {
         source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing, rawLayer.isPointLayer);
         });
     }
 
@@ -212,7 +212,8 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
             ...rawLayer,
             renderer: layerParams.renderer,
             styleId: layerParams.styleId,
-            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing,
+            isPointLayer: layerParams.isPointLayer
         }, options);
         layer = webgl.createLayer({
             ...rawLayer,

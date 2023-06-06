@@ -23,10 +23,11 @@ export {setCustomStyles};
  * @param {"default" | "webgl" | undefined} [rawLayer.renderer] - use default canvas or webgl renderer
  * @param {string} [rawLayer.styleId] - the styleId of the layer, only necessary for webgl style pipeline
  * @param {string[]} [rawLayer.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
+ * @param {string[]} [rawLayer.isPointLayer] - whether the layer consists merely of points (or multi points)
  * @param {object} options - options of the geojson layer
  * @returns {ol.source.Vector} created VectorSource
  */
-export function createLayerSource ({url, features, clusterDistance, renderer, styleId, excludeTypesFromParsing}, options) {
+export function createLayerSource ({url, features, clusterDistance, renderer, styleId, excludeTypesFromParsing, isPointLayer}, options) {
     const format = new GeoJSON();
     let source = null;
 
@@ -46,11 +47,11 @@ export function createLayerSource ({url, features, clusterDistance, renderer, st
     if (renderer === "webgl") {
         // if features were provided before source creation
         if (features?.length > 0) {
-            webgl.afterLoading(source.getFeatures(), styleId, excludeTypesFromParsing);
+            webgl.afterLoading(source.getFeatures(), styleId, excludeTypesFromParsing, isPointLayer);
         }
         // wait for loading
         source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, styleId, excludeTypesFromParsing);
+            webgl.afterLoading(event?.features, styleId, excludeTypesFromParsing, isPointLayer);
         });
     }
 
@@ -75,7 +76,8 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
             ...rawLayer,
             renderer: layerParams.renderer,
             styleId: layerParams.styleId,
-            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing,
+            isPointLayer: layerParams.isPointLayer
         }, options);
         layer = webgl.createLayer({
             ...rawLayer,
@@ -118,7 +120,7 @@ export function updateSource (layer) {
     // perform necessary feature operations if renderer is webgl
     if (layer.get("renderer") === "webgl") {
         layer.getSource().once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, layer.get("styleId"), layer.get("excludeTypesFromParsing"));
+            webgl.afterLoading(event?.features, layer.get("styleId"), layer.get("excludeTypesFromParsing"), layer.get("isPointLayer"));
         });
     }
 }
