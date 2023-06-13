@@ -11,13 +11,14 @@
 ### Fixed
 
 ---
+## 2.19.2 - 2023-06-12
+### Fixed
+- VectorStyle of multiple geometries with styling rules does not fail on not existing style.
+
+---
 ## 2.19.1 - 2023-06-02
-### Added
 ### Changed
 - Exports in src/layer/wmts.js changed to export default {} to provide  ES-Syntax.
-### Deprecated
-### Removed
-### Fixed
 
 ---
 
