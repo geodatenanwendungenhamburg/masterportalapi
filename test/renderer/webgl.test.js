@@ -1,11 +1,19 @@
 import VectorSource from "ol/source/Vector.js";
 import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
+import MultiPoint from "ol/geom/MultiPoint";
 import * as webgl from "../../src/renderer/webgl";
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import Layer from "ol/layer/Layer";
 import {packColor} from "ol/renderer/webgl/shaders";
-import styleList from "../../src/vectorStyle/styleList";
+
+jest.mock("../../src/vectorStyle/styleList.js", () => {
+    const
+        original = jest.requireActual("../../src/vectorStyle/styleList.js");
+
+    original.returnStyleObject = jest.fn(() => "xyz");
+    return original;
+});
 
 describe("webgl.js", () => {
     let layerParams, rawLayer, styleRule, styleObject;
@@ -38,12 +46,6 @@ describe("webgl.js", () => {
         styleObject = {
             rules: [styleRule]
         };
-
-        jest.spyOn(styleList, "returnStyleObject").mockImplementation(() => styleObject);
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
     });
 
     describe("createLayer", () => {
@@ -63,6 +65,18 @@ describe("webgl.js", () => {
             expect(webglLayer).toBeInstanceOf(Layer);
             expect(webglLayer).not.toBeInstanceOf(WebGLPointsLayer);
             expect(webglLayer.get("isPointLayer")).toBeFalsy();
+        });
+    });
+    describe("afterLoading", () => {
+        const feature = new Feature({
+            geometry: new MultiPoint([
+                [[0, 0, 0], [1, 0, 0], [1, 1, 0]]
+            ], "XYZ")
+        });
+
+        it("should extract single points from MultiPoint geometries, if isPointLayer", () => {
+            webgl.afterLoading([feature], layerParams.styleId, null, true);
+            expect(feature.getGeometry().getType()).toEqual("Point");
         });
     });
     describe("private format and style functions", () => {

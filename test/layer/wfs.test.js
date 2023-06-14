@@ -407,11 +407,24 @@ describe("wfs.js", function () {
                     featureType: "krankenhaeuser_hh",
                     version: "1.0.0"
                 },
-                source = wfs.createLayerSource({...rawLayer, renderer: "webgl"});
+                layerParams = {
+                    renderer: "webgl",
+                    styleId: "id",
+                    excludeTypesFromParsing: null,
+                    isPointLayer: true
+                },
+                source = wfs.createLayerSource({
+                    ...rawLayer,
+                    renderer: layerParams.renderer,
+                    styleId: layerParams.styleId,
+                    excludeTypesFromParsing: layerParams.excludeTypesFromParsing,
+                    isPointLayer: layerParams.isPointLayer
+                }),
+                features = [];
 
             expect(source.getListeners("featuresloadend")).toHaveLength(1);
-            source.getListeners("featuresloadend")[0]({features: []});
-            expect(webgl.afterLoading).toHaveBeenCalled();
+            source.getListeners("featuresloadend")[0]({features});
+            expect(webgl.afterLoading).toHaveBeenCalledWith(features, layerParams.styleId, layerParams.excludeTypesFromParsing, layerParams.isPointLayer);
         });
     });
 });

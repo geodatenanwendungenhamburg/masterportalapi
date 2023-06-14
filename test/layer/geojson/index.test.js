@@ -96,11 +96,23 @@ describe("geojson/index", function () {
         it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
             const
                 rawLayer = {url: "example.com/geo.json"},
-                source = geojson.createLayerSource({...rawLayer, renderer: "webgl"}, {});
+                layerParams = {
+                    renderer: "webgl",
+                    styleId: "id",
+                    excludeTypesFromParsing: null,
+                    isPointLayer: true
+                },
+                source = geojson.createLayerSource({
+                    ...rawLayer,
+                    renderer: layerParams.renderer,
+                    styleId: layerParams.styleId,
+                    excludeTypesFromParsing: layerParams.excludeTypesFromParsing,
+                    isPointLayer: layerParams.isPointLayer
+                }, {});
 
             expect(source.getListeners("featuresloadend")).toHaveLength(2);
-            source.getListeners("featuresloadend")[1]({features: []});
-            expect(webgl.afterLoading).toHaveBeenCalled();
+            source.getListeners("featuresloadend")[1]({features});
+            expect(webgl.afterLoading).toHaveBeenCalledWith(features, layerParams.styleId, layerParams.excludeTypesFromParsing, layerParams.isPointLayer);
         });
 
     });
