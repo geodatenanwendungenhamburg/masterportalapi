@@ -190,6 +190,7 @@ export function afterLoading (features, styleId, excludeTypesFromParsing, isPoin
 
     if (Array.isArray(features)) {
         /**
+         * extract first point from Multipoint
          * @deprecated will probably not be necessary anymore in release version
          */
         if (isPointLayer) {

@@ -46,6 +46,12 @@
       "typ": "WFS"
     },
     {
+      "id": "5097",
+      "renderer": "webgl",
+      "isPointLayer": true,
+      "typ": "WFS"
+    },
+    {
       "id": "2003",
       "renderer": "webgl",
       "hitTolerance": 20,
