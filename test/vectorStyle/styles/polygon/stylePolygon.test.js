@@ -15,8 +15,11 @@ describe("stylePolygon", () => {
         isClustered = false,
         stylePolygonClass = new PolygonStyle(feature, style, isClustered);
 
-    describe("getStyle", function () {
+    describe("createStyle", function () {
         it("returns an instance of openlayers style", () => {
+            const createdStyle = stylePolygonClass.createStyle();
+
+            stylePolygonClass.setStyle(createdStyle);
             expect(stylePolygonClass.getStyle()).toBeInstanceOf(Style);
         });
     });

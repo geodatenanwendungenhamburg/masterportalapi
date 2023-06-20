@@ -9,6 +9,7 @@
 ### Deprecated
 ### Removed
 ### Fixed
+- VectorStyle: fixed several bugs of multiple geometries with styling rules.
 
 ---
 ## 2.19.2 - 2023-06-12

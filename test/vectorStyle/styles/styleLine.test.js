@@ -21,8 +21,11 @@ describe("styleLine", () => {
         });
     });
 
-    describe("getStyle", function () {
+    describe("createStyle", function () {
         it("returns an instance of openlayers style", () => {
+            const createdStyle = styleLineClass.createStyle();
+
+            styleLineClass.setStyle(createdStyle);
             expect(styleLineClass.getStyle()).toBeInstanceOf(Style);
         });
     });

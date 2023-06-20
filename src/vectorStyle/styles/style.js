@@ -35,6 +35,14 @@ class StyleClass {
         this.style = value;
     }
 
+    /**
+     * Getter for style.
+     * @returns {ol/style} - The style.
+     */
+    getStyle () {
+        return this.style;
+    }
+
     /*
      * setter for styles
      * @param {object} styles styles

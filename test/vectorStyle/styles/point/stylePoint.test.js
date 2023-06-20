@@ -27,8 +27,11 @@ describe("stylePoint", () => {
             expect(typeof stylePointClass.setSize).toBe("function");
         });
     });
-    describe("getStyle", function () {
+    describe("createStyle", function () {
         it("returns an instance of openlayers style", () => {
+            const createdStyle = stylePointClass.createStyle();
+
+            stylePointClass.setStyle(createdStyle);
             expect(stylePointClass.getStyle()).toBeInstanceOf(Style);
         });
         it("returns an instance of openlayers circleStyle", () => {
@@ -39,6 +42,9 @@ describe("stylePoint", () => {
                 legendValue: "Krankenhaus",
                 imageName: "krankenhaus.png"
             };
+            const createdStyle = stylePointClass.createStyle();
+
+            stylePointClass.setStyle(createdStyle);
 
             expect(stylePointClass.getStyle()).toBeInstanceOf(Style);
             expect(stylePointClass.getStyle().getImage()).toBeInstanceOf(CircleStyle);
