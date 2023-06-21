@@ -1,6 +1,6 @@
 import {createMapView} from "./maps/mapView";
 import crs from "./crs";
-import drawInteractions from "./maps/ol/drawInteractions";
+import drawInteractions from "./maps/interactions/drawInteractions";
 import rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
 import wmts from "./layer/wmts";

@@ -32,7 +32,6 @@ const earthRadius = 6378137,
             type: "Polygon"
         }
     };
-let drawInteraction = null;
 
 /**
  * Transform the radius to map projection unit.
@@ -56,13 +55,14 @@ function transformMapUnitRadius (radius, mapProjection) {
 
 /**
  * Create a feature for the outer circle of draw type: double circle.
+ * @param {ol/interaction/Draw} drawInteraction The draw interaction.
  * @param {Object} mapProjection The map projection.
  * @param {ol/source} source The vector layer source for draw features.
  * @param {Object} [options={}] The options for drawing features.
  * @param {Number} [options.circleOuterRadius] The radius for the outer circle.
  * @returns {void}
  */
-function drawOuterCircle (mapProjection, source, options = {}) {
+function drawOuterCircle (drawInteraction, mapProjection, source, options = {}) {
     drawInteraction.on("drawend", event => {
         const outerCircleFeature = event.feature.clone(),
             mapUnitOuterRadius = transformMapUnitRadius(options.circleOuterRadius, mapProjection);
@@ -74,6 +74,7 @@ function drawOuterCircle (mapProjection, source, options = {}) {
 
 /**
  * Create features for non-interactive circle or double circle.
+ * @param {ol/interaction/Draw} drawInteraction The draw interaction.
  * @param {String} drawType The current draw type.
  * @param {Object} mapProjection The map projection.
  * @param {ol/source} source The vector layer source for draw features.
@@ -83,7 +84,7 @@ function drawOuterCircle (mapProjection, source, options = {}) {
  * @param {Boolean} [options.interactiveCircle] Circle is drawn interactively or not.
  * @returns {void}
  */
-function drawCircle (drawType, mapProjection, source, options = {}) {
+function drawCircle (drawInteraction, drawType, mapProjection, source, options = {}) {
     if (options.interactiveCircle === false && options.circleInnerRadius > 0) {
         drawInteraction.on("drawstart", event => {
             const mapUnitInnerRadius = transformMapUnitRadius(options.circleInnerRadius, mapProjection);
@@ -93,7 +94,7 @@ function drawCircle (drawType, mapProjection, source, options = {}) {
         });
 
         if (drawType === "doubleCircle" && options.circleOuterRadius > 0) {
-            drawOuterCircle(mapProjection, source, options);
+            drawOuterCircle(drawInteraction, mapProjection, source, options);
         }
     }
 }
@@ -117,34 +118,33 @@ function createDrawInteraction (source, type, drawTypeOptions = {}) {
 }
 
 /**
- * Change the current draw interaction.
+ * Create the draw interaction for interactive or static geometries.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
- * @param {ol/map} map The ol map.
+ * @param {Object} mapProjection The map projection.
  * @param {Object} [options={}] The options for drawing features.
  * @param {Number} [options.circleInnerRadius] The radius for the inner circle.
  * @param {Number} [options.circleOuterRadius] The radius for the outer circle.
  * @param {Boolean} [options.interactiveCircle] Circle is drawn interactively or not.
- * @returns {void}
+ * @returns {ol/interaction/Draw|null} The draw interaction.
  */
-function changeDrawInteraction (drawType, source, map, options = {}) {
-    const mapProjection = map.getView().getProjection();
+function createInteractiveOrStaticDrawInteraction (drawType, source, mapProjection, options = {}) {
+    let drawInteraction = null;
 
-    map.removeInteraction(drawInteraction);
-    drawInteraction = null;
     if (typeof mappingDrawTypes[drawType] === "object") {
         drawInteraction = createDrawInteraction(source, mappingDrawTypes[drawType].type, mappingDrawTypes[drawType].options);
 
         if (drawType === "circle" || drawType === "doubleCircle") {
-            drawCircle(drawType, mapProjection, source, options);
+            drawCircle(drawInteraction, drawType, mapProjection, source, options);
         }
-
-        map.addInteraction(drawInteraction);
     }
+
+    return drawInteraction;
 }
 
 export default {
-    changeDrawInteraction,
+    createInteractiveOrStaticDrawInteraction,
+    createDrawInteraction,
     drawCircle,
     drawOuterCircle,
     transformMapUnitRadius

@@ -5,6 +5,8 @@
 
 ## Unreleased - in development
 ### Added
+- Add draw interaction for interactive and static geometry types.
+
 ### Changed
 ### Deprecated
 ### Removed
@@ -12,11 +14,13 @@
 - VectorStyle: fixed several bugs of multiple geometries with styling rules.
 
 ---
+
 ## 2.19.2 - 2023-06-12
 ### Fixed
 - VectorStyle of multiple geometries with styling rules does not fail on not existing style.
 
 ---
+
 ## 2.19.1 - 2023-06-02
 ### Changed
 - Exports in src/layer/wmts.js changed to export default {} to provide  ES-Syntax.
