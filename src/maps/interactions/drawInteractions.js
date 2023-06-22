@@ -100,50 +100,29 @@ function drawCircle (drawInteraction, drawType, mapProjection, source, options =
 }
 
 /**
- * Create a draw interaction.
- * @param {ol/source} source The vector layer source for draw features.
- * @param {String} type The geometry type
- * @param {Object} [drawTypeOptions={}] The options for draw interaction
- * @param {Boolean} [drawTypeOptions.freehand] Geometry is drawn freehand.
- * @param {Function} [drawTypeOptions.geometryFunction] Extended geometry function.
- * @returns {ol/interaction/Draw} The draw interaction.
- */
-function createDrawInteraction (source, type, drawTypeOptions = {}) {
-    return new Draw({
-        source: source,
-        type: type,
-        freehand: drawTypeOptions.freehand,
-        geometryFunction: drawTypeOptions.geometryFunction
-    });
-}
-
-/**
- * Create the draw interaction for interactive or static geometries.
+ * Create the draw interaction.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
- * @param {Object} mapProjection The map projection.
- * @param {Object} [options={}] The options for drawing features.
- * @param {Number} [options.circleInnerRadius] The radius for the inner circle.
- * @param {Number} [options.circleOuterRadius] The radius for the outer circle.
- * @param {Boolean} [options.interactiveCircle] Circle is drawn interactively or not.
  * @returns {ol/interaction/Draw|null} The draw interaction.
  */
-function createInteractiveOrStaticDrawInteraction (drawType, source, mapProjection, options = {}) {
+function createDrawInteraction (drawType, source) {
     let drawInteraction = null;
 
     if (typeof mappingDrawTypes[drawType] === "object") {
-        drawInteraction = createDrawInteraction(source, mappingDrawTypes[drawType].type, mappingDrawTypes[drawType].options);
+        const options = mappingDrawTypes[drawType].options || {};
 
-        if (drawType === "circle" || drawType === "doubleCircle") {
-            drawCircle(drawInteraction, drawType, mapProjection, source, options);
-        }
+        drawInteraction = new Draw({
+            source: source,
+            type: mappingDrawTypes[drawType].type,
+            freehand: options.freehand,
+            geometryFunction: options.geometryFunction
+        });
     }
 
     return drawInteraction;
 }
 
 export default {
-    createInteractiveOrStaticDrawInteraction,
     createDrawInteraction,
     drawCircle,
     drawOuterCircle,

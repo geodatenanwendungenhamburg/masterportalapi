@@ -1,34 +1,28 @@
 import {Draw} from "ol/interaction.js";
+import VectorSource from "ol/source/Vector";
 
 import drawInteractions from "../../../src/maps/interactions/drawInteractions";
 
 describe("src/maps/interactions/drawInteractions.js", () => {
-    describe("createInteractiveOrStaticDrawInteraction", () => {
-        it("should create a interactive or static draw interaction", () => {
-            const drawType = "pen",
-                source = "",
-                mapProjection = {
-                    getUnits: () => "m"
-                },
-                options = {},
-                drawInteraction = drawInteractions.createInteractiveOrStaticDrawInteraction(drawType, source, mapProjection, options);
+    describe("createDrawInteraction", () => {
+        it("should create a draw interaction", () => {
+            const source = new VectorSource(),
+                drawType = "pen",
+                drawInteraction = drawInteractions.createDrawInteraction(drawType, source);
 
             expect(drawInteraction).not.toBeUndefined();
             expect(drawInteraction).not.toBeNull();
             expect(drawInteraction).toBeInstanceOf(Draw);
         });
-    });
 
-    describe("createDrawInteraction", () => {
-        it("should create a draw interaction", () => {
-            const source = "",
-                type = "Point",
-                drawTypeOptions = {},
-                drawInteraction = drawInteractions.createDrawInteraction(source, type, drawTypeOptions);
+        it("should return null, if drawType is not supported", () => {
+            const source = new VectorSource(),
+                drawType = "abc",
+                drawInteraction = drawInteractions.createDrawInteraction(drawType, source);
 
             expect(drawInteraction).not.toBeUndefined();
-            expect(drawInteraction).not.toBeNull();
-            expect(drawInteraction).toBeInstanceOf(Draw);
+            expect(drawInteraction).toBeNull();
+            expect(drawInteraction).not.toBeInstanceOf(Draw);
         });
     });
 
