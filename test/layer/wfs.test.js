@@ -414,5 +414,57 @@ describe("wfs.js", function () {
             expect(webgl.afterLoading).toHaveBeenCalled();
         });
     });
+    describe("loadFeaturesManually", function () {
+        const consoleError = console.error;
+        let tick;
+
+        beforeEach(() => {
+            tick = () => {
+                return new Promise(resolve => {
+                    setTimeout(resolve, 0);
+                });
+            };
+
+            if (global.fetch) {
+                global.fetch.mockClear();
+            }
+        });
+        // to reset show error on load in console
+        afterEach(() => {
+            console.error = consoleError;
+        });
+
+        it("load features manually", async function () {
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return featureCollection;
+                        }
+                    });
+                });
+            });
+
+            const format = new WFS(),
+                source = new VectorSource({
+                    format: format,
+                    url: "https://url.de",
+                    version: "1.1.0",
+                    featureType: "krankenhaeuser_hh",
+                    featureNS: "http://www.deegree.org/app"
+                }),
+                layerAttributes = {
+                    crs: "EPSG:25832",
+                    version: "1.1.0",
+                    url: "https://url.de"
+                };
+
+            wfs.loadFeaturesManually(layerAttributes, source);
+            await tick();
+            expect(source.getFeatures()).toHaveLength(1);
+        });
+    });
 });
 

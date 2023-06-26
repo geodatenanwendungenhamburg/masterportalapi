@@ -252,3 +252,22 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     }
     return layer;
 }
+
+/**
+ * Load the features manually.
+ * @param {Object} layerAttributes raw layer attributes.
+ * @param {module:ol/vector/Source} layerSource - the source of the layer
+ * @returns {void}
+ */
+export function loadFeaturesManually (layerAttributes, layerSource) {
+    const getUrl = createUrl(layerAttributes, layerAttributes.version, {getCode: () => layerAttributes.crs}, "");
+
+    fetch(getUrl, layerSource)
+        .then(response => response.text())
+        .then(responseString => {
+            layerSource.addFeatures(layerSource.getFormat().readFeatures(responseString));
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}

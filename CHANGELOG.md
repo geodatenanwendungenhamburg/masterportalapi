@@ -6,6 +6,7 @@
 ## Unreleased - in development
 ### Added
 - Add draw interaction for interactive and static geometry types.
+- WFS: Added function to load wfs features manually.
 
 ### Changed
 ### Deprecated
