@@ -9,6 +9,9 @@
 - WFS: Added function to load wfs features manually.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.3.0 to 7.4.0 (This reduces the styling of the webgl renderer to default values, because of changes in the experimental webgl-API)
 ### Deprecated
 ### Removed
 ### Fixed

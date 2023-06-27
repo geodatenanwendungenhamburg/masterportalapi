@@ -4,7 +4,6 @@ import Polygon from "ol/geom/Polygon";
 import * as webgl from "../../src/renderer/webgl";
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import Layer from "ol/layer/Layer";
-import {packColor} from "ol/renderer/webgl/shaders";
 import styleList from "../../src/vectorStyle/styleList";
 
 describe("webgl.js", () => {
@@ -106,55 +105,6 @@ describe("webgl.js", () => {
                 $feature = feature.clone();
                 webgl.formatFeatureStyles($feature, styleObject);
                 expect($feature.styleRule).toEqual(styleRule);
-            });
-        });
-        describe("getRenderFunctions", () => {
-            it("should read the style from styleRule and pack them to single float", () => {
-                const renderFunctions = webgl.getRenderFunctions();
-
-                $feature = feature.clone();
-                webgl.formatFeatureStyles($feature, styleObject);
-                expect(renderFunctions.fill.attributes.color($feature)).toEqual(packColor(styleRule.style.polygonFillColor));
-                expect(renderFunctions.fill.attributes.opacity($feature)).toEqual(styleRule.style.polygonFillColor[3]);
-                expect(renderFunctions.stroke.attributes.color($feature)).toEqual(packColor(styleRule.style.polygonStrokeColor));
-                expect(renderFunctions.stroke.attributes.width($feature)).toEqual(styleRule.style.polygonStrokeWidth);
-                expect(renderFunctions.stroke.attributes.opacity($feature)).toEqual(styleRule.style.polygonStrokeColor[3]);
-                expect(renderFunctions.point.attributes.color($feature)).toEqual(packColor(styleRule.style.circleFillColor));
-                expect(renderFunctions.point.attributes.size($feature)).toEqual(styleRule.style.circleRadius);
-                expect(renderFunctions.point.attributes.opacity($feature)).toEqual(styleRule.style.circleFillColor[3]);
-            });
-            it("should return default values if style is empty, i.e. \"default\" style", () => {
-                const renderFunctions = webgl.getRenderFunctions();
-
-                styleObject = {
-                    rules: [{
-                        style: {}
-                    }]
-                };
-                $feature = feature.clone();
-                webgl.formatFeatureStyles($feature, styleObject);
-                expect(typeof renderFunctions.fill.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.fill.attributes.opacity($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.width($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.opacity($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.size($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.opacity($feature)).toEqual("number");
-            });
-            it("should return default values if no style rule is found", () => {
-                const renderFunctions = webgl.getRenderFunctions();
-
-                $feature = feature.clone();
-                expect(feature.styleRule).toBeUndefined();
-                expect(typeof renderFunctions.fill.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.fill.attributes.opacity($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.width($feature)).toEqual("number");
-                expect(typeof renderFunctions.stroke.attributes.opacity($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.color($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.size($feature)).toEqual("number");
-                expect(typeof renderFunctions.point.attributes.opacity($feature)).toEqual("number");
             });
         });
     });
