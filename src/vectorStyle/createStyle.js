@@ -246,7 +246,7 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         captureLegendFromFeature(styleObject.styleId, legendInformation);
     }
     // label style is optional and depends on some fields
-    if (isClustered || hasLabelField) {
+    if (styleObjectGeometry !== null && (isClustered || hasLabelField)) {
         if (Array.isArray(styleObjectGeometry)) {
             styleObjectGeometry[0].setText(getLabelStyle(feature, style, isClustered));
         }
