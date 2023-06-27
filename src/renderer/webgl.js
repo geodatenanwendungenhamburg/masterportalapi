@@ -10,22 +10,22 @@ import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
  * @private
  */
 const defaultStyle = {
-    symbol: {
-        symbolType: "circle",
-        size: 20,
-        color: "#006688",
-        rotateWithView: false,
-        offset: [0, 0],
-        opacity: 0.6
-    }
-};
+        symbol: {
+            symbolType: "circle",
+            size: 20,
+            color: "#006688",
+            rotateWithView: false,
+            offset: [0, 0],
+            opacity: 0.6
+        }
+    },
 
-/** @type {import('../src/ol/style/literal.js').LiteralStyle} */
-const style = {
-    'stroke-color': ['*', ['get', 'COLOR'], [0, 102, 136]],
-    'stroke-width': 1,
-    'fill-color': ['*', ['get', 'COLOR'], [0, 102, 136, 0.6]],
-  };
+    /** @type {import('../src/ol/style/literal.js').LiteralStyle} */
+    style = {
+        "stroke-color": ["*", ["get", "COLOR"], [0, 102, 136]],
+        "stroke-width": 1,
+        "fill-color": ["*", ["get", "COLOR"], [0, 102, 136, 0.6]]
+    };
 
 /**
  * Creates a layer object to extend from.
@@ -48,9 +48,9 @@ export function createVectorLayerRenderer () {
          * @experimental
          */
         createRenderer () {
-            return new WebGLVectorLayerRenderer(this,  {
-                style,
-              });
+            return new WebGLVectorLayerRenderer(this, {
+                style
+            });
         }
     }
 
