@@ -3,6 +3,7 @@ import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
 import VectorLayer from "ol/layer/Layer";
 import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
+import {returnColor} from "../vectorStyle/lib/colorConvertions";
 
 /**
  * The default style for OpenLayers WebGLPoints class
@@ -22,9 +23,14 @@ const defaultStyle = {
 
     /** @type {import('../src/ol/style/literal.js').LiteralStyle} */
     style = {
-        "stroke-color": ["*", ["get", "COLOR"], [0, 102, 136]],
+        "stroke-color": ["*", ["get", "STROKECOLOR"], [0, 102, 136]],
+        // NOTICE: does not work with ol 7.4.0, throws errors -> use 1 pixel width
+        // "stroke-width": ["*", ["get", "STROKEWIDTH"], 1],
         "stroke-width": 1,
-        "fill-color": ["*", ["get", "COLOR"], [0, 102, 136, 0.6]]
+        // NOTICE: does not work with ol 7.4.0, default color id displayed
+        "fill-color": ["*", ["get", "COLOR"], [0, 102, 136, 1]],
+        "opacity": ["*", ["get", "OPACITY"], 1],
+        "size": ["*", ["get", "CIRCLESIZE"], 20]
     };
 
 /**
@@ -76,6 +82,21 @@ export function formatFeatureStyles (feature, styleObject) {
     // don't set on properties to avoid GFI issues
     // undefined if no match
     feature.styleRule = rule;
+
+    if (rule && rule.style) {
+        const polygonFillColor = "rgba(255, 255, 255, 0.3)", // "rgba(" + rule.style.polygonFillColor.join(",")+")",//returnColor(rule.style.polygonFillColor, "hex"),
+            circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
+            fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
+            polygonStrokeColor = returnColor(rule.style.polygonStrokeColor, "hex"),
+            polygonStrokeWidth = rule.style.polygonStrokeWidth,
+            size = rule.style.circleRadius;
+
+        feature.set("FILLCOLOR", fillColor ? fillColor : "#006688");
+        feature.set("STROKECOLOR", polygonStrokeColor ? polygonStrokeColor : "#006688");
+        feature.set("STROKEWIDTH", polygonStrokeWidth ? polygonStrokeWidth : 1);
+        feature.set("OPACITY", polygonFillColor ? polygonFillColor[3] : 1);
+        feature.set("CIRCLESIZE", size ? size : 20);
+    }
 }
 
 /**
