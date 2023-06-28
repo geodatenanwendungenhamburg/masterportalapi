@@ -79,12 +79,12 @@ export function formatFeatureStyles (feature, styleObject) {
     // extract first matching rule only
     const rule = getRulesForFeature(styleObject, feature)[0];
 
-    // don't set on properties to avoid GFI issues
     // undefined if no match
     feature.styleRule = rule;
 
     if (rule && rule.style) {
-        const polygonFillColor = "rgba(255, 255, 255, 0.3)", // "rgba(" + rule.style.polygonFillColor.join(",")+")",//returnColor(rule.style.polygonFillColor, "hex"),
+         // TODO set style on properties will be visible in GFI
+        const polygonFillColor = returnColor(rule.style.polygonFillColor, "hex"),
             circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
             fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
             polygonStrokeColor = returnColor(rule.style.polygonStrokeColor, "hex"),
