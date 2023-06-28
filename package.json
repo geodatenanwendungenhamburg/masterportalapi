@@ -47,7 +47,7 @@
     "use-resize-observer": "^9.1.0"
   },
   "peerDependencies": {
-    "cesium": "^1.95.0"
+    "cesium": "^1.106.0"
   },
   "engines": {
     "node": "^16.13.2 || ^18.12.0",
