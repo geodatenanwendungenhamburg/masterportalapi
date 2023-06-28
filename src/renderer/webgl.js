@@ -83,7 +83,7 @@ export function formatFeatureStyles (feature, styleObject) {
     feature.styleRule = rule;
 
     if (rule && rule.style) {
-         // TODO set style on properties will be visible in GFI
+        // TODO set style on properties will be visible in GFI
         const polygonFillColor = returnColor(rule.style.polygonFillColor, "hex"),
             circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
             fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
