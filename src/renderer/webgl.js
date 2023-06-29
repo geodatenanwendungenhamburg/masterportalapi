@@ -23,14 +23,13 @@ const defaultStyle = {
 
     /** @type {import('../src/ol/style/literal.js').LiteralStyle} */
     style = {
-        "stroke-color": ["*", ["get", "STROKECOLOR"], [0, 102, 136]],
+        "stroke-color": ["get", "STROKECOLOR"],
         // NOTICE: does not work with ol 7.4.0, throws errors -> use 1 pixel width
-        // "stroke-width": ["*", ["get", "STROKEWIDTH"], 1],
+        // "stroke-width": ["get", "STROKEWIDTH"],
         "stroke-width": 1,
-        // NOTICE: does not work with ol 7.4.0, default color id displayed
-        "fill-color": ["*", ["get", "COLOR"], [0, 102, 136, 1]],
-        "opacity": ["*", ["get", "OPACITY"], 1],
-        "size": ["*", ["get", "CIRCLESIZE"], 20]
+        "fill-color": ["get", "FILLCOLOR"],
+        "opacity": ["get", "OPACITY"],
+        "size": ["get", "CIRCLESIZE"]
     };
 
 /**

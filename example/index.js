@@ -45,12 +45,12 @@ const hamburgServicesUrl = "https://geodienste.hamburg.de/services-internet.json
     // eslint-disable-next-line func-style
     getWfsStyleFunction = function () {
         const styleId = "8712",
-            olLayer = window.mpapi.map.getLayers().getArray().find((element) => element.get("id") === "8712"),
-            source = olLayer.getSource(),
+            olLayer = window.mpapi.map?.getLayers().getArray().find((element) => element.get("id") === "8712"),
+            source = olLayer?.getSource(),
             styleObject = styleList.returnStyleObject(styleId);
         let isClusterFeature = false;
 
-        if (styleObject !== undefined) {
+        if (styleObject !== undefined && source !== undefined) {
             source.on("featuresloadend", event => {
                 event.features.forEach(element => {
                     isClusterFeature = false;
@@ -137,8 +137,6 @@ document.getElementById("layer-visibility").addEventListener("click", function (
     });
 });
 
-map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
-
 //* geojson styling function call to override default styling and special wfs styling
 mpapi.geojson.setCustomStyles({
     MultiPolygon: new Style({
@@ -187,6 +185,7 @@ const styleOaf = function (feature, resolution) {
 services.find(({id}) => id === "5001").style = styleOaf;
 
 //* SYNCHRONOUS EXAMPLE: layerConf is known
+map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
 window.mpapi.map = map2D;
 
 ["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id, {errorCallback}));
@@ -213,7 +212,7 @@ mpapi.rawLayerList.initializeLayerList(hamburgServicesUrl,
             layerConf: conf,
             layers: null
         }, "2D");
-        ["6357", "6074"].forEach(id => window.mpapi.map.addLayer(id));
+        ["23420", "6074"].forEach(id => window.mpapi.map.addLayer(id));
     });
 //*/
 
@@ -221,7 +220,7 @@ mpapi.rawLayerList.initializeLayerList(hamburgServicesUrl,
 document.getElementById("enable").style.display = "none";
 window.mpapi.map = mapsAPI.map.createMap({
     ...portalConfig, layerConf: hamburgServicesUrl, layers: [
-        {id: "6357"},
+        {id: "23420"},
         {id: "453", transparency: 50}
     ]}, "2D",
 {
@@ -251,11 +250,13 @@ window.mpapi.search("Mümmelmannsberg 72", {
 /* VECTOR TILE EXAMPLE */
 /*
 document.getElementById("enable").style.display = "none";
-map2D.getLayers().forEach(layer => {
-    map2D.removeLayer(layer);
+window.mpapi.map = mapsAPI.map.createMap(config, "2D", {errorCallback});
+
+window.mpapi.map.getLayers().forEach(layer => {
+    window.mpapi.map.removeLayer(layer);
 });
 
-const vtStyleUrl = "https://dev.adv-smart.de/styles/playground/masterportal_test1.json";
+const vtStyleUrl = "https://test.geoportal-hamburg.de/vt/esri/resources/styles/root.json";
 
 fetch(vtStyleUrl)
     .then(response => response.json())
@@ -268,13 +269,15 @@ fetch(vtStyleUrl)
 
 /* WMTS example */
 /*
-map2D.getLayers().forEach(layer => {
-    map2D.removeLayer(layer);
+window.mpapi.map = mapsAPI.map.createMap(config, "2D", {errorCallback});
+
+window.mpapi.map.getLayers().forEach(layer => {
+    window.mpapi.map.removeLayer(layer);
 });
 window.mpapi.map.addLayer("7001");
 window.mpapi.map.addLayer("7002");
 window.mpapi.map.addLayer("7003");
-*/
+//*/
 
 /* VectorStyle example */
 // Example for using the vectorStyle that is now implemented in the masterportalAPI.
