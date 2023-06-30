@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## ## 2.20.0 - 2023-06-30
 ### Added
 - Add draw interaction for interactive and static geometry types.
 - WFS: Added function to load wfs features manually.
@@ -14,8 +14,7 @@
         - ol: 7.3.0 to 7.4.0
         - cesium: 1.95.0 to 1.106.0
 - The examples in example/index.js are updated.
-### Deprecated
-### Removed
+
 ### Fixed
 - VectorStyle: fixed several bugs of multiple geometries with styling rules.
 
