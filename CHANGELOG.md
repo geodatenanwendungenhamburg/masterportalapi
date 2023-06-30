@@ -11,8 +11,9 @@
 ### Changed
 - The following packages have been updated:
     - dependencies:
-        - ol: 7.3.0 to 7.4.0 (This reduces the styling of of polygons with the webgl renderer to default values, because of changes in the experimental webgl-API)
+        - ol: 7.3.0 to 7.4.0
         - cesium: 1.95.0 to 1.106.0
+- The examples in example/index.js are updated.
 ### Deprecated
 ### Removed
 ### Fixed
