@@ -3,7 +3,16 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## ## 2.20.0 - 2023-06-30
+## Unreleased - in development
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+
+## 2.20.0 - 2023-06-30
 ### Added
 - Add draw interaction for interactive and static geometry types.
 - WFS: Added function to load wfs features manually.
