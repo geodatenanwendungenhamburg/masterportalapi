@@ -192,6 +192,7 @@ export function afterLoading (features, styleId, excludeTypesFromParsing, isPoin
         /**
          * extract first point from Multipoint
          * @deprecated will probably not be necessary anymore in release version
+         * @example An example for that behavior can be found when rendering "Strassenbaumkataster"
          */
         if (isPointLayer) {
             features.forEach(feature => {
