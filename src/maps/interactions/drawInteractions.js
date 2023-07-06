@@ -35,7 +35,8 @@ const earthRadius = 6378137,
         }
     };
 let styleObject = null,
-    styleObjectOuterCircle = null;
+    styleObjectOuterCircle = null,
+    zIndex = 0;
 
 /**
  * Transform the radius to map projection unit.
@@ -63,20 +64,22 @@ function transformMapUnitRadius (radius, mapProjection) {
  * @param {Object} mapProjection The map projection.
  * @param {ol/source} source The vector layer source for draw features.
  * @param {Object} [options={}] The options for drawing features.
- * @param {Number} [options.circleInnerRadius] The radius for the inner circle.
- * @param {Number} [options.circleOuterRadius] The radius for the outer circle.
+ * @param {Number} [options.innerRadius] The radius for the inner circle.
+ * @param {Number} [options.outerRadius] The radius for the outer circle.
  * @returns {void}
  */
 function drawOuterCircle (feature, mapProjection, source, options = {}) {
     const innerCircleFeature = feature.clone(),
-        mapUnitInnerRadius = transformMapUnitRadius(options.circleInnerRadius, mapProjection),
-        mapUnitOuterRadius = transformMapUnitRadius(options.circleOuterRadius, mapProjection),
+        mapUnitInnerRadius = transformMapUnitRadius(options.innerRadius, mapProjection),
+        mapUnitOuterRadius = transformMapUnitRadius(options.outerRadius, mapProjection),
         innerStyle = createStyle.createStyle(styleObject, innerCircleFeature, false),
         outerStyle = createStyle.createStyle(styleObjectOuterCircle, feature, false);
 
+    outerStyle.setZIndex(zIndex++);
     feature.setStyle(outerStyle);
     feature.getGeometry().setRadius(mapUnitOuterRadius);
 
+    innerStyle.setZIndex(zIndex++);
     innerCircleFeature.setStyle(innerStyle);
     innerCircleFeature.getGeometry().setRadius(mapUnitInnerRadius);
 
@@ -88,11 +91,11 @@ function drawOuterCircle (feature, mapProjection, source, options = {}) {
  * @param {ol/feature} feature The ol feature.vb
  * @param {Object} mapProjection The map projection.
  * @param {Object} [options={}] The options for drawing features.
- * @param {Number} [options.circleInnerRadius] The radius for the (inner) circle.
+ * @param {Number} [options.innerRadius] The radius for the (inner) circle.
  * @returns {void}
  */
 function drawInnerCircle (feature, mapProjection, options = {}) {
-    const mapUnitInnerRadius = transformMapUnitRadius(options.circleInnerRadius, mapProjection);
+    const mapUnitInnerRadius = transformMapUnitRadius(options.innerRadius, mapProjection);
 
     feature.getGeometry().setRadius(mapUnitInnerRadius);
 }
@@ -104,18 +107,18 @@ function drawInnerCircle (feature, mapProjection, options = {}) {
  * @param {Object} mapProjection The map projection.
  * @param {ol/source} source The vector layer source for draw features.
  * @param {Object} [options={}] The options for drawing features.
- * @param {Number} [options.circleInnerRadius] The radius for the inner circle.
- * @param {Number} [options.circleOuterRadius] The radius for the outer circle.
- * @param {Boolean} [options.interactiveCircle] Circle is drawn interactively or not.
+ * @param {Number} [options.innerRadius] The radius for the inner circle.
+ * @param {Boolean} [options.interactive] Circle is drawn interactively or not.
+ * @param {Number} [options.outerRadius] The radius for the outer circle.
  * @returns {void}
  */
 function drawCircle (drawInteraction, drawType, mapProjection, source, options = {}) {
-    if ((drawType === "doubleCircle" || options.interactiveCircle === false) && options.circleInnerRadius > 0) {
+    if ((drawType === "doubleCircle" || options.interactive === false) && options.innerRadius > 0) {
         drawInteraction.on("drawstart", event => {
             if (drawType === "circle") {
                 drawInnerCircle(event.feature, mapProjection, options);
             }
-            else if (drawType === "doubleCircle" && options.circleOuterRadius > 0) {
+            else if (drawType === "doubleCircle" && options.outerRadius > 0) {
                 drawOuterCircle(event.feature, mapProjection, source, options);
             }
             drawInteraction.finishDrawing();
@@ -166,6 +169,7 @@ function setStyleToDrawInteraction (drawInteraction) {
     drawInteraction.on("drawstart", event => {
         const style = createStyle.createStyle(styleObject, event.feature, false);
 
+        style.setZIndex(zIndex++);
         drawInteraction.getOverlay().setStyle(style);
         event.feature.setStyle(style);
     });
@@ -190,7 +194,7 @@ function createDrawInteraction (drawType, source) {
             type: mappingDrawTypes[drawType].type
         });
 
-        if (styleObject !== null) {
+        if (styleObject !== null && drawType !== "doubleCircle") {
             setStyleToDrawInteraction(drawInteraction);
         }
     }
