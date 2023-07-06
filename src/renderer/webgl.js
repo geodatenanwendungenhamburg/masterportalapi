@@ -21,15 +21,13 @@ const defaultStyle = {
         }
     },
 
-    /** @type {import('../src/ol/style/literal.js').LiteralStyle} */
+    /** @type {import('ol/style/literal.js').LiteralStyle} */
     style = {
-        "stroke-color": ["get", "STROKECOLOR"],
-        // NOTICE: does not work with ol 7.4.0, throws errors -> use 1 pixel width
-        // "stroke-width": ["get", "STROKEWIDTH"],
-        "stroke-width": 1,
-        "fill-color": ["get", "FILLCOLOR"],
-        "opacity": ["get", "OPACITY"],
-        "size": ["get", "CIRCLESIZE"]
+        "stroke-color": ["get", "STROKECOLOR", "string"],
+        "stroke-width": ["get", "STROKEWIDTH", "number"],
+        "fill-color": ["get", "FILLCOLOR", "string"],
+        "opacity": ["get", "OPACITY", "number"],
+        "size": ["get", "CIRCLESIZE", "number"]
     };
 
 /**
@@ -86,14 +84,14 @@ export function formatFeatureStyles (feature, styleObject) {
         const polygonFillColor = returnColor(rule.style.polygonFillColor, "hex"),
             circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
             fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
-            polygonStrokeColor = returnColor(rule.style.polygonStrokeColor, "hex"),
-            polygonStrokeWidth = rule.style.polygonStrokeWidth,
+            strokeColor = returnColor(rule.style.polygonStrokeColor || rule.style.lineStrokeColor, "hex"),
+            strokeWidth = rule.style.polygonStrokeWidth || rule.style.lineStrokeWidth,
             size = rule.style.circleRadius;
 
         feature.set("FILLCOLOR", fillColor ? fillColor : "#006688");
-        feature.set("STROKECOLOR", polygonStrokeColor ? polygonStrokeColor : "#006688");
-        feature.set("STROKEWIDTH", polygonStrokeWidth ? polygonStrokeWidth : 1);
-        feature.set("OPACITY", polygonFillColor ? polygonFillColor[3] : 1);
+        feature.set("STROKECOLOR", strokeColor ? strokeColor : "#006688");
+        feature.set("STROKEWIDTH", strokeWidth ? strokeWidth : 1);
+        feature.set("OPACITY", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : 1);
         feature.set("CIRCLESIZE", size ? size : 20);
     }
 }

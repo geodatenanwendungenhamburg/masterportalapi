@@ -202,9 +202,16 @@ export function createLayerSource (rawLayer, options = {}) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);
     }
     if (rawLayer.renderer === "webgl") {
-        source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
-        });
+        if (options.loadingStrategy === bbox) {
+            source.on("featuresloadend", event => {
+                webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+            });
+        }
+        else {
+            source.once("featuresloadend", event => {
+                webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+            });
+        }
     }
     return source;
 }
