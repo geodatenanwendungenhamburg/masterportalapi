@@ -22,14 +22,14 @@ class CesiumStyle extends StyleClass {
     initialize (rule) {
         this.overwriteStyling(rule.style);
         this.setConditions(rule.conditions);
-        this.setStyle(this.getStyle());
+        this.setStyle(this.createStyle());
     }
 
     /**
      * This function returns a style for each feature.
      * @returns {ol/style} - The created style.
      */
-    getStyle () {
+    createStyle () {
         return this.createCondition(this.get("conditions"), this.get("style"));
     }
 

@@ -28,14 +28,14 @@ class PolygonStyle extends StyleClass {
         this.setFeature(feature);
         this.setIsClustered(isClustered);
         this.overwriteStyling(styles);
-        this.setStyle(this.getStyle());
+        this.setStyle(this.createStyle());
     }
 
     /**
      * This function returns a style for each feature.
      * @returns {ol/style} - The created style.
      */
-    getStyle () {
+    createStyle () {
         if (this.nullStyle) {
             return null;
         }

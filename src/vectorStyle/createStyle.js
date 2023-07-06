@@ -6,8 +6,7 @@ import LineStringStyle from "./styles/styleLine";
 import CesiumStyle from "./styles/styleCesium";
 import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
-const legendsOfAllStyles = [],
-    uniqueStyles = [];
+const legendsOfAllStyles = [];
 let legendInformationLength = 0;
 
 /**
@@ -30,17 +29,13 @@ function isMultiGeometry (geometryType) {
  */
 function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
     const style = rule?.style,
-        legendValue = style ? style.legendValue : null,
-        alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style && element.geometryType === geometryType);
+        legendValue = style ? style.legendValue : null;
     let styleObject,
         styleObjectForLegend = null;
 
     feature.legendValue = legendValue ? legendValue : null;
 
-    if (alreadyExisitingStyle) {
-        styleObject = alreadyExisitingStyle.featureStyleObject;
-    }
-    else if (geometryType === "Point") {
+    if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
         if (isClustered) {
             styleObjectForLegend = new PointStyle(feature, style, false);
@@ -78,7 +73,6 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObjectForLegend.initialize(feature, style, false, wfsImgPathFromConfig);
         styleObjectForLegend.legendValue = legendValue;
     }
-    uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
     styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
     styleObject.addLegendInfo(geometryType, styleObjectForLegend === null ? styleObject : styleObjectForLegend, rule);
     styleObject.legendValue = legendValue;
@@ -122,6 +116,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
                 console.warn("Multi encapsulated multiGeometries are not supported.");
             }
             else if (!simpleStyle.styleMultiGeomOnlyWithRule || rule) {
+                simpleStyle.getStyle()?.setGeometry(geometry);
                 olStyle.push(simpleStyle);
             }
         });
@@ -136,7 +131,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
     else {
         const simpleStyle = getSimpleGeometryStyle(geometryType, feature, rules, isClustered, wfsImgPathFromConfig);
 
-        simpleStyle.getStyle().setGeometry(geometryType);
+        simpleStyle.getStyle()?.setGeometry(geometryType);
         olStyle.push(simpleStyle);
     }
     return olStyle;
@@ -251,7 +246,7 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         captureLegendFromFeature(styleObject.styleId, legendInformation);
     }
     // label style is optional and depends on some fields
-    if (isClustered || hasLabelField) {
+    if (styleObjectGeometry !== null && (isClustered || hasLabelField)) {
         if (Array.isArray(styleObjectGeometry)) {
             styleObjectGeometry[0].setText(getLabelStyle(feature, style, isClustered));
         }
