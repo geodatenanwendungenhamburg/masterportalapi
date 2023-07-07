@@ -1,6 +1,6 @@
-import StyleClass from "@masterportal/masterportalapi/src/vectorStyle/styles/style";
+import StyleClass from "./style";
 import {Circle, Fill, Stroke, Style} from "ol/style.js";
-import defaultStyle from "@masterportal/masterportalapi/src/vectorStyle/styles/defaultStyles";
+import defaultStyle from "./defaultStyles";
 
 class CircleStyle extends StyleClass {
     /**

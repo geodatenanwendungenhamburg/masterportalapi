@@ -5,9 +5,15 @@
 
 ## Unreleased - in development
 ### Added
+- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
+- Add Styling and zIndex to draw interactions and improve the draw behavior.
+
 ### Changed
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---

@@ -202,9 +202,12 @@ function createDrawInteraction (drawType, source) {
     return drawInteraction;
 }
 
+export {styleObject};
+
 export default {
     createDrawInteraction,
     drawCircle,
+    drawInnerCircle,
     drawOuterCircle,
     setStyleObject,
     transformMapUnitRadius
