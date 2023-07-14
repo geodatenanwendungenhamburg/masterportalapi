@@ -1,7 +1,7 @@
 {
   "name": "@masterportal/masterportalapi",
   "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
-  "version": "2.19.1",
+  "version": "2.20.0",
   "license": "MIT",
   "description": "Basic functions of the Masterportal as api",
   "repository": {
@@ -11,7 +11,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "jest .test.js --config ./jest.config.js --collectCoverage",
-    "test:trace": "node --trace-warnings node_modules/jest/bin/jest.js ./test/layer/wfs.test.js --config ./jest.config.js",
+    "test:trace": "node --trace-warnings node_modules/jest/bin/jest.js .test.js --config ./jest.config.js",
     "test:watch": "jest .test.js --config ./jest.config.js --watch",
     "example": "parcel example/index.html",
     "generate-jsdoc": "jsdoc ./src -r -d ./docs/ -R ./README.md -c jsdoc.json",
@@ -21,7 +21,7 @@
   "dependencies": {
     "core-js": "^3.30.2",
     "dayjs": "^1.11.7",
-    "ol": "7.3.0",
+    "ol": "7.4.0",
     "olcs": "^2.14.0",
     "proj4": "^2.9.0",
     "xml2js": "^0.5.0"
@@ -47,7 +47,7 @@
     "use-resize-observer": "^9.1.0"
   },
   "peerDependencies": {
-    "cesium": "^1.95.0"
+    "cesium": "^1.106.0"
   },
   "engines": {
     "node": "^16.13.2 || ^18.12.0",
@@ -55,7 +55,6 @@
   },
   "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
   "directories": {
-    "doc": "docs",
     "example": "example",
     "test": "test"
   },

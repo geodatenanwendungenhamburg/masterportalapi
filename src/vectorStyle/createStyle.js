@@ -3,11 +3,11 @@ import PointStyle from "./styles/point/stylePoint";
 import TextStyle from "./styles/styleText";
 import PolygonStyle from "./styles/polygon/stylePolygon";
 import LineStringStyle from "./styles/styleLine";
+import CircleStyle from "./styles/styleCircle";
 import CesiumStyle from "./styles/styleCesium";
 import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
-const legendsOfAllStyles = [],
-    uniqueStyles = [];
+const legendsOfAllStyles = [];
 let legendInformationLength = 0;
 
 /**
@@ -30,17 +30,13 @@ function isMultiGeometry (geometryType) {
  */
 function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsImgPathFromConfig) {
     const style = rule?.style,
-        legendValue = style ? style.legendValue : null,
-        alreadyExisitingStyle = uniqueStyles.find(element => element.featureStyle === style && element.geometryType === geometryType);
+        legendValue = style ? style.legendValue : null;
     let styleObject,
         styleObjectForLegend = null;
 
     feature.legendValue = legendValue ? legendValue : null;
 
-    if (alreadyExisitingStyle) {
-        styleObject = alreadyExisitingStyle.featureStyleObject;
-    }
-    else if (geometryType === "Point") {
+    if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
         if (isClustered) {
             styleObjectForLegend = new PointStyle(feature, style, false);
@@ -65,7 +61,13 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObject.legendValue = legendValue;
         return styleObject;
     }
-    else if (geometryType === "LinearRing" || geometryType === "Circle") {
+    else if (geometryType === "Circle") {
+        styleObject = new CircleStyle(feature, style, isClustered);
+        if (isClustered) {
+            styleObjectForLegend = new CircleStyle(feature, style, false);
+        }
+    }
+    else if (geometryType === "LinearRing") {
         console.warn("Geometry type not implemented: " + geometryType + " default style ist used for feature " + feature);
         return new Style();
     }
@@ -78,7 +80,6 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObjectForLegend.initialize(feature, style, false, wfsImgPathFromConfig);
         styleObjectForLegend.legendValue = legendValue;
     }
-    uniqueStyles.push({featureStyle: style, featureStyleObject: styleObject, geometryType});
     styleObject.initialize(feature, style, isClustered, wfsImgPathFromConfig);
     styleObject.addLegendInfo(geometryType, styleObjectForLegend === null ? styleObject : styleObjectForLegend, rule);
     styleObject.legendValue = legendValue;
@@ -122,6 +123,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
                 console.warn("Multi encapsulated multiGeometries are not supported.");
             }
             else if (!simpleStyle.styleMultiGeomOnlyWithRule || rule) {
+                simpleStyle.getStyle()?.setGeometry(geometry);
                 olStyle.push(simpleStyle);
             }
         });
@@ -136,7 +138,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
     else {
         const simpleStyle = getSimpleGeometryStyle(geometryType, feature, rules, isClustered, wfsImgPathFromConfig);
 
-        simpleStyle.getStyle().setGeometry(geometryType);
+        simpleStyle.getStyle()?.setGeometry(geometryType);
         olStyle.push(simpleStyle);
     }
     return olStyle;
@@ -227,10 +229,22 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
         hasLabelField = style?.labelField,
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
-        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos,
-        styleObjectGeometry = Array.isArray(geometryStyle) ? geometryStyle.map(styleItem => styleItem.getStyle()) : geometryStyle.getStyle();
+        legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos;
+    let styleObjectGeometry = null;
 
-    if (geometryStyle.length > 1) {
+    if (Array.isArray(geometryStyle)) {
+        styleObjectGeometry = [];
+        geometryStyle.forEach(styleItem => {
+            if (styleItem.getStyle() !== null) {
+                styleObjectGeometry.push(styleItem.getStyle());
+            }
+        });
+    }
+    else {
+        styleObjectGeometry = geometryStyle.getStyle();
+    }
+
+    if (Array.isArray(geometryStyle) && geometryStyle.length > 1) {
         for (const i in geometryStyle) {
             captureLegendFromFeature(styleObject.styleId, geometryStyle[i].legendInfos);
         }
@@ -238,9 +252,8 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
     else {
         captureLegendFromFeature(styleObject.styleId, legendInformation);
     }
-
     // label style is optional and depends on some fields
-    if (isClustered || hasLabelField) {
+    if (styleObjectGeometry !== null && (isClustered || hasLabelField)) {
         if (Array.isArray(styleObjectGeometry)) {
             styleObjectGeometry[0].setText(getLabelStyle(feature, style, isClustered));
         }

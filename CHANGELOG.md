@@ -5,19 +5,45 @@
 
 ## Unreleased - in development
 ### Added
+- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
+- Add Styling and zIndex to draw interactions and improve the draw behavior.
+
 ### Changed
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---
-## 2.19.1 - 2023-06-02
+
+## 2.20.0 - 2023-06-30
 ### Added
+- Add draw interaction for interactive and static geometry types.
+- WFS: Added function to load wfs features manually.
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.3.0 to 7.4.0
+        - cesium: 1.95.0 to 1.106.0
+- The examples in example/index.js are updated.
+
+### Fixed
+- VectorStyle: fixed several bugs of multiple geometries with styling rules.
+
+---
+
+## 2.19.2 - 2023-06-12
+### Fixed
+- VectorStyle of multiple geometries with styling rules does not fail on not existing style.
+
+---
+
+## 2.19.1 - 2023-06-02
 ### Changed
 - Exports in src/layer/wmts.js changed to export default {} to provide  ES-Syntax.
-### Deprecated
-### Removed
-### Fixed
 
 ---
 

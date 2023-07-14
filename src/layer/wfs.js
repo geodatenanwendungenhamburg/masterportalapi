@@ -202,9 +202,16 @@ export function createLayerSource (rawLayer, options = {}) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);
     }
     if (rawLayer.renderer === "webgl") {
-        source.once("featuresloadend", event => {
-            webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
-        });
+        if (options.loadingStrategy === bbox) {
+            source.on("featuresloadend", event => {
+                webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+            });
+        }
+        else {
+            source.once("featuresloadend", event => {
+                webgl.afterLoading(event?.features, rawLayer.styleId, rawLayer.excludeTypesFromParsing);
+            });
+        }
     }
     return source;
 }
@@ -251,4 +258,23 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
         layer.setStyle(rawLayer.style);
     }
     return layer;
+}
+
+/**
+ * Load the features manually.
+ * @param {Object} layerAttributes raw layer attributes.
+ * @param {module:ol/vector/Source} layerSource - the source of the layer
+ * @returns {void}
+ */
+export function loadFeaturesManually (layerAttributes, layerSource) {
+    const getUrl = createUrl(layerAttributes, layerAttributes.version, {getCode: () => layerAttributes.crs}, "");
+
+    fetch(getUrl, layerSource)
+        .then(response => response.text())
+        .then(responseString => {
+            layerSource.addFeatures(layerSource.getFormat().readFeatures(responseString));
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }

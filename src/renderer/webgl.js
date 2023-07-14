@@ -1,9 +1,9 @@
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
 import VectorLayer from "ol/layer/Layer";
-import {packColor} from "ol/renderer/webgl/shaders";
 import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
+import {returnColor} from "../vectorStyle/lib/colorConvertions";
 
 /**
  * The default style for OpenLayers WebGLPoints class
@@ -11,82 +11,24 @@ import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
  * @private
  */
 const defaultStyle = {
-    symbol: {
-        symbolType: "circle",
-        size: 20,
-        color: "#006688",
-        rotateWithView: false,
-        offset: [0, 0],
-        opacity: 0.6
-    }
-};
-
-/**
- * parses the styling rules for the renderer
- * @static
- * @private
- * @returns {Object} the style options object with conditional functions
- */
-export function getRenderFunctions () {
-    return {
-        /**
-         * Used for polygon fills
-         * Reads the relevant properties from the Masterportal style object
-         * @see https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/style.json.md
-         */
-        fill: {
-            attributes: {
-                color: (feature) => {
-                    return packColor(feature.styleRule?.style.polygonFillColor || "#006688");
-                },
-                opacity: (feature) => {
-                    return typeof feature.styleRule?.style.polygonFillColor?.[3] === "number" ?
-                        feature.styleRule.style.polygonFillColor[3] : 1;
-                }
-            }
-        },
-        stroke: {
-            /**
-             * Used for polygon edges and lineStrings
-             * Reads the relevant properties from the Masterportal style object
-             * @see https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/style.json.md
-             */
-            attributes: {
-                color: (feature) => {
-                    return packColor(feature.styleRule?.style.polygonStrokeColor || "#006688");
-                },
-                width: (feature) => {
-                    return feature.styleRule?.style.polygonStrokeWidth || 1;
-                },
-                opacity: (feature) => {
-                    return typeof feature.styleRule?.style.polygonStrokeColor?.[3] === "number" ?
-                        feature.styleRule.style.polygonStrokeColor[3] : 1;
-                }
-            }
-        },
-        point: {
-            /**
-             * As of now, the generic VectorLayerRenderer only supports points rendered as quads
-             * available attributes: color, size, opacity
-             * Due to that, we use WebGLPoints Layer Class for point geom types
-             * Reads the relevant properties from the Masterportal style object
-             * @see https://bitbucket.org/geowerkstatt-hamburg/masterportal/src/dev/doc/style.json.md
-             */
-            attributes: {
-                color: (feature) => {
-                    return packColor(feature.styleRule?.style.circleFillColor || "#006688");
-                },
-                size: (feature) => {
-                    return feature.styleRule?.style.circleRadius || 20;
-                },
-                opacity: (feature) => {
-                    return typeof feature.styleRule?.style.circleFillColor?.[3] === "number" ?
-                        feature.styleRule.style.circleFillColor[3] : 1;
-                }
-            }
+        symbol: {
+            symbolType: "circle",
+            size: 20,
+            color: "#006688",
+            rotateWithView: false,
+            offset: [0, 0],
+            opacity: 0.6
         }
+    },
+
+    /** @type {import('ol/style/literal.js').LiteralStyle} */
+    style = {
+        "stroke-color": ["get", "STROKECOLOR"],
+        "stroke-width": ["get", "STROKEWIDTH", "number"],
+        "fill-color": ["get", "FILLCOLOR"],
+        "opacity": ["get", "OPACITY", "number"],
+        "size": ["get", "CIRCLESIZE", "number"]
     };
-}
 
 /**
  * Creates a layer object to extend from.
@@ -109,7 +51,9 @@ export function createVectorLayerRenderer () {
          * @experimental
          */
         createRenderer () {
-            return new WebGLVectorLayerRenderer(this, getRenderFunctions());
+            return new WebGLVectorLayerRenderer(this, {
+                style
+            });
         }
     }
 
@@ -132,9 +76,23 @@ export function formatFeatureStyles (feature, styleObject) {
     // extract first matching rule only
     const rule = getRulesForFeature(styleObject, feature)[0];
 
-    // don't set on properties to avoid GFI issues
     // undefined if no match
     feature.styleRule = rule;
+
+    if (rule && rule.style) {
+        const polygonFillColor = returnColor(rule.style.polygonFillColor, "hex"),
+            circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
+            fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
+            strokeColor = returnColor(rule.style.polygonStrokeColor || rule.style.lineStrokeColor, "hex"),
+            strokeWidth = rule.style.polygonStrokeWidth || rule.style.lineStrokeWidth,
+            size = rule.style.circleRadius;
+
+        feature.set("FILLCOLOR", fillColor ? fillColor : "#006688");
+        feature.set("STROKECOLOR", strokeColor ? strokeColor : "#006688");
+        feature.set("STROKEWIDTH", strokeWidth ? strokeWidth : 1);
+        feature.set("OPACITY", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : 1);
+        feature.set("CIRCLESIZE", size ? size : 20);
+    }
 }
 
 /**
