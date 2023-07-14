@@ -10,6 +10,7 @@ import {Select} from "ol/interaction.js";
 function removeSelectedFeature (selectInteraction, source) {
     selectInteraction.on("select", event => {
         source.removeFeature(event.selected[0]);
+        event.target.getFeatures().clear();
     });
 }
 
