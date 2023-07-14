@@ -6,7 +6,7 @@ import defaults from "../../defaults";
 import * as wms from "../../layer/wms";
 import wmts from "../../layer/wmts";
 import * as geojson from "../../layer/geojson";
-import * as wfs from "../../layer/wfs";
+import wfs from "../../layer/wfs";
 import * as vectorBase from "../../layer/vectorBase";
 import * as vectortile from "../../layer/vectorTile";
 import * as oaf from "../../layer/oaf";

@@ -4,7 +4,7 @@ import drawInteractions from "./maps/interactions/drawInteractions";
 import rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
 import wmts from "./layer/wmts";
-import * as wfs from "./layer/wfs";
+import wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorBase from "./layer/vectorBase";
 import * as vectorTile from "./layer/vectorTile";

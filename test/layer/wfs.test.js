@@ -1,3 +1,4 @@
+import {enableFetchMocks} from "jest-fetch-mock";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Cluster from "ol/source/Cluster.js";
@@ -5,10 +6,13 @@ import {Style, Icon} from "ol/style.js";
 import map from "../../src/maps/map.js";
 import defaults from "../../src/defaults";
 import {WFS} from "ol/format.js";
-import * as wfs from "../../src/layer/wfs";
+import wfs from "../../src/layer/wfs";
 import {featureCollection} from "./resources/wfsFeatures";
 import {wfsFilterQuery} from "./resources/wfsFilter";
 import * as webgl from "../../src/renderer/webgl.js";
+import {Feature} from "ol";
+import Polygon from "ol/geom/Polygon";
+
 
 jest.mock("../../src/rawLayerList.js", () => {
     const original = jest.requireActual("../../src/rawLayerList.js");
@@ -26,6 +30,11 @@ jest.mock("../../src/renderer/webgl.js", () => {
 
 
 describe("wfs.js", function () {
+    beforeEach(() => {
+        enableFetchMocks();
+        fetch.resetMocks();
+    });
+
     describe("createLayer", function () {
         it("creates a VectorLayer without id", function () {
             const layer = wfs.createLayer({version: "1.1.0"});
@@ -413,7 +422,648 @@ describe("wfs.js", function () {
             source.getListeners("featuresloadend")[0]({features: []});
             expect(webgl.afterLoading).toHaveBeenCalled();
         });
+        it("creates a vectorSource with credentials: include as params", () => {
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                // NOTE: fetch only rejects if a network error occurs, which do not apply to 4xx or 5xx http codes.
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return featureCollection;
+                        }
+                    });
+                });
+            });
+
+            const map2D = map.createMap(defaults),
+                url = "https://url.de",
+                rawLayer = {
+                    id: "id",
+                    url: url,
+                    featureNS: "http://www.deegree.org/app",
+                    featureType: "krankenhaeuser_hh",
+                    version: "2.0.0"
+                },
+                options = {
+                    loadingParams: {xhrParameters: {credentials: "include"}}
+                },
+                layer = wfs.createLayer(rawLayer, {options});
+
+            layer.getSource().loadFeatures([-10000, -10000, 10000, 10000],
+                1,
+                map2D.getView().getProjection());
+
+            expect(fetch).toHaveBeenCalledWith("https://url.de/?service=WFS&version=2.0.0&request=GetFeature&srsName=EPSG%3A25832&typeNames=krankenhaeuser_hh&bbox=-10000,-10000,10000,10000,EPSG:25832", {"credentials": "include"});
+        });
     });
+    describe("parseDescribeFeatureTypeResponse", () => {
+        const exampleDescribeFeatureType = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:app=\"http://www.deegree.org/app\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" targetNamespace=\"http://www.deegree.org/app\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n" +
+                "  <import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/3.1.1/base/gml.xsd\"/>\n" +
+                "  <element name=\"wfstgeom\" substitutionGroup=\"gml:_Feature\">\n" +
+                "    <complexType>\n" +
+                "      <complexContent>\n" +
+                "        <extension base=\"gml:AbstractFeatureType\">\n" +
+                "          <sequence>\n" +
+                "            <element name=\"name\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"nummer\" minOccurs=\"0\" type=\"integer\"/>\n" +
+                "            <element name=\"bemerkung\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"datum\" minOccurs=\"0\" type=\"date\"/>\n" +
+                "            <element name=\"geom\" minOccurs=\"0\" type=\"gml:GeometryPropertyType\"/>\n" +
+                "          </sequence>\n" +
+                "        </extension>\n" +
+                "      </complexContent>\n" +
+                "    </complexType>\n" +
+                "  </element>\n" +
+                "</schema>",
+            exampleProperties = [
+                {
+                    key: "name",
+                    label: "name",
+                    required: false,
+                    type: "string",
+                    value: null
+                },
+                {
+                    key: "nummer",
+                    label: "nummer",
+                    required: false,
+                    type: "integer",
+                    value: null
+                },
+                {
+                    key: "bemerkung",
+                    label: "bemerkung",
+                    required: false,
+                    type: "string",
+                    value: null
+                },
+                {
+                    key: "datum",
+                    label: "datum",
+                    required: false,
+                    type: "date",
+                    value: null
+                },
+                {
+                    key: "geom",
+                    label: "geom",
+                    required: false,
+                    type: "geometry",
+                    value: null
+                }
+            ];
+
+
+        let featureType;
+
+        it("should retrieve the element values (required, type, key) from the parsed XML string if an element with name = featureType can be found in the XML", () => {
+            featureType = "wfstgeom";
+
+            const featureProperties = wfs.parseDescribeFeatureTypeResponse(exampleDescribeFeatureType, featureType);
+
+            expect(Array.isArray(featureProperties)).toBe(true);
+            expect(featureProperties.length).toEqual(5);
+            exampleProperties.forEach(property => {
+                const parsedProperty = featureProperties.find(({key}) => key === property.key);
+
+                expect(parsedProperty).not.toEqual(undefined);
+                expect(parsedProperty).toEqual(property);
+            });
+        });
+        it("should return an empty array if no element with name = featureType can be found in the XML", () => {
+            featureType = "myCoolType";
+
+            const featureProperties = wfs.parseDescribeFeatureTypeResponse(exampleDescribeFeatureType, featureType);
+
+            expect(Array.isArray(featureProperties)).toBe(true);
+            expect(featureProperties.length).toEqual(0);
+        });
+    });
+    describe("writeTransactionBody", () => {
+        const feature = new Feature({
+                geometry: new Polygon([
+                    [
+                        [
+                            9.17782024967994,
+                            50.20836600730087
+                        ],
+                        [
+                            9.200676227149245,
+                            50.20836600730087
+                        ],
+                        [
+                            9.200676227149245,
+                            50.20873353776312
+                        ],
+                        [
+                            9.17782024967994,
+                            50.20873353776312
+                        ],
+                        [
+                            9.17782024967994,
+                            50.20836600730087
+                        ]
+                    ]]),
+                name: "My Polygon"
+            }),
+
+            transactionOptions = {
+                featureNS: "myNS",
+                featurePrefix: "myPrefix",
+                featureType: "Polygon",
+                srsName: "EPSG:4326"
+            };
+
+
+        it("should write a transaction body for inserting a feature", () => {
+            const transactionBody = wfs.writeTransactionBody(feature, transactionOptions, "insert"),
+                expectedBody = "<Transaction xmlns=\"http://www.opengis.net/wfs\" service=\"WFS\" version=\"1.1.0\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\" ns1:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\"><Insert><Polygon xmlns=\"myNS\"><geometry><Polygon xmlns=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\"><exterior><LinearRing srsName=\"EPSG:4326\"><posList srsDimension=\"2\">50.20836600730087 9.17782024967994 50.20836600730087 9.200676227149245 50.20873353776312 9.200676227149245 50.20873353776312 9.17782024967994 50.20836600730087 9.17782024967994</posList></LinearRing></exterior></Polygon></geometry><name>My Polygon</name></Polygon></Insert></Transaction>";
+
+            expect(transactionBody).toEqual(expectedBody);
+        });
+
+        it("should write a transaction body for updating a feature", () => {
+            feature.setId(1);
+            const transactionBody = wfs.writeTransactionBody(feature, transactionOptions, "selectedUpdate"),
+                expectedBody = "<Transaction xmlns=\"http://www.opengis.net/wfs\" service=\"WFS\" version=\"1.1.0\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\" ns1:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\"><Update typeName=\"myPrefix:Polygon\" xmlns:myPrefix=\"myNS\"><Property><Name>geometry</Name><Value><Polygon xmlns=\"http://www.opengis.net/gml\" srsName=\"EPSG:4326\"><exterior><LinearRing srsName=\"EPSG:4326\"><posList srsDimension=\"2\">50.20836600730087 9.17782024967994 50.20836600730087 9.200676227149245 50.20873353776312 9.200676227149245 50.20873353776312 9.17782024967994 50.20836600730087 9.17782024967994</posList></LinearRing></exterior></Polygon></Value></Property><Property><Name>name</Name><Value>My Polygon</Value></Property><Filter xmlns=\"http://www.opengis.net/ogc\"><FeatureId fid=\"1\"/></Filter></Update></Transaction>";
+
+            expect(transactionBody).toEqual(expectedBody);
+        });
+
+        it("should write a transaction body for deleting a feature", () => {
+            feature.setId(1);
+            const transactionBody = wfs.writeTransactionBody(feature, transactionOptions, "delete"),
+                expectedBody = "<Transaction xmlns=\"http://www.opengis.net/wfs\" service=\"WFS\" version=\"1.1.0\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\" ns1:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\"><Delete typeName=\"myPrefix:Polygon\" xmlns:myPrefix=\"myNS\"><Filter xmlns=\"http://www.opengis.net/ogc\"><FeatureId fid=\"1\"/></Filter></Delete></Transaction>";
+
+            expect(transactionBody).toEqual(expectedBody);
+        });
+
+        it("should throw error if transactionMethod is invalid", () => {
+            expect(() => wfs.writeTransactionBody(feature, transactionOptions, "remove")).toThrow(Error);
+            expect(() => wfs.writeTransactionBody(feature, transactionOptions, "remove")).toThrow("transactionMethod has to be \"insert\", \"selectedUpdate\" or \"delete\".");
+        });
+    });
+
+    describe("receivePossibleProperties", () => {
+        const originalConsoleError = console.error;
+
+        beforeAll(() => {
+            console.error = jest.fn();
+
+        });
+
+        afterAll(() => {
+            console.error = originalConsoleError;
+        });
+
+        // eslint-disable-next-line one-var
+        const exampleDescribeFeatureType = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" targetNamespace=\"http://cite.opengeospatial.org/gmlsf\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n" +
+                "  <import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/3.1.1/base/gml.xsd\"/>\n" +
+                "  <element name=\"wfstpoint\" substitutionGroup=\"gml:_Feature\">\n" +
+                "    <complexType>\n" +
+                "      <complexContent>\n" +
+                "        <extension base=\"gml:AbstractFeatureType\">\n" +
+                "          <sequence>\n" +
+                "            <element name=\"geometry\" minOccurs=\"0\" type=\"gml:PointPropertyType\"/>\n" +
+                "            <element name=\"name\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"baumnummer\" minOccurs=\"0\" type=\"integer\"/>\n" +
+                "            <element name=\"bemerkung\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"datum\" minOccurs=\"0\" type=\"date\"/>\n" +
+                "            <element name=\"isNew\" minOccurs=\"0\" type=\"boolean\"/>\n" +
+                "            <element name=\"isUpdate\" minOccurs=\"0\" type=\"boolean\"/>\n" +
+                "          </sequence>\n" +
+                "        </extension>\n" +
+                "      </complexContent>\n" +
+                "    </complexType>\n" +
+                "  </element>\n" +
+                "  <element name=\"wfstline\" substitutionGroup=\"gml:_Feature\">\n" +
+                "    <complexType>\n" +
+                "      <complexContent>\n" +
+                "        <extension base=\"gml:AbstractFeatureType\">\n" +
+                "          <sequence>\n" +
+                "            <element name=\"geometry\" minOccurs=\"0\" type=\"gml:LineStringPropertyType\"/>\n" +
+                "            <element name=\"name\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"nummer\" minOccurs=\"0\" type=\"integer\"/>\n" +
+                "            <element name=\"bemerkung\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"datum\" minOccurs=\"0\" type=\"date\"/>\n" +
+                "          </sequence>\n" +
+                "        </extension>\n" +
+                "      </complexContent>\n" +
+                "    </complexType>\n" +
+                "  </element>\n" +
+                "  <element name=\"wfstpolygon\" substitutionGroup=\"gml:_Feature\">\n" +
+                "    <complexType>\n" +
+                "      <complexContent>\n" +
+                "        <extension base=\"gml:AbstractFeatureType\">\n" +
+                "          <sequence>\n" +
+                "            <element name=\"name\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"nummer\" minOccurs=\"0\" type=\"integer\"/>\n" +
+                "            <element name=\"bemerkung\" minOccurs=\"0\" type=\"string\"/>\n" +
+                "            <element name=\"datum\" minOccurs=\"0\" type=\"date\"/>\n" +
+                "            <element name=\"geom\" minOccurs=\"0\" type=\"gml:GeometryPropertyType\"/>\n" +
+                "          </sequence>\n" +
+                "        </extension>\n" +
+                "      </complexContent>\n" +
+                "    </complexType>\n" +
+                "  </element>\n" +
+                "</schema>",
+            geoserverDescribeFeatureType = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml/3.2\" xmlns:test=\"http://opengeo.org/test\" xmlns:wfs=\"http://www.opengis.net/wfs/2.0\" elementFormDefault=\"qualified\" targetNamespace=\"http://opengeo.org/test\">\n" +
+                "  <xsd:import namespace=\"http://www.opengis.net/gml/3.2\" schemaLocation=\"https://geoservice.norderstedt.de/geoserver/schemas/gml/3.2.1/gml.xsd\"/>\n" +
+                "  <xsd:complexType name=\"test_polygonType\">\n" +
+                "    <xsd:complexContent>\n" +
+                "      <xsd:extension base=\"gml:AbstractFeatureType\">\n" +
+                "        <xsd:sequence>\n" +
+                "          <xsd:element maxOccurs=\"1\" minOccurs=\"0\" name=\"id\" nillable=\"true\" type=\"xsd:long\"/>\n" +
+                "          <xsd:element maxOccurs=\"1\" minOccurs=\"0\" name=\"geom\" nillable=\"true\" type=\"gml:SurfacePropertyType\"/>\n" +
+                "          <xsd:element maxOccurs=\"1\" minOccurs=\"0\" name=\"hochkomma\" nillable=\"true\" type=\"xsd:string\"/>\n" +
+                "        </xsd:sequence>\n" +
+                "      </xsd:extension>\n" +
+                "    </xsd:complexContent>\n" +
+                "  </xsd:complexType>\n" +
+                "  <xsd:element name=\"test_polygon\" substitutionGroup=\"gml:AbstractFeature\" type=\"test:test_polygonType\"/>\n" +
+                "</xsd:schema>",
+            tinyOwsDescribeFeatureType = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<xs:schema targetNamespace='http://www.mapserver.org/tinyows/' xmlns:tows='http://www.mapserver.org/tinyows/' xmlns:ogc='http://www.opengis.net/ogc' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns='http://www.w3.org/2001/XMLSchema' xmlns:gml='http://www.opengis.net/gml' elementFormDefault='qualified' version='1.1'>\n" +
+                "<xs:import namespace='http://www.opengis.net/gml' schemaLocation='http://schemas.opengis.net/gml/3.1.1/base/gml.xsd'/>\n" +
+                "<xs:element name='befall' type='tows:befallType' substitutionGroup='gml:_Feature' />\n" +
+                "<xs:complexType name='befallType'>\n" +
+                " <xs:complexContent>\n" +
+                "  <xs:extension base='gml:AbstractFeatureType'>\n" +
+                "   <xs:sequence>\n" +
+                "    <xs:element name ='the_geom' type='gml:PointPropertyType' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
+                "    <xs:element name ='art' nillable='true' minOccurs='0' maxOccurs='1'>\n" +
+                "<xs:simpleType><xs:restriction base='string'><xs:maxLength value='50'/></xs:restriction></xs:simpleType></xs:element>    <xs:element name ='beschreibung' nillable='true' minOccurs='0' maxOccurs='1'>\n" +
+                "<xs:simpleType><xs:restriction base='string'><xs:maxLength value='150'/></xs:restriction></xs:simpleType></xs:element>    <xs:element name ='befall1' type='boolean' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
+                "    <xs:element name ='befall2' type='boolean' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
+                "   </xs:sequence>\n" +
+                "  </xs:extension>\n" +
+                " </xs:complexContent>\n" +
+                "</xs:complexType>\n" +
+                "</xs:schema>";
+
+        it("should receive the possible properties", async () => {
+            fetch.mockResponseOnce(exampleDescribeFeatureType);
+
+            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", false),
+                exampleProperties = [
+                    {
+                        key: "name",
+                        label: "name",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "nummer",
+                        label: "nummer",
+                        required: false,
+                        type: "integer",
+                        value: null
+                    },
+                    {
+                        key: "bemerkung",
+                        label: "bemerkung",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "datum",
+                        label: "datum",
+                        required: false,
+                        type: "date",
+                        value: null
+                    },
+                    {
+                        key: "geom",
+                        label: "geom",
+                        required: false,
+                        type: "geometry",
+                        value: null
+                    }
+                ];
+
+            expect(Array.isArray(properties)).toBe(true);
+            expect(properties.length).toEqual(5);
+            exampleProperties.forEach(property => {
+                const parsedProperty = properties.find(({key}) => key === property.key);
+
+                expect(parsedProperty).not.toEqual(undefined);
+                expect(parsedProperty).toEqual(property);
+            });
+            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=wfstpolygon", {"responseType": "text/xml", "credentials": "omit"});
+
+        });
+
+        it("should receive the possible properties from a geoserver", async () => {
+            fetch.mockResponseOnce(geoserverDescribeFeatureType);
+
+            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "test_polygon", false),
+                exampleProperties = [
+                    {
+                        key: "id",
+                        label: "id",
+                        required: false,
+                        type: "integer",
+                        value: null
+                    },
+                    {
+                        key: "geom",
+                        label: "geom",
+                        required: false,
+                        type: "geometry",
+                        value: null
+                    },
+                    {
+                        key: "hochkomma",
+                        label: "hochkomma",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                ];
+
+            expect(Array.isArray(properties)).toBe(true);
+            expect(properties.length).toEqual(3);
+            exampleProperties.forEach(property => {
+                const parsedProperty = properties.find(({key}) => key === property.key);
+
+                expect(parsedProperty).not.toEqual(undefined);
+                expect(parsedProperty).toEqual(property);
+            });
+            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=test_polygon", {"responseType": "text/xml", "credentials": "omit"});
+
+        });
+
+        // TODO Team WaaS (LGLN) muss mit Produktpflege Ã¼ber WFS XML Parsing reden before dieser Test implementiert wird
+        it.skip("should receive the possible properties from a tinyows", async () => {
+            fetch.mockResponseOnce(tinyOwsDescribeFeatureType);
+
+            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "tows:befall", false),
+                exampleProperties = [
+                    {
+                        key: "the_geom",
+                        label: "the_geom",
+                        required: false,
+                        type: "geometry",
+                        value: null
+                    },
+                    {
+                        key: "art",
+                        label: "art",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "beschreibung",
+                        label: "beschreibung",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "befall1",
+                        label: "befall1",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "befall2",
+                        label: "befall2",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                ];
+
+            expect(Array.isArray(properties)).toBe(true);
+            expect(properties.length).toEqual(3);
+            exampleProperties.forEach(property => {
+                const parsedProperty = properties.find(({key}) => key === property.key);
+
+                expect(parsedProperty).not.toEqual(undefined);
+                expect(parsedProperty).toEqual(property);
+            });
+            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=tows:befall", {"responseType": "text/xml", "credentials": "omit"});
+
+        });
+
+        it("should receive the possible properties with credentials", async () => {
+            fetch.mockResponseOnce(exampleDescribeFeatureType);
+
+            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", true),
+                exampleProperties = [
+                    {
+                        key: "name",
+                        label: "name",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "nummer",
+                        label: "nummer",
+                        required: false,
+                        type: "integer",
+                        value: null
+                    },
+                    {
+                        key: "bemerkung",
+                        label: "bemerkung",
+                        required: false,
+                        type: "string",
+                        value: null
+                    },
+                    {
+                        key: "datum",
+                        label: "datum",
+                        required: false,
+                        type: "date",
+                        value: null
+                    },
+                    {
+                        key: "geom",
+                        label: "geom",
+                        required: false,
+                        type: "geometry",
+                        value: null
+                    }
+                ];
+
+            expect(Array.isArray(properties)).toBe(true);
+            expect(properties.length).toEqual(5);
+            exampleProperties.forEach(property => {
+                const parsedProperty = properties.find(({key}) => key === property.key);
+
+                expect(parsedProperty).not.toEqual(undefined);
+                expect(parsedProperty).toEqual(property);
+            });
+            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=wfstpolygon", {"responseType": "text/xml", "credentials": "include"});
+
+        });
+
+        it("should throw an error if the properties can not be fetched", async () => {
+            fetch.mockAbortOnce();
+
+            await expect(async () => {
+                await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstgeom", false);
+            }).rejects.toThrow(Error);
+        });
+    });
+
+    describe("sendTransaction", () => {
+        const originalConsoleError = console.error;
+
+        beforeAll(() => {
+            console.error = jest.fn();
+        });
+
+        afterAll(() => {
+            console.error = originalConsoleError;
+        });
+
+        const layer = {
+                id: Symbol("layerId"),
+                url: "some.good.url",
+                isSecured: false,
+                featureNS: "wfsgeom",
+                featurePrefix: "test",
+                featureType: "Polygon",
+                version: "1.1.0"
+            },
+            feature = new Feature({
+                geometry: new Polygon([
+                    [
+                        [
+                            9.17782024967994,
+                            50.20836600730087
+                        ],
+                        [
+                            9.200676227149245,
+                            50.20836600730087
+                        ],
+                        [
+                            9.200676227149245,
+                            50.20873353776312
+                        ],
+                        [
+                            9.17782024967994,
+                            50.20873353776312
+                        ],
+                        [
+                            9.17782024967994,
+                            50.20836600730087
+                        ]
+                    ]]),
+                name: "My Polygon"
+            }),
+            srsName = "EPSG:4326",
+            url = "https://team-waas-was-here.lgln",
+            insertTransaction = "insert",
+            updateTransaction = "selectedUpdate",
+            deleteTransaction = "delete",
+            fetchResponseInsert = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<wfs:TransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\">\n" +
+                "  <wfs:TransactionSummary>\n" +
+                "    <wfs:totalInserted>1</wfs:totalInserted>\n" +
+                "    <wfs:totalUpdated>0</wfs:totalUpdated>\n" +
+                "    <wfs:totalDeleted>0</wfs:totalDeleted>\n" +
+                "  </wfs:TransactionSummary>\n" +
+                "  <wfs:InsertResults>\n" +
+                "    <wfs:Feature>\n" +
+                "      <ogc:FeatureId fid=\"wfst.59\"/>\n" +
+                "    </wfs:Feature>\n" +
+                "  </wfs:InsertResults>\n" +
+                "</wfs:TransactionResponse>",
+            fetchResponseUpdate = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<wfs:TransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\">\n" +
+                "  <wfs:TransactionSummary>\n" +
+                "    <wfs:totalInserted>0</wfs:totalInserted>\n" +
+                "    <wfs:totalUpdated>1</wfs:totalUpdated>\n" +
+                "    <wfs:totalDeleted>0</wfs:totalDeleted>\n" +
+                "  </wfs:TransactionSummary>\n" +
+                "</wfs:TransactionResponse>",
+            fetchResponseDelete = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<wfs:TransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\">\n" +
+                "  <wfs:TransactionSummary>\n" +
+                "    <wfs:totalInserted>0</wfs:totalInserted>\n" +
+                "    <wfs:totalUpdated>0</wfs:totalUpdated>\n" +
+                "    <wfs:totalDeleted>1</wfs:totalDeleted>\n" +
+                "  </wfs:TransactionSummary>\n" +
+                "</wfs:TransactionResponse>";
+
+        it("should return the inserted feature if the transaction was successful", async function () {
+            fetch.mockResponseOnce(fetchResponseInsert);
+
+            expect(await wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).toEqual(feature);
+        });
+
+        it("should return the inserted feature if the transaction was successful", async function () {
+            fetch.mockResponseOnce(fetchResponseInsert);
+            layer.isSecured = true;
+
+            expect(await wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).toEqual(feature);
+        });
+
+        it("should return the updated feature if the transaction was successful", async function () {
+            fetch.mockResponseOnce(fetchResponseUpdate);
+            feature.setId(1);
+
+            expect(await wfs.sendTransaction(srsName, feature, url, layer, updateTransaction)).toEqual(feature);
+        });
+
+        it("should return the deleted feature if the transaction was successful", async function () {
+            fetch.mockResponseOnce(fetchResponseDelete);
+            feature.setId(1);
+
+            expect(await wfs.sendTransaction(srsName, feature, url, layer, deleteTransaction)).toEqual(feature);
+        });
+
+        it("should throw an error if fetch fails", async function () {
+            fetch.mockAbortOnce();
+
+            await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow(Error);
+        });
+
+        it("should throw an error if transaction type is not insert, selectedUpdate or delete", async function () {
+            fetch.mockResponseOnce(fetchResponseDelete);
+            feature.setId(1);
+
+            await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, "lÃ¶schen")).rejects.toThrow(Error);
+        });
+
+        it("should send a request and show an alert with a generic error message if no transactionsSummary is present in the XML response", async () => {
+            const failedResponse = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<ows:ExceptionReport xmlns:ows=\"http://www.opengis.net/ows\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\" version=\"1.0.0\">\n" +
+                "  <ows:Exception" +
+                "    <ows:ExceptionText>Cannot perform insert operation: Error in XML document (line: 1, column: 234, character offset: 233): Feature type \"{wrong}wfst\" is unknown.</ows:ExceptionText>\n" +
+                "  </ows:Exception>\n" +
+                "</ows:ExceptionReport>";
+
+            fetch.mockResponseOnce(failedResponse);
+
+            await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow(Error);
+        });
+
+        it("should send a request, show an alert with a generic error message if no transactionsSummary is present in the XML response and log an error if an exceptionText is present in the XML response", async () => {
+            const failedResponse = "<?xml version='1.0' encoding='UTF-8'?>\n" +
+                "<ows:ExceptionReport xmlns:ows=\"http://www.opengis.net/ows\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/ows http://schemas.opengis.net/ows/1.0.0/owsExceptionReport.xsd\" version=\"1.0.0\">\n" +
+                "  <ows:Exception>" +
+                "    <ows:ExceptionText>Cannot perform insert operation: Error in XML document (line: 1, column: 234, character offset: 233): Feature type \"{wrong}wfst\" is unknown.</ows:ExceptionText>\n" +
+                "  </ows:Exception>\n" +
+                "</ows:ExceptionReport>";
+
+            fetch.mockResponseOnce(failedResponse);
+
+            await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow("Cannot perform insert operation: Error in XML document (line: 1, column: 234, character offset: 233): Feature type \"{wrong}wfst\" is unknown.");
+        });
+    });
+
     describe("loadFeaturesManually", function () {
         const consoleError = console.error;
         let tick;
@@ -467,4 +1117,5 @@ describe("wfs.js", function () {
         });
     });
 });
+
 
