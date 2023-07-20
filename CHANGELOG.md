@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.21.0 - 2023-07-20
 ### Added
 - The following packages have been installed:
     - @swc/jest: 0.2.27
@@ -32,6 +32,7 @@
 ### Removed
 
 ### Fixed
+- Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
 
 ---
 
