@@ -175,13 +175,13 @@ function createLayerSource (rawLayer, options = {}) {
         }
         else {
             const bboxParam = options.loadingStrategy === bbox ? `&bbox=${extent.join(",")},${projection.getCode()}` : "";
-            let url = createUrl(rawLayer, version, projection, bboxParam);
-            let params = {};
+            let url = createUrl(rawLayer, version, projection, bboxParam),
+                params = {};
 
             if (options.loadingParams) {
                 for (const key in options.loadingParams) {
                     if (key === "xhrParameters") {
-                        params = options.loadingParams["xhrParameters"];
+                        params = options.loadingParams.xhrParameters;
                         continue;
                     }
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
@@ -269,11 +269,11 @@ function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
  * Writes a wfs transaction including the given feature for given layer
  * inserting, updated or deleting the feature depending on the given selectedInteraction.
  *
- * @param {module:ol/Feature} feature Feature to be inserted, updated or deleted.
- * @param {TransactionLayer} transactionOptions Information about the layer to be manipulated.
- * @param {("insert"|"delete"|"selectedUpdate")} transactionMethod Which transaction to perform.
- * @param {String} srsName EPSG code currently used by the map.
- * @returns {String} WFS Transaction as an XML Node as String.
+ * @param {ol/Feature} feature Feature to be inserted, updated or deleted.
+ * @param {Object} transactionOptions Information about the layer to be manipulated.
+ * @param {string} transactionMethod Which transaction to perform. Possible values are: "insert"|"delete"|"selectedUpdate"
+ * @param {string} srsName EPSG code currently used by the map.
+ * @returns {string} WFS Transaction as an XML Node as String.
  */
 
 function writeTransactionBody (feature, transactionOptions, transactionMethod, version = "1.1.0") {
@@ -297,11 +297,11 @@ function writeTransactionBody (feature, transactionOptions, transactionMethod, v
 /**
  * Checks if it is an unknown or special error and returns the code and the error message
  *
- * @param {XMLDocument} xmlDocument with the error
- * @returns {{code: null, message: null}} the code and the specific or unknown error
+ * @param {Object} xmlDocument with the error
+ * @returns {Object} the code and the specific or unknown error looking like this {code, message}
  */
 function getExceptionFromTransactionResponse (xmlDocument) {
-    const response = {code: null, message: null},
+    const response = {code: null, message: "genericFailedTransaction"},
         exception = xmlDocument.getElementsByTagName(`${xmlDocument.getElementsByTagName("Exception").length === 0 ? "ows:" : ""}Exception`)[0],
         exceptionText = exception.getElementsByTagName(`${xmlDocument.getElementsByTagName("ExceptionText").length === 0 ? "ows:" : ""}ExceptionText`)[0];
 
@@ -324,15 +324,14 @@ function getExceptionFromTransactionResponse (xmlDocument) {
 /**
  * Sends a transaction to the service and returns the feature.
  *
- * @param {String} srsName of the coordinate reference system
- * @param {module:ol/Feature} feature Feature to by inserted / updated / deleted.
- * @param {String} url of the wfs-t service
+ * @param {string} srsName of the coordinate reference system
+ * @param {ol/Feature} feature Feature to by inserted / updated / deleted.
+ * @param {string} url of the wfs-t service
  * @param {Object} layer the configured representation of the layer in the Masterportal
- * @param {("insert"|"delete"|"selectedUpdate")} transactionMethod which transaction to perform
- * @returns {Feature} the given feature
+ * @param {string} transactionMethod which transaction to perform. Possible values are: "insert"|"delete"|"selectedUpdate"
+ * @returns {ol/Feature} the given feature
  * @throws {Error} error if occurs
  */
-// Todo: write tests for TinyOWS-Response
 async function sendTransaction (srsName, feature, url, layer, transactionMethod) {
     let exception,
         response,
@@ -362,8 +361,7 @@ async function sendTransaction (srsName, feature, url, layer, transactionMethod)
         // NOTE: WFS-T services respond errors with the transaction as an XML response, even though it's the http code indicates different...
         if (transactionSummary.length === 0) {
             exception = getExceptionFromTransactionResponse(xmlDocument);
-            // TODO include exception.code in Error
-            throw new Error(exception.message);
+            throw new Error(exception.code ? exception.code + ": " + exception.message : exception.message);
         }
     }
     catch (e) {
@@ -378,35 +376,34 @@ async function sendTransaction (srsName, feature, url, layer, transactionMethod)
  * Parses the response of a DescribeFeatureType request
  * and prepares its values for later use as an input value for the user.
  *
- * @param {String} responseData XML response data
- * @param {String} featureType Name of the feature type of the service.
- * @returns {FeatureProperty[]} If an <element> with a name of the featureType is present, an array of prepared feature properties; else an empty Array.
+ * @param {string} responseData XML response data
+ * @param {string} featureType Name of the feature type of the service.
+ * @returns {Array} If an <element> with a name of the featureType is present, an array of prepared feature properties; else an empty Array.
  */
 function parseDescribeFeatureTypeResponse (responseData, featureType) {
 
     const parsedResponse = new DOMParser().parseFromString(responseData, "application/xml");
 
-    let prefix = "";
+    let prefix = "",
+        foundElement = null;
 
-    const xsdElements = parsedResponse.getElementsByTagName("xsd:element").length;
-    const xsElements = parsedResponse.getElementsByTagName("xs:element").length;
-
-    if (xsdElements > 0) {
+    if (parsedResponse.getElementsByTagName("xsd:element").length > 0) {
         prefix = "xsd:";
     }
-    else if (xsElements > 0) {
+    else if (parsedResponse.getElementsByTagName("xs:element").length > 0) {
         prefix = "xs";
     }
 
-    // removePrefix("xsd", parsedResponse);
     // Check if featureType applies to the response
-    const foundElement = Object.values(parsedResponse.getElementsByTagName(prefix + "element")).find(element => element.getAttribute("name") === featureType);
+    foundElement = Object.values(parsedResponse.getElementsByTagName(prefix + "element")).find(element => element.getAttribute("name") === featureType);
 
     if (foundElement) {
         let sequenceElements;
+
         if (foundElement.hasChildNodes()) {
             sequenceElements = Object.values(foundElement.getElementsByTagName(prefix + "sequence"));
-        } else {
+        }
+        else {
             sequenceElements = Object.values(parsedResponse.getElementsByTagName(prefix + "sequence"));
         }
 
@@ -455,15 +452,15 @@ function parseDescribeFeatureTypeResponse (responseData, featureType) {
     return [];
 }
 
-// Todo: write tests
 /**
  * Requests the possible properties of a feature and further values;
  * for more {@see FeatureProperty}.
  *
- * @param {String} url from the WFS-T
- * @param {String} version of the WFS-T
- * @param {String} featureType Name of the FeatureType according to the capabilities document
- * @returns {Promise<FeatureProperty[]>} If the request is successful, an array of prepared feature properties.
+ * @param {string} url from the WFS-T
+ * @param {string} version of the WFS-T
+ * @param {string} featureType Name of the FeatureType according to the capabilities document
+ * @param {boolean} isSecured Whether the layer is secured by BasicAuth and should include or omit the credentials prompt
+ * @returns {Promise<Array>} If the request is successful, an array of prepared feature properties.
  */
 async function receivePossibleProperties (url, version, featureType, isSecured) {
     const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;

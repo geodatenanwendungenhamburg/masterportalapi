@@ -30,6 +30,17 @@ jest.mock("../../src/renderer/webgl.js", () => {
 
 
 describe("wfs.js", function () {
+
+    const originalConsoleError = console.error;
+
+    beforeAll(() => {
+        console.error = jest.fn();
+    });
+
+    afterAll(() => {
+        console.error = originalConsoleError;
+    });
+
     beforeEach(() => {
         enableFetchMocks();
         fetch.resetMocks();
@@ -671,18 +682,6 @@ describe("wfs.js", function () {
     });
 
     describe("receivePossibleProperties", () => {
-        const originalConsoleError = console.error;
-
-        beforeAll(() => {
-            console.error = jest.fn();
-
-        });
-
-        afterAll(() => {
-            console.error = originalConsoleError;
-        });
-
-        // eslint-disable-next-line one-var
         const exampleDescribeFeatureType = "<?xml version='1.0' encoding='UTF-8'?>\n" +
                 "<schema xmlns=\"http://www.w3.org/2001/XMLSchema\" xmlns:gml=\"http://www.opengis.net/gml\" xmlns:sf=\"http://cite.opengeospatial.org/gmlsf\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" targetNamespace=\"http://cite.opengeospatial.org/gmlsf\" elementFormDefault=\"qualified\" attributeFormDefault=\"unqualified\">\n" +
                 "  <import namespace=\"http://www.opengis.net/gml\" schemaLocation=\"http://schemas.opengis.net/gml/3.1.1/base/gml.xsd\"/>\n" +
@@ -748,25 +747,7 @@ describe("wfs.js", function () {
                 "    </xsd:complexContent>\n" +
                 "  </xsd:complexType>\n" +
                 "  <xsd:element name=\"test_polygon\" substitutionGroup=\"gml:AbstractFeature\" type=\"test:test_polygonType\"/>\n" +
-                "</xsd:schema>",
-            tinyOwsDescribeFeatureType = "<?xml version='1.0' encoding='UTF-8'?>\n" +
-                "<xs:schema targetNamespace='http://www.mapserver.org/tinyows/' xmlns:tows='http://www.mapserver.org/tinyows/' xmlns:ogc='http://www.opengis.net/ogc' xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns='http://www.w3.org/2001/XMLSchema' xmlns:gml='http://www.opengis.net/gml' elementFormDefault='qualified' version='1.1'>\n" +
-                "<xs:import namespace='http://www.opengis.net/gml' schemaLocation='http://schemas.opengis.net/gml/3.1.1/base/gml.xsd'/>\n" +
-                "<xs:element name='befall' type='tows:befallType' substitutionGroup='gml:_Feature' />\n" +
-                "<xs:complexType name='befallType'>\n" +
-                " <xs:complexContent>\n" +
-                "  <xs:extension base='gml:AbstractFeatureType'>\n" +
-                "   <xs:sequence>\n" +
-                "    <xs:element name ='the_geom' type='gml:PointPropertyType' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
-                "    <xs:element name ='art' nillable='true' minOccurs='0' maxOccurs='1'>\n" +
-                "<xs:simpleType><xs:restriction base='string'><xs:maxLength value='50'/></xs:restriction></xs:simpleType></xs:element>    <xs:element name ='beschreibung' nillable='true' minOccurs='0' maxOccurs='1'>\n" +
-                "<xs:simpleType><xs:restriction base='string'><xs:maxLength value='150'/></xs:restriction></xs:simpleType></xs:element>    <xs:element name ='befall1' type='boolean' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
-                "    <xs:element name ='befall2' type='boolean' nillable='true' minOccurs='0' maxOccurs='1'/>\n" +
-                "   </xs:sequence>\n" +
-                "  </xs:extension>\n" +
-                " </xs:complexContent>\n" +
-                "</xs:complexType>\n" +
-                "</xs:schema>";
+                "</xsd:schema>";
 
         it("should receive the possible properties", async () => {
             fetch.mockResponseOnce(exampleDescribeFeatureType);
@@ -847,7 +828,7 @@ describe("wfs.js", function () {
                         required: false,
                         type: "string",
                         value: null
-                    },
+                    }
                 ];
 
             expect(Array.isArray(properties)).toBe(true);
@@ -859,61 +840,6 @@ describe("wfs.js", function () {
                 expect(parsedProperty).toEqual(property);
             });
             expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=test_polygon", {"responseType": "text/xml", "credentials": "omit"});
-
-        });
-
-        // TODO Team WaaS (LGLN) muss mit Produktpflege Ã¼ber WFS XML Parsing reden before dieser Test implementiert wird
-        it.skip("should receive the possible properties from a tinyows", async () => {
-            fetch.mockResponseOnce(tinyOwsDescribeFeatureType);
-
-            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "tows:befall", false),
-                exampleProperties = [
-                    {
-                        key: "the_geom",
-                        label: "the_geom",
-                        required: false,
-                        type: "geometry",
-                        value: null
-                    },
-                    {
-                        key: "art",
-                        label: "art",
-                        required: false,
-                        type: "string",
-                        value: null
-                    },
-                    {
-                        key: "beschreibung",
-                        label: "beschreibung",
-                        required: false,
-                        type: "string",
-                        value: null
-                    },
-                    {
-                        key: "befall1",
-                        label: "befall1",
-                        required: false,
-                        type: "string",
-                        value: null
-                    },
-                    {
-                        key: "befall2",
-                        label: "befall2",
-                        required: false,
-                        type: "string",
-                        value: null
-                    },
-                ];
-
-            expect(Array.isArray(properties)).toBe(true);
-            expect(properties.length).toEqual(3);
-            exampleProperties.forEach(property => {
-                const parsedProperty = properties.find(({key}) => key === property.key);
-
-                expect(parsedProperty).not.toEqual(undefined);
-                expect(parsedProperty).toEqual(property);
-            });
-            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=tows:befall", {"responseType": "text/xml", "credentials": "omit"});
 
         });
 
@@ -981,16 +907,6 @@ describe("wfs.js", function () {
     });
 
     describe("sendTransaction", () => {
-        const originalConsoleError = console.error;
-
-        beforeAll(() => {
-            console.error = jest.fn();
-        });
-
-        afterAll(() => {
-            console.error = originalConsoleError;
-        });
-
         const layer = {
                 id: Symbol("layerId"),
                 url: "some.good.url",
