@@ -15,7 +15,7 @@
 ### Fixed
 
 ---
-## 2.21.0 - 2023-07-25
+## 2.22.0 - 2023-07-25
 ### Added
 - VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
