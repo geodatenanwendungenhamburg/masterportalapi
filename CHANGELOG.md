@@ -3,18 +3,22 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.21.0 - 2023-07-25
 ### Added
 - VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
 
 ### Changed
 - Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
+- WFS: 
+    - Migrated writeTransaction and sendTransaction from masterportal the masterportalAPI.
+    - Exports in src/layer/wfs.js changed to export default {} to provide  ES-Syntax.
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+- WFS: fixed a bug that prevented parsing GeoServer responses.
 
 ---
 
