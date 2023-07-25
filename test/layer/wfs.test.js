@@ -143,17 +143,12 @@ describe("wfs.js", function () {
         });
     });
     describe("createLayerSource", function () {
-        const consoleError = console.error;
-
         beforeEach(() => {
             if (global.fetch) {
                 global.fetch.mockClear();
             }
         });
-        // to reset show error on load in console
-        afterEach(() => {
-            console.error = consoleError;
-        });
+
         it("creates a VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
             global.fetch = jest.fn().mockImplementationOnce(() => {
                 return new Promise((resolve) => {
@@ -332,8 +327,6 @@ describe("wfs.js", function () {
                     });
                 });
             });
-            // to reset show error on load in console when testing 'onLoadingError'
-            console.error = jest.fn();
 
             const map2D = map.createMap(defaults),
                 url = "https://url.de",
@@ -1045,7 +1038,6 @@ describe("wfs.js", function () {
     });
 
     describe("loadFeaturesManually", function () {
-        const consoleError = console.error;
         let tick;
 
         beforeEach(() => {
@@ -1058,10 +1050,6 @@ describe("wfs.js", function () {
             if (global.fetch) {
                 global.fetch.mockClear();
             }
-        });
-        // to reset show error on load in console
-        afterEach(() => {
-            console.error = consoleError;
         });
 
         it("load features manually", async function () {
