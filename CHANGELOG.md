@@ -5,6 +5,9 @@
 
 ## Unreleased - in development
 ### Added
+- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
+- Add Styling and zIndex to draw interactions and improve the draw behavior.
+- Add select and modify interactions for editing ol features.
 
 ### Changed
 
@@ -23,7 +26,7 @@
 
 ### Changed
 - Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
-- WFS: 
+- WFS:
     - Migrated writeTransaction and sendTransaction from masterportal the masterportalAPI.
     - Exports in src/layer/wfs.js changed to export default {} to provide  ES-Syntax.
 ### Deprecated
