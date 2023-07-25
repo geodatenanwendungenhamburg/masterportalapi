@@ -154,7 +154,7 @@ function createUrl (rawLayer, version, projection, bboxParam) {
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
  */
-export function createLayerSource (rawLayer, options = {}) {
+function createLayerSource (rawLayer, options = {}) {
     if (!options.loadingStrategy) {
         options.loadingStrategy = bbox;
     }
@@ -175,10 +175,15 @@ export function createLayerSource (rawLayer, options = {}) {
         }
         else {
             const bboxParam = options.loadingStrategy === bbox ? `&bbox=${extent.join(",")},${projection.getCode()}` : "";
-            let url = createUrl(rawLayer, version, projection, bboxParam);
+            let url = createUrl(rawLayer, version, projection, bboxParam),
+                params = {};
 
             if (options.loadingParams) {
                 for (const key in options.loadingParams) {
+                    if (key === "xhrParameters") {
+                        params = options.loadingParams.xhrParameters;
+                        continue;
+                    }
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
 
                     if (option !== undefined && key === "bbox") {
@@ -189,7 +194,7 @@ export function createLayerSource (rawLayer, options = {}) {
                     }
                 }
             }
-            loadWFS(url, {}, source, {onErrorFn: onError, success, failure}, options);
+            loadWFS(url, params, source, {onErrorFn: onError, success, failure}, options);
         }
     }
     format.featureType = rawLayer.featureType;
@@ -224,7 +229,7 @@ export function createLayerSource (rawLayer, options = {}) {
  * @param {options} [optionalParams.options] - additional options
  * @returns {ol.Layer} Layer that can be added to map.
  */
-export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
+function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
     let layer, source;
 
     // use WebGL render pipeline, if specified
@@ -262,12 +267,226 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
 }
 
 /**
+ * Writes a wfs transaction including the given feature for given layer
+ * inserting, updated or deleting the feature depending on the given selectedInteraction.
+ *
+ * @param {ol/Feature} feature Feature to be inserted, updated or deleted.
+ * @param {Object} transactionOptions Information about the layer to be manipulated.
+ * @param {string} transactionMethod Which transaction to perform. Possible values are: "insert"|"delete"|"selectedUpdate"
+ * @param {string} srsName EPSG code currently used by the map.
+ * @returns {string} WFS Transaction as an XML Node as String.
+ */
+
+function writeTransactionBody (feature, transactionOptions, transactionMethod, version = "1.1.0") {
+    const transactionPosition = {
+            insert: 0,
+            selectedUpdate: 1,
+            delete: 2
+        },
+        transaction = [[], [], []];
+
+    if (transactionMethod !== "insert" && transactionMethod !== "delete" && transactionMethod !== "selectedUpdate") {
+        throw new Error("transactionMethod has to be \"insert\", \"selectedUpdate\" or \"delete\".");
+    }
+
+    transaction[transactionPosition[transactionMethod]].push(feature);
+    return new XMLSerializer()
+        .serializeToString(new WFS({version})
+            .writeTransaction(...transaction, transactionOptions));
+}
+
+/**
+ * Checks if it is an unknown or special error and returns the code and the error message
+ *
+ * @param {Object} xmlDocument with the error
+ * @returns {Object} the code and the specific or unknown error looking like this {code, message}
+ */
+function getExceptionFromTransactionResponse (xmlDocument) {
+    const response = {code: null, message: "genericFailedTransaction"},
+        exception = xmlDocument.getElementsByTagName(`${xmlDocument.getElementsByTagName("Exception").length === 0 ? "ows:" : ""}Exception`)[0],
+        exceptionText = exception.getElementsByTagName(`${xmlDocument.getElementsByTagName("ExceptionText").length === 0 ? "ows:" : ""}ExceptionText`)[0];
+
+    if (exceptionText !== undefined) {
+        response.message = exceptionText.textContent;
+        console.error("WfsTransaction: An error occurred when sending the transaction to the service.", exceptionText.textContent);
+    }
+    else {
+        response.message = "WfsTransaction: An unkown error occurred when sending the transaction to the service.";
+        console.error(response.message);
+    }
+    if (exception?.attributes.getNamedItem("code") || exception?.attributes.getNamedItem("exceptionCode")) {
+        response.code = exception.attributes.getNamedItem(`${exception?.attributes.getNamedItem("code") ? "c" : "exceptionC"}ode`).textContent;
+    }
+
+    return response;
+}
+
+
+/**
+ * Sends a transaction to the service and returns the feature.
+ *
+ * @param {string} srsName of the coordinate reference system
+ * @param {ol/Feature} feature Feature to by inserted / updated / deleted.
+ * @param {string} url of the wfs-t service
+ * @param {Object} layer the configured representation of the layer in the Masterportal
+ * @param {string} transactionMethod which transaction to perform. Possible values are: "insert"|"delete"|"selectedUpdate"
+ * @returns {ol/Feature} the given feature
+ * @throws {Error} error if occurs
+ */
+async function sendTransaction (srsName, feature, url, layer, transactionMethod) {
+    let exception,
+        response,
+        xmlDocument = null,
+        transactionSummary = null,
+        data = null;
+
+    const {featureNS, featurePrefix, featureType, version} = layer;
+
+    try {
+        response = await fetch(url, {
+            method: "POST",
+            headers: {"Content-Type": "text/xml"},
+            credentials: layer.isSecured ? "include" : "omit",
+            body: writeTransactionBody(feature,
+                {featureNS, featurePrefix, featureType, version, srsName},
+                transactionMethod,
+                version),
+            responseType: "text"
+        });
+
+        data = await response.text();
+
+        xmlDocument = new DOMParser().parseFromString(data, "text/xml");
+        transactionSummary = xmlDocument.getElementsByTagName("wfs:TransactionSummary");
+
+        // NOTE: WFS-T services respond errors with the transaction as an XML response, even though it's the http code indicates different...
+        if (transactionSummary.length === 0) {
+            exception = getExceptionFromTransactionResponse(xmlDocument);
+            throw new Error(exception.code ? exception.code + ": " + exception.message : exception.message);
+        }
+    }
+    catch (e) {
+        console.error(e);
+        throw e;
+    }
+
+    return feature;
+}
+
+/**
+ * Parses the response of a DescribeFeatureType request
+ * and prepares its values for later use as an input value for the user.
+ *
+ * @param {string} responseData XML response data
+ * @param {string} featureType Name of the feature type of the service.
+ * @returns {Array} If an <element> with a name of the featureType is present, an array of prepared feature properties; else an empty Array.
+ */
+function parseDescribeFeatureTypeResponse (responseData, featureType) {
+
+    const parsedResponse = new DOMParser().parseFromString(responseData, "application/xml");
+
+    let prefix = "",
+        foundElement = null;
+
+    if (parsedResponse.getElementsByTagName("xsd:element").length > 0) {
+        prefix = "xsd:";
+    }
+    else if (parsedResponse.getElementsByTagName("xs:element").length > 0) {
+        prefix = "xs";
+    }
+
+    // Check if featureType applies to the response
+    foundElement = Object.values(parsedResponse.getElementsByTagName(prefix + "element")).find(element => element.getAttribute("name") === featureType);
+
+    if (foundElement) {
+        let sequenceElements;
+
+        if (foundElement.hasChildNodes()) {
+            sequenceElements = Object.values(foundElement.getElementsByTagName(prefix + "sequence"));
+        }
+        else {
+            sequenceElements = Object.values(parsedResponse.getElementsByTagName(prefix + "sequence"));
+        }
+
+        const elements = [];
+
+        sequenceElements.forEach(sequenceElement => {
+            elements.push(...Object.values(sequenceElement.getElementsByTagName(prefix + "element")));
+        });
+
+        return elements.map(el => Object.values(el.attributes).reduce((obj, att) => {
+            if (att.localName === "minOccurs") {
+                obj.required = att.value === "1";
+            }
+            else if (att.localName === "type") {
+                if (att.value.trim().startsWith("gml")) {
+                    obj.type = "geometry";
+                }
+                else {
+                    let value = att.value;
+
+                    if (prefix.length > 0) {
+                        value = value.replace(prefix, "");
+                    }
+
+                    switch (value) {
+                        case "long":
+                            obj.type = "integer";
+                            break;
+                        default:
+                            obj.type = value;
+                    }
+                }
+            }
+            else if (att.localName === "name") {
+                obj.label = obj.key = att.value;
+            }
+            return obj;
+        }, {
+            label: "",
+            key: "",
+            value: null,
+            type: "string",
+            required: false
+        }));
+    }
+    return [];
+}
+
+/**
+ * Requests the possible properties of a feature and further values;
+ * for more {@see FeatureProperty}.
+ *
+ * @param {string} url from the WFS-T
+ * @param {string} version of the WFS-T
+ * @param {string} featureType Name of the FeatureType according to the capabilities document
+ * @param {boolean} isSecured Whether the layer is secured by BasicAuth and should include or omit the credentials prompt
+ * @returns {Promise<Array>} If the request is successful, an array of prepared feature properties.
+ */
+async function receivePossibleProperties (url, version, featureType, isSecured) {
+    const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
+    let response;
+
+    try {
+        response = await fetch(baseUrl, {
+            responseType: "text/xml",
+            credentials: isSecured ? "include" : "omit"
+        });
+        return parseDescribeFeatureTypeResponse(await response.text(), featureType);
+    }
+    catch (e) {
+        console.error(e);
+        throw e;
+    }
+}
+
+/**
  * Load the features manually.
  * @param {Object} layerAttributes raw layer attributes.
  * @param {module:ol/vector/Source} layerSource - the source of the layer
  * @returns {void}
  */
-export function loadFeaturesManually (layerAttributes, layerSource) {
+function loadFeaturesManually (layerAttributes, layerSource) {
     const getUrl = createUrl(layerAttributes, layerAttributes.version, {getCode: () => layerAttributes.crs}, "");
 
     fetch(getUrl, layerSource)
@@ -279,3 +498,5 @@ export function loadFeaturesManually (layerAttributes, layerSource) {
             console.error(error);
         });
 }
+
+export default {createLayerSource, createLayer, sendTransaction, receivePossibleProperties, parseDescribeFeatureTypeResponse, writeTransactionBody, loadFeaturesManually};

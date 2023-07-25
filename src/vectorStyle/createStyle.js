@@ -3,6 +3,7 @@ import PointStyle from "./styles/point/stylePoint";
 import TextStyle from "./styles/styleText";
 import PolygonStyle from "./styles/polygon/stylePolygon";
 import LineStringStyle from "./styles/styleLine";
+import CircleStyle from "./styles/styleCircle";
 import CesiumStyle from "./styles/styleCesium";
 import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
@@ -60,7 +61,13 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
         styleObject.legendValue = legendValue;
         return styleObject;
     }
-    else if (geometryType === "LinearRing" || geometryType === "Circle") {
+    else if (geometryType === "Circle") {
+        styleObject = new CircleStyle(feature, style, isClustered);
+        if (isClustered) {
+            styleObjectForLegend = new CircleStyle(feature, style, false);
+        }
+    }
+    else if (geometryType === "LinearRing") {
         console.warn("Geometry type not implemented: " + geometryType + " default style ist used for feature " + feature);
         return new Style();
     }
