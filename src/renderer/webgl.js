@@ -147,20 +147,15 @@ export function afterLoading (features, styleId, excludeTypesFromParsing, isPoin
     const styleObject = styleList.returnStyleObject(styleId); // load styleModel to extract rules per feature
 
     if (Array.isArray(features)) {
-        /**
-         * extract first point from Multipoint
-         * @deprecated will probably not be necessary anymore in release version
-         * @example An example for that behavior can be found when rendering "Strassenbaumkataster"
-         */
-        if (isPointLayer) {
-            features.forEach(feature => {
-                if (feature.getGeometry().getType() === "MultiPoint") {
-                    feature.setGeometry(feature.getGeometry().getPoint(0)); // other points in the multi point will be ignored for now
-                }
-            });
-        }
-
         features.forEach(feature => {
+            /**
+             * extract first point from Multipoint
+             * @deprecated will probably not be necessary anymore in release version
+             * @example An example for that behavior can be found when rendering "Strassenbaumkataster"
+             */
+            if (isPointLayer && feature.getGeometry().getType() === "MultiPoint") {
+                feature.setGeometry(feature.getGeometry().getPoint(0)); // other points in the multi point will be ignored for now
+            }
             formatFeatureGeometry(feature); /** @deprecated will propbably not be necessary anymore in release version */
             formatFeatureStyles(feature, styleObject); /** @todo needs refactoring in release version  */
             formatFeatureData(feature, excludeTypesFromParsing); /** Necessary since the WebGLPoints Style Syntax depends on data types (i.e. numbers not as strings) */

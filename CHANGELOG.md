@@ -7,6 +7,7 @@
 ### Added
 
 ### Changed
+- WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
 
 ### Deprecated
 
