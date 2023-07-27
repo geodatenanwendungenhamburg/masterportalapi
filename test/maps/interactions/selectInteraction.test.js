@@ -3,9 +3,9 @@ import {pointerMove, singleClick} from "ol/events/condition.js";
 import {Select} from "ol/interaction.js";
 import VectorLayer from "ol/layer/Vector";
 
-import selectInteractions from "../../../src/maps/interactions/selectInteractions";
+import selectInteractions from "../../../src/maps/interactions/selectInteraction";
 
-describe("src/maps/interactions/selectInteractions.js", () => {
+describe("src/maps/interactions/selectInteraction.js", () => {
     describe("createSelectInteraction", () => {
         it("should create a select interaction", () => {
             const layers = new VectorLayer(),

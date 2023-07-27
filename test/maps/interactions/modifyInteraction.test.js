@@ -1,9 +1,9 @@
 import {Modify} from "ol/interaction.js";
 import VectorSource from "ol/source/Vector";
 
-import modifyInteractions from "../../../src/maps/interactions/modifyInteractions";
+import modifyInteractions from "../../../src/maps/interactions/modifyInteraction";
 
-describe("src/maps/interactions/modifyInteractions.js", () => {
+describe("src/maps/interactions/modifyInteraction.js", () => {
     describe("createModifyInteraction", () => {
         it("should create a modify interaction", () => {
             const source = new VectorSource(),

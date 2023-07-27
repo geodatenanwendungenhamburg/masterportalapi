@@ -3,9 +3,9 @@ import Feature from "ol/Feature";
 import Circle from "ol/geom/Circle";
 import VectorSource from "ol/source/Vector";
 
-import drawInteractions, {styleObject} from "../../../src/maps/interactions/drawInteractions";
+import drawInteractions, {styleObject} from "../../../src/maps/interactions/drawInteraction";
 
-describe("src/maps/interactions/drawInteractions.js", () => {
+describe("src/maps/interactions/drawInteraction.js", () => {
     describe("transformMapUnitRadius", () => {
         it("should return the input meter radius in meter ", () => {
             const radius = 100,
