@@ -1,4 +1,3 @@
-
 import {Select} from "ol/interaction.js";
 
 /**
