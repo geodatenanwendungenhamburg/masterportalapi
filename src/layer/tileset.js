@@ -33,10 +33,11 @@ export default function Tileset (rawLayer) {
         typ: rawLayer.typ
     };
     if (Cesium) {
-
         this.tileset = Promise.resolve(createTileSet(rawLayer));
         this.tileset.then(function (tileset) {
-            tileset.layerReferenceId = rawLayer.id;
+            if (tileset) {
+                tileset.layerReferenceId = rawLayer.id;
+            }
         });
 
     }

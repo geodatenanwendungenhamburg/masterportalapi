@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2.21.0 - 2023-07-20
+## Unreleased - in development
 ### Added
 - The following packages have been installed:
     - @swc/jest: 0.2.27
@@ -48,8 +48,29 @@
 ---
 
 ## 2.22.0 - 2023-07-25
+- Add select and modify interactions for editing ol features.
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.22.0 - 2023-07-26
 ### Added
-- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
+
+### Changed
+- WFST Refactoring
+
+---
+
+## 2.21.0 - 2023-07-21
+### Added
+- VectorStyle: Add Styling rules for Geometries of type `Circle`.
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
 
 ### Changed
