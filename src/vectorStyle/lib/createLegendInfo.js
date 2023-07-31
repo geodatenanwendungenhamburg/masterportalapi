@@ -1,4 +1,5 @@
 import createStyle from "../createStyle";
+
 /**
  * Creates the style objects for the layer
  * @param   {object[]} rules styling rules from the styleObject
@@ -8,22 +9,29 @@ import createStyle from "../createStyle";
  */
 export function createLegendInfo (rules, geometryType, wfsImgPath) {
     let styleObject,
-        simpleGeom;
+        simpleGeom,
+        legendInfos = [];
 
     geometryType.forEach(geom => rules.forEach(rule => {
         if (geom === "MultiSurface") {
             simpleGeom = "Polygon";
             styleObject = createStyle.getSimpleGeometryStyle(simpleGeom, "", rule, false, wfsImgPath);
-            return styleObject;
+            legendInfos = legendInfos.concat(styleObject.legendInfos);
         }
         else if (geom.includes("Multi")) {
             simpleGeom = geom.replace("Multi", "");
             styleObject = createStyle.getMultiGeometryStyle(simpleGeom, "", rule, false, wfsImgPath);
-            return styleObject;
-        }
 
-        simpleGeom = geom;
-        styleObject = createStyle.getSimpleGeometryStyle(simpleGeom, "", rule, false, wfsImgPath);
-        return styleObject;
+            styleObject.forEach(singleStyleObject => {
+                legendInfos = legendInfos.concat(singleStyleObject.legendInfos);
+            });
+        }
+        else {
+            simpleGeom = geom;
+            styleObject = createStyle.getSimpleGeometryStyle(simpleGeom, "", rule, false, wfsImgPath);
+            legendInfos = legendInfos.concat(styleObject.legendInfos);
+        }
     }));
+
+    return legendInfos;
 }

@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- The legend for wfs is now created again via the Describefeaturetype.
 
 
 ---
