@@ -1,5 +1,8 @@
 /* eslint-env node */
 module.exports = {
+    "transform": {
+        "^.+\\.(t|j)sx?$": "@swc/jest"
+    },
     /** ol prints errors without HTMLCanvasElement being available in test environment */
     "setupFiles": ["jest-canvas-mock"],
     /** node_modules are usually ignored by babel-jest, but ol is published in ES6 */

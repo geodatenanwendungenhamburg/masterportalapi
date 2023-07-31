@@ -9,8 +9,10 @@ import * as webgl from "../../src/renderer/webgl.js";
 jest.mock("../../src/renderer/webgl.js", () => {
     const original = jest.requireActual("../../src/renderer/webgl.js");
 
-    original.afterLoading = jest.fn();
-    return original;
+    return {
+        ...original,
+        afterLoading: jest.fn()
+    };
 });
 
 describe("vectorBase.js", function () {

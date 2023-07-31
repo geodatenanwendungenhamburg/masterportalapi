@@ -19,8 +19,10 @@ jest.mock("../../src/rawLayerList.js", () => {
 jest.mock("../../src/renderer/webgl.js", () => {
     const original = jest.requireActual("../../src/renderer/webgl.js");
 
-    original.afterLoading = jest.fn();
-    return original;
+    return {
+        ...original,
+        afterLoading: jest.fn()
+    };
 });
 
 
