@@ -51,6 +51,7 @@
 - Add select and modify interactions for editing ol features.
 
 ### Changed
+- Replace derprecated cesium tileset and terrain loading functions.
 
 ### Deprecated
 
