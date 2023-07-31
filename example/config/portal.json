@@ -77,6 +77,6 @@
       }
     }
   ],
-  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/1_99/Cesium.js",
+  "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js",
   "wfsImgPath": "https://geodienste.hamburg.de/lgv-config/img/"
 }
