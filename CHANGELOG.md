@@ -21,6 +21,7 @@
 - The following packages have been installed:
     - @swc/jest: 0.2.27
 - Add a function to convertUnits in drawInteractions.
+- Remove VectorBase layer and add it to masterportal
 
 ### Changed
 - The following packages have been updated:
