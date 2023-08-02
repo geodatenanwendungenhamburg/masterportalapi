@@ -3,6 +3,15 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+
 ## 2.23.0 - 2023-08-02
 ### Added
 - VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
