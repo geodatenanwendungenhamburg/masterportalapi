@@ -3,23 +3,17 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.23.0 - 2023-08-02
 ### Added
 - VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
 - Add select and modify interactions for editing ol features.
 
-### Changed
-
-### Deprecated
-
-### Removed
-
 ### Fixed
 - The legend for wfs is now created again via the Describefeaturetype.
 
-
 ---
+
 ## 2.22.0 - 2023-07-25
 ### Added
 - VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
