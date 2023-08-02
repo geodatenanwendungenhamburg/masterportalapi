@@ -25,7 +25,7 @@
         - jest-canvas-mock: 2.5.0 to 2.5.2
         - jest-environment-jsdom: 29.5.0 to 29.6.2
         - parcel: 2.8.3 to 2.9.3
-        - sass: 1.62.1 to 1.64.1
+        - sass: 1.62.1 to 1.64.2
 
 ### Deprecated
 
