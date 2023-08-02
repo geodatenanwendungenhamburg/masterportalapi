@@ -7,6 +7,7 @@
 ### Added
 - The following packages have been installed:
     - @swc/jest: 0.2.27
+- Add a function to convertUnits in drawInteractions.
 
 ### Changed
 - The following packages have been updated:
@@ -38,8 +39,6 @@
 
 ## 2.23.0 - 2023-08-02
 ### Added
-- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
-- Add Styling and zIndex to draw interactions and improve the draw behavior.
 - Add select and modify interactions for editing ol features.
 
 ### Fixed
@@ -48,23 +47,8 @@
 ---
 
 ## 2.22.0 - 2023-07-25
-- Add select and modify interactions for editing ol features.
-
 ### Changed
 - Replace derprecated cesium tileset and terrain loading functions.
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
----
-
-## 2.22.0 - 2023-07-26
-### Added
-
-### Changed
 - WFST Refactoring
 
 ---
@@ -79,9 +63,6 @@
 - WFS:
     - Migrated writeTransaction and sendTransaction from masterportal the masterportalAPI.
     - Exports in src/layer/wfs.js changed to export default {} to provide  ES-Syntax.
-### Deprecated
-
-### Removed
 
 ### Fixed
 - WFS: fixed a bug that prevented parsing GeoServer responses.

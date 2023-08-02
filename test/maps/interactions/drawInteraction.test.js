@@ -6,6 +6,40 @@ import VectorSource from "ol/source/Vector";
 import drawInteractions, {styleObject} from "../../../src/maps/interactions/drawInteraction";
 
 describe("src/maps/interactions/drawInteraction.js", () => {
+    describe("convertUnits", () => {
+        it("shold return 1000 for sourceUnit === 'm' and targetUnit === 'm'", () =>{
+            const value = 1000,
+                sourceUnit = "m",
+                targetUnit = "m";
+
+            expect(drawInteractions.convertUnits(value, sourceUnit, targetUnit)).toEqual(1000);
+        });
+
+        it("shold return 1000 for sourceUnit === 'm' and targetUnit === 'km'", () =>{
+            const value = 1000,
+                sourceUnit = "m",
+                targetUnit = "km";
+
+            expect(drawInteractions.convertUnits(value, sourceUnit, targetUnit)).toEqual(1);
+        });
+
+        it("shold return 1000 for sourceUnit === 'km' and targetUnit === 'm'", () =>{
+            const value = 1000,
+                sourceUnit = "km",
+                targetUnit = "m";
+
+            expect(drawInteractions.convertUnits(value, sourceUnit, targetUnit)).toEqual(1000000);
+        });
+
+        it("shold return 1000 for sourceUnit === 'abc' and targetUnit === 'def'", () =>{
+            const value = 1000,
+                sourceUnit = "abc",
+                targetUnit = "def";
+
+            expect(drawInteractions.convertUnits(value, sourceUnit, targetUnit)).toEqual(1000);
+        });
+    });
+
     describe("transformMapUnitRadius", () => {
         it("should return the input meter radius in meter ", () => {
             const radius = 100,
