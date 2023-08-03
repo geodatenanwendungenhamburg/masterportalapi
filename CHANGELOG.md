@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.24.0 - 2023-08-03
 ### Added
 - The following packages have been installed:
     - @swc/jest: 0.2.27
@@ -27,10 +27,6 @@
         - jest-environment-jsdom: 29.5.0 to 29.6.2
         - parcel: 2.8.3 to 2.9.3
         - sass: 1.62.1 to 1.64.2
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
