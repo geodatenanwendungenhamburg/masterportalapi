@@ -2,6 +2,7 @@ import OpenLayersVectorTileLayer from "ol/layer/VectorTile";
 import OpenLayersVectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 
+
 import {Feature} from "ol";
 import Polygon from "ol/geom/Polygon";
 
@@ -16,11 +17,21 @@ jest.mock("../../src/rawLayerList.js", () => {
     return original;
 });
 
+jest.mock("../../src/renderer/webgl.js", () => {
+    const original = jest.requireActual("../../src/renderer/webgl.js");
+
+    return {
+        ...original,
+        afterLoading: jest.fn()
+    };
+});
+
+
 describe("vectorTile.js", function () {
 
     beforeAll(() => crs.registerProjections());
 
-    const layerParams = {
+    const rawLayer = {
             name: "VT Test",
             id: "VT_01",
             url: "https://example.org"
@@ -79,17 +90,25 @@ describe("vectorTile.js", function () {
                 source = vectorTile.createLayerSource("https://foo.example.org", sourceParams);
 
             expect(source).toBeInstanceOf(OpenLayersVectorTileSource);
+            expect(typeof source.getTileLoadFunction()).toEqual("function");
         });
     });
 
     describe("createLayer", function () {
         it("creates a vector Tile Layer", function () {
-            const layer = vectorTile.createLayer(layerParams);
+            const layer = vectorTile.createLayer(rawLayer);
 
             expect(layer).toBeInstanceOf(OpenLayersVectorTileLayer);
             expect(layer.getSource()).toBeInstanceOf(OpenLayersVectorTileSource);
             expect(layer.get("name")).toEqual("VT Test");
             expect(layer.get("id")).toEqual("VT_01");
+        });
+
+        it("creates a vector Tile Layer with webgl renderer", function () {
+            const layer = vectorTile.createLayer(rawLayer, {layerParams: {renderer: "webgl"}});
+
+            expect(layer.constructor.name).toEqual("LocalWebGLLayer");
+            expect(layer.getSource()).toBeInstanceOf(OpenLayersVectorTileSource);
         });
 
         it("should log an error when required param is missing", function () {
@@ -139,7 +158,7 @@ describe("vectorTile.js", function () {
                     ],
                     tileSize: 512
                 },
-                layer = vectorTile.createLayer(layerParams),
+                layer = vectorTile.createLayer(rawLayer),
                 source = layer.getSource(),
                 tileGrid = source.getTileGrid();
 
@@ -156,7 +175,7 @@ describe("vectorTile.js", function () {
 
     describe("setStyle", function () {
         it("should apply a given style", function () {
-            const layer = vectorTile.createLayer(layerParams);
+            const layer = vectorTile.createLayer(rawLayer);
 
             let featureStyle = null;
 

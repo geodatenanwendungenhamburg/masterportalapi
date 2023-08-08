@@ -1,9 +1,13 @@
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
+import WebGLVectorTileLayerRenderer from "ol/renderer/webgl/VectorTileLayer.js";
+import VectorTile from "ol/layer/VectorTile.js";
 import VectorLayer from "ol/layer/Layer";
 import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
 import {returnColor} from "../vectorStyle/lib/colorConvertions";
+import {asArray} from "ol/color.js";
+import {packColor, parseLiteralStyle} from "ol/webgl/styleparser.js";
 
 /**
  * The default style for OpenLayers WebGLPoints class
@@ -23,11 +27,12 @@ const defaultStyle = {
 
     /** @type {import('ol/style/literal.js').LiteralStyle} */
     style = {
-        "stroke-color": ["get", "STROKECOLOR"],
-        "stroke-width": ["get", "STROKEWIDTH", "number"],
-        "fill-color": ["get", "FILLCOLOR"],
-        "opacity": ["get", "OPACITY", "number"],
-        "size": ["get", "CIRCLESIZE", "number"]
+        "stroke-color": ["get", "strokeColor"],
+        "stroke-width": ["get", "strokeWidth", "number"],
+        "fill-color": ["get", "fillColor"],
+        "opacity": ["get", "opacity", "number"],
+        "size": ["get", "circleSize", "number"],
+        symbol: defaultStyle.symbol
     };
 
 /**
@@ -46,7 +51,7 @@ export function createVectorLayerRenderer () {
      */
     class LocalWebGLLayer extends VectorLayer {
         /**
-         * Creates a new renderer that takes the defined style of the new layer as an input
+         * Creates a new renderer that takes the defined style of the new layer as an input.
          * @returns {module:ol/renderer/webgl/WebGLVectorLayerRenderer} the custom renderer
          * @experimental
          */
@@ -61,8 +66,101 @@ export function createVectorLayerRenderer () {
 }
 
 /**
+ * Creates a layer object to extend from.
+ * @augments VectorLayer
+ * @private
+ * @implements {WebGLVectorLayerRenderer}
+ * @param {Object} attrs attributes of the layer
+ * @returns {module:ol/layer/Layer} the LocalWebGLLayer with a custom renderer for WebGL styling
+ */
+export function createVectorTileLayerRenderer () {
+    /**
+     * @class LocalWebGLLayer
+     * @see https://openlayers.org/en/latest/examples/webgl-vector-tiles.html
+     * @description the temporary class with a custom renderer to render the vectortiles with WebGL
+     */
+    class LocalWebGLLayer extends VectorTile {
+
+        /**
+         * Creates a new renderer that takes the defined style of the new layer as an input.
+         * @returns {module:ol/renderer/webgl/WebGLVectorTileLayerRenderer} the custom renderer
+         * @experimental
+         */
+        createRenderer () {
+            const result = parseLiteralStyle(style),
+                invisible = [255, 255, 255, 0],
+                grey = [119, 119, 119, 1];
+
+
+            return new WebGLVectorTileLayerRenderer(this, {
+                style: {
+                    fill: {
+                        fragment: result.builder.getFillFragmentShader(),
+                        vertex: result.builder.getFillVertexShader()
+                    },
+                    stroke: {
+                        fragment: result.builder.getStrokeFragmentShader(),
+                        vertex: result.builder.getStrokeVertexShader()
+                    },
+                    symbol: {
+                        fragment: result.builder.getSymbolFragmentShader(),
+                        vertex: result.builder.getSymbolVertexShader()
+                    },
+                    attributes: {
+                        fillColor: {
+                            size: 2,
+                            callback: (feature) => {
+                                const featureStyle = this.getStyle()(feature, 1);
+
+                                if (featureStyle && featureStyle[0]) {
+                                    const color = featureStyle[0]?.getFill()?.getColor();
+
+                                    return packColor(color && typeof color === "string" ? asArray(color) : invisible);
+                                }
+                                return packColor(grey);
+                            }
+                        },
+                        strokeColor: {
+                            size: 2,
+                            callback: (feature) => {
+                                const featureStyle = this.getStyle()(feature, 1);
+
+                                if (featureStyle && featureStyle[0]) {
+                                    const color = featureStyle[0]?.getStroke()?.getColor();
+
+                                    return packColor(color ? asArray(color) : invisible);
+                                }
+                                return packColor(grey);
+                            }
+                        },
+                        strokeWidth: {
+                            size: 1,
+                            callback: (feature) => {
+                                const featureStyle = this.getStyle()(feature, 1);
+
+                                if (featureStyle && featureStyle[0]) {
+                                    const width = featureStyle[0]?.getStroke()?.getWidth();
+
+                                    if (width !== undefined) {
+                                        return width > 10 ? width / 10 : 1;/** @todo needs refactoring in later versions  */
+                                    }
+                                }
+                                return 1;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    return LocalWebGLLayer;
+}
+
+/**
  * Parses the vectorStyle from style.json to the feature
- * to reduce processing on runtime
+ * to reduce processing on runtime.
+ * Sets properties with style at feature to use by literalSytle of renderer of VectorLayer.
  * @private
  * @param {module:ol/Feature} feature - the feature to check
  * @param {module:Backbone/Model} [styleObject] - (optional) the style model from StyleList
@@ -87,11 +185,11 @@ export function formatFeatureStyles (feature, styleObject) {
             strokeWidth = rule.style.polygonStrokeWidth || rule.style.lineStrokeWidth,
             size = rule.style.circleRadius;
 
-        feature.set("FILLCOLOR", fillColor ? fillColor : "#006688");
-        feature.set("STROKECOLOR", strokeColor ? strokeColor : "#006688");
-        feature.set("STROKEWIDTH", strokeWidth ? strokeWidth : 1);
-        feature.set("OPACITY", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : 1);
-        feature.set("CIRCLESIZE", size ? size : 20);
+        feature.set("fillColor", fillColor ? fillColor : "#006688");
+        feature.set("strokeColor", strokeColor ? strokeColor : "#006688");
+        feature.set("strokeWidth", strokeWidth ? strokeWidth : 1);
+        feature.set("opacity", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : 1);
+        feature.set("circleSize", size ? size : 20);
     }
 }
 
@@ -134,7 +232,7 @@ export function formatFeatureData (feature, excludeTypes = ["boolean"]) {
 }
 
 /**
- * feature transformations called after loading
+ * feature transformations called after loading - but not for layer of typ VectortTile
  * called by the layer source loader, binds the instance of the layer model
  * should be called on each source refresh
  * @param {module:ol/Feature[]} features - the features loaded by the layer
@@ -184,7 +282,8 @@ export function createLayer (attrs) {
         opacity: attrs.transparency ? (100 - attrs.transparency) / 100 : attrs.opacity,
         renderer: "webgl",
         styleId: attrs.styleId,
-        excludeTypesFromParsing: attrs.excludeTypesFromParsing
+        excludeTypesFromParsing: attrs.excludeTypesFromParsing,
+        extent: attrs.extent
     };
 
     /**
@@ -205,11 +304,22 @@ export function createLayer (attrs) {
         });
     }
 
-    /**
-     * use ol/renderer/webgl/WebGLVectorLayerRenderer if not point layer
-     * Point styling as quads only
-     */
-    LayerConstructor = createVectorLayerRenderer(attrs);
+    if (attrs.typ === "VectorTile") {
+
+        /**
+         * use ol/renderer/webgl/WebGLVectorLayerRenderer if not point layer
+         * Point styling as quads only
+         */
+        LayerConstructor = createVectorTileLayerRenderer(attrs);
+    }
+    else {
+
+        /**
+         * use ol/renderer/webgl/WebGLVectorLayerRenderer if not point layer
+         * Point styling as quads only
+         */
+        LayerConstructor = createVectorLayerRenderer(attrs);
+    }
     return new LayerConstructor({
         ...options,
         isPointLayer: false

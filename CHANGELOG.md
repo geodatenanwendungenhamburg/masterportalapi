@@ -8,6 +8,8 @@
 
 ### Changed
 - WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
+- WebGL Render-Pipeline for VectorLayer of type VectorTile can be called using {"renderer": "webgl"} in config.json.
+## Changed
 
 ## Deprecated
 
@@ -22,7 +24,7 @@
 - The following packages have been installed:
     - @swc/jest: 0.2.27
 - Add a function to convertUnits in drawInteractions.
-- Remove VectorBase layer and add it to masterportal
+- Remove VectorBase layer and add it to masterportal.
 
 ### Changed
 - The following packages have been updated:

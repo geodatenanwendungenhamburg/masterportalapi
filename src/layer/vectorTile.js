@@ -3,6 +3,7 @@ import VectorTileLayer from "ol/layer/VectorTile";
 import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
+import * as webgl from "../renderer/webgl";
 
 import {stylefunction, apply} from "ol-mapbox-style";
 
@@ -108,6 +109,9 @@ function mustCreateTileGrid (options = {}) {
  *
  * @param {string} url - url to vector tile service
  * @param {tileGridProperties} [options] - properties for tileGrid
+ * @param {"default" | "webgl" | undefined} [options.renderer] - use default canvas or webgl renderer
+ * @param {string} [options.styleId] - the styleId of the layer, only necessary for webgl style pipeline
+ * @param {string[]} [options.excludeTypesFromParsing] - types that should not be parsed from strings, only necessary for webgl
  * @returns {ol.source.VectorTile} Source
  */
 export function createLayerSource (url, options = {}) {
@@ -122,12 +126,38 @@ export function createLayerSource (url, options = {}) {
         minZoom: options.minZoom,
         maxZoom: options.maxZoom
     };
+    let source = null;
 
     if (mustCreateTileGrid(options)) {
         sourceParams.tileGrid = createTileGrid(options);
     }
+    source = new VectorTileSource(sourceParams);
 
-    return new VectorTileSource(sourceParams);
+    source.setTileLoadFunction(function (tile, tileUrl) {
+        tile.setLoader(function (extent, resolution, projection) {
+            fetch(tileUrl).then(function (response) {
+                if (response.ok) {
+                    response.arrayBuffer().then(function (data) {
+                        const format = tile.getFormat(), // ol/format/MVT configured as source format
+                            features = format.readFeatures(data, {
+                                extent: extent,
+                                featureProjection: projection
+                            });
+
+                        format.readProjection(source);
+                        tile.setFeatures(features);
+                    })
+                        .catch(error => {
+                            console.error(error);
+                        });
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+        });
+    });
+
+    return source;
 }
 
 /**
@@ -143,13 +173,35 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
         console.error(`Cancelled creation of layer "${rawLayer.id}"(${rawLayer.name}) because of missing required parameters`);
         return undefined;
     }
-    const source = createLayerSource(rawLayer.url, rawLayer),
-        layer = new VectorTileLayer(Object.assign({
-            id: rawLayer.id, name: rawLayer.name, attribution: rawLayer.olAttribution, extent: source.getTileGrid().getExtent(),
-            minZoom: rawLayer.minZoom, maxZoom: rawLayer.maxZoom, source: source,
-            declutter: true}, layerParams));
+    let layer, source;
 
-    if (options.style) {
+    // use WebGL render pipeline, if specified
+    if (layerParams.renderer === "webgl") {
+        source = createLayerSource(rawLayer.url, {
+            ...rawLayer,
+            renderer: layerParams.renderer,
+            styleId: layerParams.styleId,
+            excludeTypesFromParsing: layerParams.excludeTypesFromParsing
+        });
+
+        layer = webgl.createLayer({
+            extent: source.getTileGrid().getExtent(),
+            ...rawLayer,
+            ...layerParams,
+            source
+        });
+
+        return layer;
+    }
+
+    // use default canvas renderer
+    source = createLayerSource(rawLayer.url, rawLayer);
+    layer = new VectorTileLayer(Object.assign({
+        id: rawLayer.id, name: rawLayer.name, attribution: rawLayer.olAttribution, extent: source.getTileGrid().getExtent(),
+        minZoom: rawLayer.minZoom, maxZoom: rawLayer.maxZoom, source: source,
+        declutter: true}, layerParams));
+
+    if (options.style && rawLayer.renderer !== "webgl") {
         layer.setStyle(options.style);
     }
 
