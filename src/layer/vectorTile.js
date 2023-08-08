@@ -132,31 +132,6 @@ export function createLayerSource (url, options = {}) {
         sourceParams.tileGrid = createTileGrid(options);
     }
     source = new VectorTileSource(sourceParams);
-
-    source.setTileLoadFunction(function (tile, tileUrl) {
-        tile.setLoader(function (extent, resolution, projection) {
-            fetch(tileUrl).then(function (response) {
-                if (response.ok) {
-                    response.arrayBuffer().then(function (data) {
-                        const format = tile.getFormat(), // ol/format/MVT configured as source format
-                            features = format.readFeatures(data, {
-                                extent: extent,
-                                featureProjection: projection
-                            });
-
-                        format.readProjection(source);
-                        tile.setFeatures(features);
-                    })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            }).catch(function (error) {
-                console.error(error);
-            });
-        });
-    });
-
     return source;
 }
 
