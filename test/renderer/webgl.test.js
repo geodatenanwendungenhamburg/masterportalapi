@@ -8,7 +8,6 @@ import * as webgl from "../../src/renderer/webgl";
 import WebGLPointsLayer from "ol/layer/WebGLPoints";
 import Layer from "ol/layer/Layer";
 import {returnColor} from "../../src/vectorStyle/lib/colorConvertions";
-import styleList from "../../src/vectorStyle/styleList";
 
 jest.mock("../../src/vectorStyle/styleList.js", () => {
     const
