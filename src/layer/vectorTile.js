@@ -116,7 +116,6 @@ function mustCreateTileGrid (options = {}) {
  */
 export function createLayerSource (url, options = {}) {
     options.epsg = options.epsg ? options.epsg : defaults.epsg;
-
     const sourceParams = {
         projection: options.epsg,
         format: new MVT(),
@@ -126,13 +125,11 @@ export function createLayerSource (url, options = {}) {
         minZoom: options.minZoom,
         maxZoom: options.maxZoom
     };
-    let source = null;
 
     if (mustCreateTileGrid(options)) {
         sourceParams.tileGrid = createTileGrid(options);
     }
-    source = new VectorTileSource(sourceParams);
-    return source;
+    return new VectorTileSource(sourceParams);
 }
 
 /**

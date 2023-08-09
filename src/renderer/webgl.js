@@ -36,12 +36,11 @@ const defaultStyle = {
     };
 
 /**
- * Creates a layer object to extend from.
+ *  Creates a vector layer with custom renderer.
  * @augments VectorLayer
  * @private
  * @implements {WebGLVectorLayerRenderer}
- * @param {Object} attrs attributes of the layer
- * @returns {module:ol/layer/Layer} the LocalWebGLLayer with a custom renderer for WebGL styling
+ * @returns {module:ol/layer/VectorLayer} the LocalWebGLLayer with a custom renderer for WebGL styling
  */
 export function createVectorLayerRenderer () {
     /**
@@ -66,12 +65,11 @@ export function createVectorLayerRenderer () {
 }
 
 /**
- * Creates a layer object to extend from.
- * @augments VectorLayer
+ * Creates a vector tile layer with custom renderer.
+ * @augments VectorTile
  * @private
- * @implements {WebGLVectorLayerRenderer}
- * @param {Object} attrs attributes of the layer
- * @returns {module:ol/layer/Layer} the LocalWebGLLayer with a custom renderer for WebGL styling
+ * @implements {WebGLVectorTileLayerRenderer}
+ * @returns {module:ol/layer/VectorTile} the LocalWebGLLayer with a custom renderer for WebGL styling of vectorTile layers.
  */
 export function createVectorTileLayerRenderer () {
     /**
