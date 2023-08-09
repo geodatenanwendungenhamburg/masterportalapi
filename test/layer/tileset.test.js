@@ -6,7 +6,8 @@ describe("tileset.js", function () {
 
     beforeEach(() => {
         global.Cesium = {};
-        global.Cesium.Cesium3DTileset = jest.fn();
+        global.Cesium.Cesium3DTileset = {};
+        global.Cesium.Cesium3DTileset.fromUrl = jest.fn();
         global.Cesium.Cesium3DTileStyle = jest.fn(color => color);
         attr = {
             id: "4002",
@@ -28,7 +29,9 @@ describe("tileset.js", function () {
                 };
             }
         };
-        cesium3DTilesetSpy = jest.spyOn(global.Cesium, "Cesium3DTileset");
+        cesium3DTilesetSpy = jest.spyOn(global.Cesium.Cesium3DTileset, "fromUrl").mockImplementation(() => {
+            return Promise.resolve({});
+        });
         console.warn = jest.fn();
     });
 
@@ -38,21 +41,23 @@ describe("tileset.js", function () {
         console.warn = consoleWarn;
     });
 
-    function checkAttributes (layer, attrs) {
+    async function checkAttributes (layer, attrs) {
+        const tileset = await layer.tileset;
+
         expect(layer.get("name")).toEqual(attrs.name);
         expect(layer.get("typ")).toEqual(attrs.typ);
         expect(layer.get("id")).toEqual(attrs.id);
-        expect(layer.tileset.layerReferenceId).toEqual(attrs.id);
+        expect(tileset.layerReferenceId).toEqual(attrs.id);
     }
 
     describe("createLayer", function () {
         it("creates tileset layer without map", function () {
             const layer = new Tileset(attr);
 
-            checkAttributes(layer, attr);
             expect(layer.tileSet).toEqual(undefined);
             expect(layer.tileset.show).toEqual(undefined);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+            checkAttributes(layer, attr);
         });
         it("creates 2 tileset layers  with map and checks attributes", function () {
             const attr2 = {

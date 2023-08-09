@@ -5,14 +5,15 @@
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
  * @returns {void}
  */
-function createTerrainProvider (rawLayer) {
-    const options = {};
+async function createTerrainProvider (rawLayer) {
+    const options = {},
+        terrainProvider = await Cesium.CesiumTerrainProvider.fromUrl(rawLayer.url, options);
 
     if (rawLayer.cesiumTerrainProviderOptions) {
         Object.assign(options, rawLayer.cesiumTerrainProviderOptions);
     }
-    options.url = rawLayer.url;
-    return new Cesium.CesiumTerrainProvider(options);
+
+    return terrainProvider;
 }
 
 /**
@@ -24,10 +25,10 @@ function createTerrainProvider (rawLayer) {
  * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-export function setVisible (value, rawLayer, map) {
+async function setVisible (value, rawLayer, map) {
     if (map && typeof map.getCesiumScene === "function") {
         if (value) {
-            map.getCesiumScene().terrainProvider = createTerrainProvider(rawLayer);
+            map.getCesiumScene().terrainProvider = await createTerrainProvider(rawLayer);
         }
         else {
             map.getCesiumScene().terrainProvider = new Cesium.EllipsoidTerrainProvider({});
@@ -63,3 +64,4 @@ export function get (key) {
     return this.values[key];
 }
 
+module.exports.setVisible = setVisible;

@@ -5,8 +5,10 @@ describe("terrain.js", function () {
 
     beforeEach(() => {
         global.Cesium = {};
-        global.Cesium.CesiumTerrainProvider = jest.fn();
+        global.Cesium.CesiumTerrainProvider = {};
+        global.Cesium.CesiumTerrainProvider.fromUrl = jest.fn();
         global.Cesium.EllipsoidTerrainProvider = jest.fn();
+
         attr = {
             id: "12883",
             name: "Gelaende",
@@ -21,7 +23,7 @@ describe("terrain.js", function () {
                 return {};
             }
         };
-        cesiumTerrainProviderSpy = jest.spyOn(global.Cesium, "CesiumTerrainProvider");
+        cesiumTerrainProviderSpy = jest.spyOn(global.Cesium.CesiumTerrainProvider, "fromUrl");
     });
 
     afterEach(() => {

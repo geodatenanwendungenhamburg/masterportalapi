@@ -3,33 +3,77 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### Added
+### Unreleased - in development
+## Added
 
 ### Changed
 - WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
 
-### Deprecated
+## Deprecated
 
-### Removed
+## Removed
 
-### Fixed
-
+## Fixed
 
 ---
-## 2.22.0 - 2023-07-25
+
+## 2.24.0 - 2023-08-03
 ### Added
-- VectorStyle: Add Styling rules for Geoemtries of type `Circle`.
+- The following packages have been installed:
+    - @swc/jest: 0.2.27
+- Add a function to convertUnits in drawInteractions.
+- Remove VectorBase layer and add it to masterportal
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.30.2 to 3.32.0
+        - dayjs: 1.11.7 to 1.11.9
+        - olcs: 2.14.0 to 2.15.0
+        - xml2js: 0.5.0 to 0.6.2
+    - devDependencies:
+        - @babel/core: 7.21.8 to 7.22.9
+        - @babel/plugin-transform-modules-commonjs: 7.21.5 to 7.21.5
+        - @parcel/transformer-sass: 2.8.3 to 2.9.3
+        - buffer: 5.7.1 to 6.0.3
+        - eslint: 8.40.0 to 8.46.0
+        - jest: 29.5.0 to 29.6.2
+        - jest-canvas-mock: 2.5.0 to 2.5.2
+        - jest-environment-jsdom: 29.5.0 to 29.6.2
+        - parcel: 2.8.3 to 2.9.3
+        - sass: 1.62.1 to 1.64.2
+
+### Fixed
+- Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
+
+---
+
+## 2.23.0 - 2023-08-02
+### Added
+- Add select and modify interactions for editing ol features.
+
+### Fixed
+- The legend for wfs is now created again via the Describefeaturetype.
+
+---
+
+## 2.22.0 - 2023-07-25
+### Changed
+- Replace derprecated cesium tileset and terrain loading functions.
+- WFST Refactoring
+
+---
+
+## 2.21.0 - 2023-07-21
+### Added
+- VectorStyle: Add Styling rules for Geometries of type `Circle`.
 - Add Styling and zIndex to draw interactions and improve the draw behavior.
 
 ### Changed
 - Changed peerDependency from cesium 1.106.0 to @cesium/engine 2.4.1.
-- WFS: 
+- WFS:
     - Migrated writeTransaction and sendTransaction from masterportal the masterportalAPI.
     - Exports in src/layer/wfs.js changed to export default {} to provide  ES-Syntax.
-### Deprecated
-
-### Removed
 
 ### Fixed
 - WFS: fixed a bug that prevented parsing GeoServer responses.

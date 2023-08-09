@@ -7,15 +7,15 @@ import {createLegendInfo} from "./createLegendInfo";
  * @returns {object[]} subElements of the xml element
  */
 function getSubelementsFromXMLOtherStructure (xml, featureType) {
-    const elements = xml ? Array.from(xml.getElementsByTagName("element")) : [];
+    const elements = xml ? Array.from(xml.getElementsByTagNameNS("*", "element")) : [];
     let subElements = [];
 
     elements.forEach(element => {
         if (element.getAttribute("name") === featureType) {
             const sibling = element.nextElementSibling;
 
-            if (sibling && sibling.tagName === "complexType" && sibling.hasAttribute("name")) {
-                subElements = Array.from(sibling.getElementsByTagName("element"));
+            if (sibling && sibling.tagName.endsWith("complexType") && sibling.hasAttribute("name")) {
+                subElements = Array.from(sibling.getElementsByTagNameNS("*", "element"));
             }
         }
     });
@@ -29,7 +29,8 @@ function getSubelementsFromXMLOtherStructure (xml, featureType) {
  * @returns {object[]} subElements of the xml element
  */
 function getSubelementsFromXML (xml, featureType) {
-    const elements = xml ? Array.from(xml.getElementsByTagName("element")) : [];
+    const elements = xml ? Array.from(xml.getElementsByTagNameNS("*", "element")) : [];
+
     let subElements = [],
         featureTypeWithoutNamespace = featureType;
 
@@ -39,9 +40,10 @@ function getSubelementsFromXML (xml, featureType) {
 
     elements.forEach(element => {
         if (element.getAttribute("name") === featureTypeWithoutNamespace) {
-            subElements = Array.from(element.getElementsByTagName("element"));
+            subElements = Array.from(element.getElementsByTagNameNS("*", "element"));
         }
     });
+
     if (subElements.length === 0) {
         subElements = getSubelementsFromXMLOtherStructure(xml, featureTypeWithoutNamespace);
     }
@@ -105,7 +107,7 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
     url = url.slice(0, -1);
 
 
-    fetch(url, {
+    return fetch(url, {
         method: "get",
         withCredentials: isSecured,
         responseType: "text"
@@ -115,7 +117,7 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
             const subElements = getSubelementsFromXML(responseXML, featureType),
                 geometryTypes = getTypeAttributesFromSubelements(subElements, styleGeometryType);
 
-            createLegendInfo(rules, geometryTypes, wfsImgPath);
+            return createLegendInfo(rules, geometryTypes, wfsImgPath);
         }).catch(error => {
             return callback(error);
         });

@@ -1,12 +1,10 @@
 import {createMapView} from "./maps/mapView";
 import crs from "./crs";
-import drawInteractions from "./maps/interactions/drawInteractions";
 import rawLayerList from "./rawLayerList";
 import * as wms from "./layer/wms";
 import wmts from "./layer/wmts";
 import wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
-import * as vectorBase from "./layer/vectorBase";
 import * as vectorTile from "./layer/vectorTile";
 import * as oaf from "./layer/oaf";
 import * as terrain from "./layer/terrain";
@@ -25,7 +23,6 @@ export {
     wfs,
     geojson,
     layerLib,
-    vectorBase,
     vectorTile,
     oaf,
     terrain,
@@ -37,6 +34,5 @@ export {
     ping,
     search,
     crs,
-    drawInteractions,
     webgl
 };

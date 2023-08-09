@@ -39,6 +39,26 @@ let styleObject = null,
     zIndex = 0;
 
 /**
+ * Converts a value from one unit to another.
+ * @param {Number} value The value to convert.
+ * @param {String} sourceUnit The source unit.
+ * @param {String} targetUnit The target unit.
+ * @returns {Number} The converted value.
+ */
+function convertUnits (value, sourceUnit, targetUnit) {
+    if (sourceUnit === targetUnit) {
+        return value;
+    }
+    else if (sourceUnit === "m" && targetUnit === "km") {
+        return value / 1000;
+    }
+    else if (sourceUnit === "km" && targetUnit === "m") {
+        return value * 1000;
+    }
+    return value;
+}
+
+/**
  * Transform the radius to map projection unit.
  * @param {Number} radius The radius.
  * @param {Object} mapProjection The map projection.
@@ -70,8 +90,10 @@ function transformMapUnitRadius (radius, mapProjection) {
  */
 function drawOuterCircle (feature, mapProjection, source, options = {}) {
     const innerCircleFeature = feature.clone(),
-        mapUnitInnerRadius = transformMapUnitRadius(options.innerRadius, mapProjection),
-        mapUnitOuterRadius = transformMapUnitRadius(options.outerRadius, mapProjection),
+        innerRadius = convertUnits(options.innerRadius, options.unit, "m"),
+        outerRadius = convertUnits(options.outerRadius, options.unit, "m"),
+        mapUnitInnerRadius = transformMapUnitRadius(innerRadius, mapProjection),
+        mapUnitOuterRadius = transformMapUnitRadius(outerRadius, mapProjection),
         innerStyle = createStyle.createStyle(styleObject, innerCircleFeature, false),
         outerStyle = createStyle.createStyle(styleObjectOuterCircle, feature, false);
 
@@ -95,7 +117,8 @@ function drawOuterCircle (feature, mapProjection, source, options = {}) {
  * @returns {void}
  */
 function drawInnerCircle (feature, mapProjection, options = {}) {
-    const mapUnitInnerRadius = transformMapUnitRadius(options.innerRadius, mapProjection);
+    const innerRadius = convertUnits(options.innerRadius, options.unit, "m"),
+        mapUnitInnerRadius = transformMapUnitRadius(innerRadius, mapProjection);
 
     feature.getGeometry().setRadius(mapUnitInnerRadius);
 }
@@ -205,6 +228,7 @@ function createDrawInteraction (drawType, source) {
 export {styleObject};
 
 export default {
+    convertUnits,
     createDrawInteraction,
     drawCircle,
     drawInnerCircle,
