@@ -112,8 +112,10 @@ function createLayerSourceByCapabilities (attrs, tileLayer) {
     const layerIdentifier = attrs.layers,
         url = attrs.capabilitiesUrl,
         matrixSet = attrs.tileMatrixSet,
+        format = attrs.format,
         capabilitiesOptions = {
-            layer: layerIdentifier
+            layer: layerIdentifier,
+            format
         };
 
     // use the matrixSet (if defined) for optionsFromCapabilities
