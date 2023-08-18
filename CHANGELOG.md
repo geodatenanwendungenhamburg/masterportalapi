@@ -9,7 +9,9 @@
 ### Changed
 - WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
 - WebGL Render-Pipeline for VectorLayer of type VectorTile can be called using {"renderer": "webgl"} in config.json.
+
 ## Changed
+- The styleList is now loading asynchronus
 
 ## Deprecated
 

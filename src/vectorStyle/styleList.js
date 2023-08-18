@@ -230,31 +230,15 @@ function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     styleConf = Config.styleConf;
     featureViaUrlLayers = Config.featureViaURL?.layers;
 
-    const xhr = new XMLHttpRequest();
-
-    xhr.open("GET", styleConf, false);
-    xhr.onreadystatechange = function (event) {
-        const target = event.target,
-            status = target.status;
-        let data;
-
-        if (status === 200) {
-            try {
-                data = JSON.parse(target.response);
-            }
-            catch (error) {
-                console.error("An error occured when parsing the response after loading '" + styleConf + "':", error);
-                return callback(false, error);
-            }
+    fetch(styleConf)
+        .then(response => response.json())
+        .then(data => {
             styleList = parseStyles(data);
-        }
-        else if (status === 404) {
-            console.error("An error occured when trying to fetch services from '" + styleConf + "':", 404);
-            return callback(false, true);
-        }
-        return callback(styleList);
-    };
-    xhr.send();
+        })
+        .catch(error => {
+            console.error(error);
+            callback(false, true);
+        });
 }
 
 /**
