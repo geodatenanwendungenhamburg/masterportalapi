@@ -27,6 +27,9 @@
 
 ## Changed
 - The styleList is now loading asynchronus
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.4.0 to 7.5.1
 
 ## Deprecated
 
