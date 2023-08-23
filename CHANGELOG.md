@@ -3,39 +3,20 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-### Unreleased - in development
-## Added
-
-### Changed
-
+### 2.26.0 - 2023-08-23
 ## Changed
-
-## Deprecated
-
-## Removed
-
-## Fixed
-
----
-
-## 2.25.0 - 2023-08-21
-## Added
-
-### Changed
-- WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
-- WebGL Render-Pipeline for VectorLayer of type VectorTile can be called using {"renderer": "webgl"} in config.json.
-
-## Changed
-- The styleList is now loading asynchronus
 - The following packages have been updated:
     - dependencies:
         - ol: 7.4.0 to 7.5.1
 
-## Deprecated
+---
 
-## Removed
+## 2.25.0 - 2023-08-21
 
-## Fixed
+### Changed
+- WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
+- WebGL Render-Pipeline for VectorLayer of type VectorTile can be called using {"renderer": "webgl"} in config.json.
+- The styleList is now loading asynchronus
 
 ---
 
