@@ -7,6 +7,7 @@
 ### Unreleased - in development
 ## Added
 ## Changed
+- VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
 ## Deprecated
 ## Removed
 ## Fixed

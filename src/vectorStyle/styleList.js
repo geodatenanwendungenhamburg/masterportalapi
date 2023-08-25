@@ -214,9 +214,9 @@ function parseStyles (data) {
  * @param {array} [layers] - an array with the configured layers
  * @param {array} [tools] - an array with the configured tools
  * @param {function} [callback] - called with services after loaded; called with false and error on error
- * @returns {undefined} nothing, add callback to receive styleList
+ * @returns {array} the list of styles
  */
-function initializeStyleList (styleGetters, Config, layers, tools, callback) {
+async function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     configuredLayers = layers;
     configuredTools = tools;
 
@@ -230,7 +230,7 @@ function initializeStyleList (styleGetters, Config, layers, tools, callback) {
     styleConf = Config.styleConf;
     featureViaUrlLayers = Config.featureViaURL?.layers;
 
-    fetch(styleConf)
+    await fetch(styleConf)
         .then(response => response.json())
         .then(data => {
             styleList = parseStyles(data);
@@ -239,6 +239,7 @@ function initializeStyleList (styleGetters, Config, layers, tools, callback) {
             console.error(error);
             callback(false, true);
         });
+    return styleList;
 }
 
 /**
