@@ -21,7 +21,8 @@ const props = {
                 }
             ]
         }
-    ]
+    ],
+    random_url: "http://random.url.de"
 };
 
 describe("src/utils/attributeMapper.js", () => {
@@ -270,6 +271,105 @@ describe("src/utils/attributeMapper.js", () => {
             expect(mapAttributes(props, mappingObj)).toEqual({
                 boolean: "true",
                 int: "12345"
+            });
+        });
+        it("should map object with mapping object and type:html", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html"
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "http://random.url.de"
+            });
+        });
+        it("should map object with mapping object and type:html and tag a", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a"
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a href=\"http://random.url.de\">Link</a>"
+            });
+        });
+        it("should map object with mapping object and type:html and tag a and innerHTML", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a",
+                        innerHTML: "myURL"
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a href=\"http://random.url.de\">myURL</a>"
+            });
+        });
+        it("should map object with mapping object and type:html and tag a and properties", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a",
+                        innerHTML: "myURL",
+                        properties: {
+                            target: "_blank"
+                        }
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a href=\"http://random.url.de\" target=\"_blank\">myURL</a>"
+            });
+        });
+        it("should map object with mapping object and type:html and tag img and properties", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "img",
+                        properties: {
+                            style: "width:150px"
+                        }
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<img src=\"http://random.url.de\" style=\"width:150px\" />"
+            });
+        });
+        it("should map object with mapping object and type:html and tag iframe and properties", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "iframe",
+                        properties: {
+                            foo: "bar",
+                            bar: "foo"
+                        }
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<iframe src=\"http://random.url.de\" foo=\"bar\" bar=\"foo\"></iframe>"
             });
         });
     });

@@ -119,6 +119,21 @@ function getValueFromCondition (key, condition, properties) {
 }
 
 /**
+ * Maps the feature properties by the given object.
+ * @param {HTML} htmltag The html tag.
+ * @param {Object} properties The properties for the htmltag.
+ * @returns {HTML} The html tag with mapped properties.
+ */
+function addPropertiesToHtmlTag (htmltag, properties) {
+    const htmltagWithproperties = htmltag;
+
+    Object.keys(properties).forEach(prop => {
+        htmltagWithproperties.setAttribute(prop, properties[prop]);
+    });
+    return htmltagWithproperties;
+}
+
+/**
  * Derives the gfi value if the value is an object.
  * @param {*} key Key of Attribute.
  * @param {Object} mappingObj Value of attribute.
@@ -127,10 +142,12 @@ function getValueFromCondition (key, condition, properties) {
  */
 function prepareValueFromObject (key, mappingObj, properties) {
     const type = mappingObj?.type ? mappingObj.type : "string",
-        condition = mappingObj?.condition ? mappingObj.condition : null;
+        condition = mappingObj?.condition ? mappingObj.condition : null,
+        serializer = new XMLSerializer();
     let preparedValue = prepareValue(properties, key),
         format = mappingObj?.format ? mappingObj.format : "YYYY-MM-DDTHH:mm:ss.SSSZ",
-        date;
+        date,
+        htmltag;
 
     if (condition) {
         preparedValue = getValueFromCondition(key, condition, properties);
@@ -170,6 +187,32 @@ function prepareValueFromObject (key, mappingObj, properties) {
         case "boolean": {
             format = format === "DD.MM.YYYY HH:mm:ss" ? {true: "true", false: "false"} : format;
             preparedValue = getBooleanValue(preparedValue, format);
+            break;
+        }
+        case "html": {
+            if (mappingObj?.html?.tag === "img") {
+                htmltag = document.createElement("img");
+                htmltag.setAttribute("src", preparedValue);
+            }
+            else if (mappingObj?.html?.tag === "iframe") {
+                htmltag = document.createElement("iframe");
+                htmltag.setAttribute("src", preparedValue);
+            }
+            else if (mappingObj?.html?.tag === "a") {
+                htmltag = document.createElement("a");
+                htmltag.innerHTML = mappingObj?.html?.innerHTML || "Link";
+                htmltag.setAttribute("href", preparedValue);
+            }
+
+            if (htmltag) {
+                if (mappingObj?.html?.properties) {
+                    htmltag = addPropertiesToHtmlTag(htmltag, mappingObj?.html?.properties);
+                }
+                preparedValue = serializer.serializeToString(htmltag);
+                preparedValue = preparedValue.replace(/ xmlns="(.*?)"/g, "");
+
+            }
+
             break;
         }
         // default equals to mappingObj.type === "string"
