@@ -4,7 +4,7 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 
-### Unreleased - in development
+### 2.27.0 - 2023-08-31
 ## Added
 ## Changed
 - VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
