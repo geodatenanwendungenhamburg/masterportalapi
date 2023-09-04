@@ -3,10 +3,18 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-
 ### Unreleased - in development
 ## Added
 -GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
+## Changed
+## Deprecated
+## Removed
+## Fixed
+
+---
+
+### 2.27.0 - 2023-08-31
+## Added
 ## Changed
 - VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
 ## Deprecated
