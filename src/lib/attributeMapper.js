@@ -119,16 +119,22 @@ function getValueFromCondition (key, condition, properties) {
 }
 
 /**
- * Maps the feature properties by the given object.
+ * Maps the feature properties by the given object. if the value is the wildcard '%value%' then the prepared value is taken.
  * @param {HTML} htmltag The html tag.
  * @param {Object} properties The properties for the htmltag.
+ * @param {String} preparedValue The prepared value.
  * @returns {HTML} The html tag with mapped properties.
  */
-function addPropertiesToHtmlTag (htmltag, properties) {
+function addPropertiesToHtmlTag (htmltag, properties, preparedValue) {
     const htmltagWithproperties = htmltag;
 
     Object.keys(properties).forEach(prop => {
-        htmltagWithproperties.setAttribute(prop, properties[prop]);
+        if (properties[prop] === "%value%") {
+            htmltagWithproperties.setAttribute(prop, preparedValue);
+        }
+        else {
+            htmltagWithproperties.setAttribute(prop, properties[prop]);
+        }
     });
     return htmltagWithproperties;
 }
@@ -190,25 +196,25 @@ function prepareValueFromObject (key, mappingObj, properties) {
             break;
         }
         case "html": {
-            if (mappingObj?.html?.tag === "img") {
-                htmltag = document.createElement("img");
-                htmltag.setAttribute("src", preparedValue);
+            // create tag
+            if (mappingObj?.html?.tag) {
+                htmltag = document.createElement(mappingObj?.html?.tag);
             }
-            else if (mappingObj?.html?.tag === "iframe") {
-                htmltag = document.createElement("iframe");
-                htmltag.setAttribute("src", preparedValue);
+            // create innerHTML
+            if (mappingObj?.html?.innerHTML === "%value%") {
+                htmltag.innerHTML = preparedValue;
             }
-            else if (mappingObj?.html?.tag === "a") {
-                htmltag = document.createElement("a");
-                htmltag.innerHTML = mappingObj?.html?.innerHTML || "Link";
-                htmltag.setAttribute("href", preparedValue);
+            else if (mappingObj?.html?.innerHTML) {
+                htmltag.innerHTML = mappingObj?.html?.innerHTML;
             }
+
 
             if (htmltag) {
                 if (mappingObj?.html?.properties) {
-                    htmltag = addPropertiesToHtmlTag(htmltag, mappingObj?.html?.properties);
+                    htmltag = addPropertiesToHtmlTag(htmltag, mappingObj?.html?.properties, preparedValue);
                 }
                 preparedValue = serializer.serializeToString(htmltag);
+                // remove xmlns
                 preparedValue = preparedValue.replace(/ xmlns="(.*?)"/g, "");
 
             }

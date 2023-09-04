@@ -291,13 +291,35 @@ describe("src/utils/attributeMapper.js", () => {
                     name: "url",
                     type: "html",
                     html: {
-                        tag: "a"
+                        tag: "a",
+                        properties: {
+                            href: "%value%"
+                        }
                     }
                 }
             };
 
             expect(mapAttributes(props, mappingObj)).toEqual({
-                url: "<a href=\"http://random.url.de\">Link</a>"
+                url: "<a href=\"http://random.url.de\"></a>"
+            });
+        });
+        it("should map object with mapping object and type:html and tag a", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a",
+                        innerHTML: "%value%",
+                        properties: {
+                            href: "%value%"
+                        }
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a href=\"http://random.url.de\">http://random.url.de</a>"
             });
         });
         it("should map object with mapping object and type:html and tag a and innerHTML", () => {
@@ -307,7 +329,10 @@ describe("src/utils/attributeMapper.js", () => {
                     type: "html",
                     html: {
                         tag: "a",
-                        innerHTML: "myURL"
+                        innerHTML: "myURL",
+                        properties: {
+                            href: "%value%"
+                        }
                     }
                 }
             };
@@ -325,6 +350,7 @@ describe("src/utils/attributeMapper.js", () => {
                         tag: "a",
                         innerHTML: "myURL",
                         properties: {
+                            href: "%value%",
                             target: "_blank"
                         }
                     }
@@ -335,6 +361,26 @@ describe("src/utils/attributeMapper.js", () => {
                 url: "<a href=\"http://random.url.de\" target=\"_blank\">myURL</a>"
             });
         });
+        it("should map object with mapping object and type:html and tag a and properties", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a",
+                        innerHTML: "%value%",
+                        properties: {
+                            href: "%value%",
+                            target: "_blank"
+                        }
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a href=\"http://random.url.de\" target=\"_blank\">http://random.url.de</a>"
+            });
+        });
         it("should map object with mapping object and type:html and tag img and properties", () => {
             const mappingObj = {
                 random_url: {
@@ -343,6 +389,7 @@ describe("src/utils/attributeMapper.js", () => {
                     html: {
                         tag: "img",
                         properties: {
+                            src: "%value%",
                             style: "width:150px"
                         }
                     }
@@ -361,6 +408,7 @@ describe("src/utils/attributeMapper.js", () => {
                     html: {
                         tag: "iframe",
                         properties: {
+                            src: "%value%",
                             foo: "bar",
                             bar: "foo"
                         }
