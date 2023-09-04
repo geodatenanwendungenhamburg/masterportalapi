@@ -6,6 +6,7 @@
 
 ### Unreleased - in development
 ## Added
+-GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
 ## Changed
 - VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
 ## Deprecated
