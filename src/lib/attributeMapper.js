@@ -128,14 +128,16 @@ function getValueFromCondition (key, condition, properties) {
 function addPropertiesToHtmlTag (htmltag, properties, preparedValue) {
     const htmltagWithproperties = htmltag;
 
-    Object.keys(properties).forEach(prop => {
-        if (properties[prop] === "%value%") {
-            htmltagWithproperties.setAttribute(prop, preparedValue);
-        }
-        else {
-            htmltagWithproperties.setAttribute(prop, properties[prop]);
-        }
-    });
+    if (properties) {
+        Object.keys(properties).forEach(prop => {
+            if (properties[prop] === "%value%") {
+                htmltagWithproperties.setAttribute(prop, preparedValue);
+            }
+            else {
+                htmltagWithproperties.setAttribute(prop, properties[prop]);
+            }
+        });
+    }
     return htmltagWithproperties;
 }
 
