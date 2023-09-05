@@ -322,6 +322,21 @@ describe("src/utils/attributeMapper.js", () => {
                 url: "<a href=\"http://random.url.de\">http://random.url.de</a>"
             });
         });
+        it("should map object with mapping object and type:html and tag a without innerHTML and properties", () => {
+            const mappingObj = {
+                random_url: {
+                    name: "url",
+                    type: "html",
+                    html: {
+                        tag: "a"
+                    }
+                }
+            };
+
+            expect(mapAttributes(props, mappingObj)).toEqual({
+                url: "<a></a>"
+            });
+        });
         it("should map object with mapping object and type:html and tag a and innerHTML", () => {
             const mappingObj = {
                 random_url: {
