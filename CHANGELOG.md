@@ -5,11 +5,12 @@
 
 ### Unreleased - in development
 ## Added
--GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
+- GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
 ## Changed
 ## Deprecated
 ## Removed
 ## Fixed
+- Issue Masterportal #1067 VectorStyle: if there is a ? in the services URL, no further one is added
 
 ---
 

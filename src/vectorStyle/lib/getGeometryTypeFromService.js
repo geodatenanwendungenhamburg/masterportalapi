@@ -99,7 +99,14 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
         "VERSION": version,
         "REQUEST": "DescribeFeatureType"
     };
-    let url = wfsURL + "?";
+    let url = wfsURL;
+
+    if (url && url.includes("?")) {
+        url += "&";
+    }
+    else {
+        url += "?";
+    }
 
     Object.keys(params).forEach(key => {
         url += key + "=" + params[key] + "&";
