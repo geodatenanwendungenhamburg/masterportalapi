@@ -6,21 +6,24 @@
 ### Unreleased - in development
 ## Added
 - GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
+
 ## Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 7.5.1 to 7.5.2 (This version fix a bug for vectorTiles with declutter: true)
+
 ## Deprecated
+
 ## Removed
+
 ## Fixed
 - Issue Masterportal #1067 VectorStyle: if there is a ? in the services URL, no further one is added
 
 ---
 
 ### 2.27.0 - 2023-08-31
-## Added
 ## Changed
 - VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
-## Deprecated
-## Removed
-## Fixed
 
 ---
 
@@ -33,7 +36,6 @@
 ---
 
 ## 2.25.0 - 2023-08-21
-
 ### Changed
 - WebGL: method "afterLoading" catches MultiPoint geometries and parses them to a single point feature for proper rendering
 - WebGL Render-Pipeline for VectorLayer of type VectorTile can be called using {"renderer": "webgl"} in config.json.
