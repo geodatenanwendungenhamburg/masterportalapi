@@ -18,6 +18,7 @@
 
 ## Fixed
 - Issue Masterportal #1067 VectorStyle: if there is a ? in the services URL, no further one is added
+- Cesium tileset: set visibility and set opacity was fixed.
 
 ---
 

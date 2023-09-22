@@ -63,7 +63,11 @@ Tileset.prototype.setOpacity = function (opacity) {
         color = splitValues.toString();
     }
 
-    this.tileset.style = new Cesium.Cesium3DTileStyle({color});
+    this.tileset.then(function (tileset) {
+        if (tileset) {
+            tileset.style = new Cesium.Cesium3DTileStyle({color});
+        }
+    });
 };
 
 /**
@@ -80,11 +84,12 @@ Tileset.prototype.setVisible = function (value, map) {
                     map.getCesiumScene().primitives.add(tileset);
                 });
             }
-            this.tileset.show = true;
         }
-        else {
-            this.tileset.show = false;
-        }
+        this.tileset.then(function (tileset) {
+            if (tileset) {
+                tileset.show = value;
+            }
+        });
     }
 };
 

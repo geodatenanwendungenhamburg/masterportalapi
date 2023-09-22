@@ -75,40 +75,62 @@ describe("tileset.js", function () {
         });
     });
     describe("setOpacity", function () {
-        it("calls setOpacity sets opacity to terrain style", function () {
+        it("calls setOpacity sets opacity to terrain style", function (done) {
             const layer = new Tileset(attr, map);
 
             layer.setOpacity(0.5);
 
-            expect(layer.tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
+            layer.tileset.then(function (tileset) {
+                if (tileset) {
+                    expect(tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
+                    done();
+                }
+            });
         });
     });
     describe("setVisible", function () {
-        it("calls setVisible without map shall not fail", function () {
+        it("calls setVisible without map shall not fail", function (done) {
             const layer = new Tileset(attr, map);
 
             expect(layer.tileset.show).toEqual(undefined);
             layer.setVisible(true);
 
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(undefined);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+            layer.tileset.then(function (tileset) {
+                if (tileset) {
+                    checkAttributes(layer, attr);
+                    expect(layer.tileset.show).toEqual(undefined);
+                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+                    done();
+                }
+            });
         });
-        it("sets the tileset layer visible", function () {
+        it("sets the tileset layer visible", function (done) {
             const layer = new Tileset(attr, map);
 
             layer.setVisible(true, map);
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(true);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+
+            layer.tileset.then(function (tileset) {
+                if (tileset) {
+                    checkAttributes(layer, attr);
+                    expect(tileset.show).toEqual(true);
+                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+                    done();
+                }
+            });
         });
-        it("sets the tileset layer not visible", function () {
+        it("sets the tileset layer not visible", function (done) {
             const layer = new Tileset(attr, map);
 
             layer.setVisible(false, map);
-            checkAttributes(layer, attr);
-            expect(layer.tileset.show).toEqual(false);
-            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+
+            layer.tileset.then(function (tileset) {
+                if (tileset) {
+                    checkAttributes(layer, attr);
+                    expect(tileset.show).toEqual(false);
+                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
+                    done();
+                }
+            });
         });
     });
     describe("get", function () {
