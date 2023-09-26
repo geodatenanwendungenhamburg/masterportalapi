@@ -1,4 +1,10 @@
-import {normalizeRgbColor, componentToHex, rgbToHex, hexToRgb} from "../../../src/vectorStyle/lib/colorConvertions";
+import {
+    normalizeRgbColor,
+    componentToHex,
+    rgbToHex,
+    hexToRgb,
+    returnColor
+} from "../../../src/vectorStyle/lib/colorConvertions";
 
 describe("normalizeRgbColor", function () {
     it("should be extend the given array with length 3 by value 1", function () {
@@ -38,5 +44,27 @@ describe("hexToRgb", function () {
     });
     it("should return null", function () {
         expect(hexToRgb("")).toEqual(null);
+    });
+});
+
+describe("returnColor", function () {
+    it("should return the parsed rgb value", function () {
+        expect(returnColor([255, 0, 0])).toEqual([255, 0, 0]);
+    });
+    it("should return the parsed rgb value with hex format", function () {
+        expect(returnColor([255, 0, 0, 0.5], "hex")).toEqual("#ff0000");
+    });
+    it("should return the parsed rgb value with rgba format", function () {
+        expect(returnColor([255, 0, 0, 0.5], "rgba")).toEqual("rgba(255, 0, 0, 0.5)");
+    });
+
+    it("should return the parsed rgb value with hex format", function () {
+        expect(returnColor("#ff0000")).toEqual("#ff0000");
+    });
+    it("should return the parsed rgb value with array in string", function () {
+        expect(returnColor("[255, 0, 0, 0.5]")).toEqual(["255", "0", "0", "0.5"]);
+    });
+    it("should return the parsed rgb value with array in string and hex format as destination format", function () {
+        expect(returnColor("[255, 0, 0, 0.5]", "hex")).toEqual("#ff0000");
     });
 });

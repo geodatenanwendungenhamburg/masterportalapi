@@ -18,7 +18,7 @@ jest.mock("../../src/vectorStyle/styleList.js", () => {
 });
 
 describe("webgl.js", () => {
-    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject;
+    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject, defaultStyle;
 
     beforeEach(() => {
         layerParams = {
@@ -67,6 +67,13 @@ describe("webgl.js", () => {
         }};
         styleObject = {
             rules: [styleRule]
+        };
+        defaultStyle = {
+            fillColor: "#006688",
+            strokeColor: "#006688",
+            strokeWidth: 1,
+            opacity: 1,
+            size: 20
         };
     });
 
@@ -156,7 +163,7 @@ describe("webgl.js", () => {
             it("set the necessary style attributes on the feature for literal style syntax", () => {
                 $feature = feature.clone();
                 webgl.formatFeatureStyles($feature, styleObject);
-                expect($feature.get("fillColor")).toEqual(returnColor(styleRule.style.polygonFillColor, "hex"));
+                expect($feature.get("fillColor")).toEqual(returnColor(styleRule.style.polygonFillColor, "rgba"));
                 expect($feature.get("strokeColor")).toEqual(returnColor(styleRule.style.polygonStrokeColor, "hex"));
                 expect($feature.get("strokeWidth")).toEqual(styleRule.style.polygonStrokeWidth);
                 expect($feature.get("opacity")).toEqual(styleRule.style.polygonFillColor[3]);
@@ -172,6 +179,19 @@ describe("webgl.js", () => {
                 expect($feature.get("fillColor")).toEqual(returnColor(styleRule.style.circleFillColor, "hex"));
                 expect($feature.get("opacity")).toEqual(styleRule.style.circleFillColor[3]);
                 expect($feature.get("circleSize")).toEqual(styleRule.style.circleRadius);
+            });
+            it("set the necessary style attributes on the feature with default style", () => {
+                $feature = feature.clone();
+                styleRule = null;
+                styleObject = {
+                    rules: [styleRule]
+                };
+                webgl.formatFeatureStyles($feature, styleObject);
+                expect($feature.get("fillColor")).toEqual(defaultStyle.fillColor);
+                expect($feature.get("strokeColor")).toEqual(defaultStyle.strokeColor);
+                expect($feature.get("strokeWidth")).toEqual(defaultStyle.strokeWidth);
+                expect($feature.get("opacity")).toEqual(defaultStyle.opacity);
+                expect($feature.get("circleSize")).toEqual(defaultStyle.size);
             });
         });
     });

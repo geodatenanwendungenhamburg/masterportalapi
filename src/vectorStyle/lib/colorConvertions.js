@@ -90,6 +90,9 @@ export function returnColor (color, dest) {
     else if (src === "rgb" && dest === "hex") {
         newColor = rgbToHex(newColor[0], newColor[1], newColor[2]);
     }
+    else if (src === "rgb" && dest === "rgba") {
+        newColor = "rgba(" + newColor[0] + ", " + newColor[1] + ", " + newColor[2] + ", " + newColor[3] + ")";
+    }
 
     newColor = dest === "rgb" ? normalizeRgbColor(newColor) : newColor;
 

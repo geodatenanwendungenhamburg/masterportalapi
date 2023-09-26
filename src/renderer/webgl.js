@@ -14,7 +14,7 @@ import {packColor, parseLiteralStyle} from "ol/webgl/styleparser.js";
  * @see https://openlayers.org/en/latest/examples/webgl-points-layer.html
  * @private
  */
-const defaultStyle = {
+const defaultPointStyle = {
         symbol: {
             symbolType: "circle",
             size: 20,
@@ -25,6 +25,13 @@ const defaultStyle = {
         }
     },
 
+    defaultPolygonStyle = {
+        fillColor: "#006688",
+        strokeColor: "#006688",
+        strokeWidth: 1,
+        opacity: 1
+    },
+
     /** @type {import('ol/style/literal.js').LiteralStyle} */
     style = {
         "stroke-color": ["get", "strokeColor"],
@@ -32,7 +39,7 @@ const defaultStyle = {
         "fill-color": ["get", "fillColor"],
         "opacity": ["get", "opacity", "number"],
         "size": ["get", "circleSize", "number"],
-        symbol: defaultStyle.symbol
+        symbol: defaultPointStyle.symbol
     };
 
 /**
@@ -165,29 +172,36 @@ export function createVectorTileLayerRenderer () {
  * @returns {void}
  */
 export function formatFeatureStyles (feature, styleObject) {
-    if (!styleObject) {
-        return;
+    let rule;
+
+    if (styleObject) {
+        // extract first matching rule only
+        rule = getRulesForFeature(styleObject, feature)[0];
     }
 
-    // extract first matching rule only
-    const rule = getRulesForFeature(styleObject, feature)[0];
+    if (rule?.style) {
+        feature.styleRule = rule;
 
-    // undefined if no match
-    feature.styleRule = rule;
-
-    if (rule && rule.style) {
-        const polygonFillColor = returnColor(rule.style.polygonFillColor, "hex"),
+        const polygonFillColor = returnColor(rule.style.polygonFillColor, "rgba"),
             circleFillColor = returnColor(rule.style.circleFillColor, "hex"),
+
             fillColor = polygonFillColor ? polygonFillColor : circleFillColor,
             strokeColor = returnColor(rule.style.polygonStrokeColor || rule.style.lineStrokeColor, "hex"),
             strokeWidth = rule.style.polygonStrokeWidth || rule.style.lineStrokeWidth,
             size = rule.style.circleRadius;
 
-        feature.set("fillColor", fillColor ? fillColor : "#006688");
-        feature.set("strokeColor", strokeColor ? strokeColor : "#006688");
-        feature.set("strokeWidth", strokeWidth ? strokeWidth : 1);
-        feature.set("opacity", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : 1);
-        feature.set("circleSize", size ? size : 20);
+        feature.set("fillColor", fillColor || defaultPolygonStyle.fillColor);
+        feature.set("strokeColor", strokeColor || defaultPolygonStyle.strokeColor);
+        feature.set("strokeWidth", strokeWidth || defaultPolygonStyle.strokeWidth);
+        feature.set("opacity", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : defaultPolygonStyle.opacity);
+        feature.set("circleSize", size || defaultPointStyle.symbol.size);
+    }
+    else {
+        feature.set("fillColor", defaultPolygonStyle.fillColor);
+        feature.set("strokeColor", defaultPolygonStyle.strokeColor);
+        feature.set("strokeWidth", defaultPolygonStyle.strokeWidth);
+        feature.set("opacity", defaultPolygonStyle.opacity);
+        feature.set("circleSize", defaultPointStyle.symbol.size);
     }
 }
 
@@ -217,7 +231,7 @@ export function formatFeatureData (feature, excludeTypes = ["boolean"]) {
             valueIsTrue = typeof feature.get(key) === "string" && feature.get(key).toLowerCase() === "true" ? true : undefined,
             valueIsFalse = typeof feature.get(key) === "string" && feature.get(key).toLowerCase() === "false" ? false : undefined;
 
-        if (!isNaN(parseFloat(feature.get(key))) && !excludeTypes.includes("number")) {
+        if (!isNaN(parseFloat(feature.get(key))) && !excludeTypes?.includes("number")) {
             feature.set(key, valueAsNumber);
         }
         if (valueIsTrue === true && !excludeTypes.includes("boolean")) {
@@ -288,14 +302,14 @@ export function createLayer (attrs) {
      * If the layer consists only of points, use WebGLPointsLayer
      * For advanced styling options
      * @see https://openlayers.org/en/latest/examples/webgl-points-layer.html
-    */
+     */
     if (attrs.isPointLayer) {
         /**
          * @deprecated
          * @todo will be replaced in the next OL release and incorporated in the WebGLVectorLayerRenderer
          */
         return new LayerConstructor({
-            style: attrs.style || defaultStyle,
+            style: attrs.style || defaultPointStyle,
             disableHitDetection: false,
             ...options,
             isPointLayer: true
@@ -323,3 +337,12 @@ export function createLayer (attrs) {
         isPointLayer: false
     });
 }
+
+export default {
+    afterLoading,
+    createLayer,
+    createVectorLayerRenderer,
+    formatFeatureData,
+    formatFeatureGeometry,
+    formatFeatureStyles
+};
