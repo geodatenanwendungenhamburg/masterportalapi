@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+### Unreleased - in development
+## Added
+
+## Changed
+
+## Deprecated
+
+## Removed
+
+## Fixed
+
+---
+
 ### 2.28.0 - 2023-09-27
 ## Added
 - GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
