@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-### Unreleased - in development
+### 2.28.0 - 2023-09-27
 ## Added
 - GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
 
@@ -11,11 +11,6 @@
 - The following packages have been updated:
     - dependencies:
         - ol: 7.5.1 to 7.5.2 (This version fix a bug for vectorTiles with declutter: true)
-
-## Deprecated
-
-## Removed
-
 ## Fixed
 - Issue Masterportal #1067 VectorStyle: if there is a ? in the services URL, no further one is added
 - Cesium tileset: set visibility and set opacity was fixed.
