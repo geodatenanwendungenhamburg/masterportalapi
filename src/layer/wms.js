@@ -74,6 +74,13 @@ export function makeParams (rawLayer) {
     return params;
 }
 
+async function defaultTileLoadFunction (imageTile, src) {
+    const response = await fetch(src),
+        data = await response.blob();
+
+    imageTile.getImage().src = URL.createObjectURL(data);
+}
+
 /**
  * Creates an ol/source element for the rawLayer.
  * @param {object} rawLayer - layer specification as in services.json
@@ -118,7 +125,8 @@ export function createLayerSource (rawLayer, options) {
         tileGrid: tileGrid,
         projection: projection,
         attributions: rawLayer.olAttribution,
-        crossOrigin: rawLayer.crossOrigin
+        crossOrigin: rawLayer.crossOrigin,
+        tileLoadFunction: defaultTileLoadFunction
     });
 }
 
