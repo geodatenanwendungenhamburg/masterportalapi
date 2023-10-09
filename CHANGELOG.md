@@ -5,8 +5,20 @@
 
 ### Unreleased - in development
 ## Added
+- The following packages from parcel automatic were installed for node builtin:
+    - dependencies:
+        - assert": 2.1.0,
+        - browserify-zlib: 0.2.0,
+        - https-browserify: 1.0.0
+        - punycode: 1.4.1
+        - stream-http: 3.2.0
+        - url: 0.11.3
+        - util: 0.12.5
 
 ## Changed
+- The following packages have been updated:
+    - dependencies:
+        - olcs: 2.15.0 to 2.16.0
 
 ## Deprecated
 
