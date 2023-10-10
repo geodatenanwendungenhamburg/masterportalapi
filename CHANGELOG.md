@@ -25,6 +25,7 @@
 ## Removed
 
 ## Fixed
+- styleList: styles of type oaf are now also added to the stylelist
 
 ---
 
