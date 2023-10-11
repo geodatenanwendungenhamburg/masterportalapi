@@ -14,10 +14,14 @@
         - stream-http: 3.2.0
         - url: 0.11.3
         - util: 0.12.5
+- The following packages have been added:
+    - dependencies:
+        - ol-mapbox-style: 12.0.0 
 
 ## Changed
 - The following packages have been updated:
     - dependencies:
+        - ol: 7.5.2 to 8.1.0 (includes the change of the symbol style format in ol/layer/WebGLPointsLayer)
         - olcs: 2.15.0 to 2.16.0
 
 ## Deprecated
