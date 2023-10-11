@@ -34,19 +34,16 @@ export function getRotationValue (rotation, featureValues) {
 export function createIconStyle (attributes, feature, isClustered) {
     const showCluster = isClustered && feature.get("features")?.length > 1,
 
-        height = showCluster ? attributes.clusterImageHeight : attributes.imageHeight,
         imageName = showCluster ? attributes.clusterImageName : attributes.imageName,
         imageOffsetX = showCluster ? attributes.clusterImageOffsetY : attributes.imageOffsetX,
         imageOffsetY = showCluster ? attributes.clusterImageOffsetX : attributes.imageOffsetY,
         scale = showCluster ? attributes.clusterImageScale : attributes.imageScale,
         src = imageName.indexOf("/") === -1 ? attributes.imagePath + imageName : imageName,
-        width = showCluster ? attributes.clusterImageWidth : attributes.imageWidth,
         iconOptions = {
             crossOrigin: "anonymous",
             src: src.startsWith("<svg") ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src) : src,
             scale,
-            anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)],
-            imgSize: src.indexOf(".svg") > -1 ? [width, height] : ""
+            anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)]
         };
 
     if (!showCluster) {
@@ -67,13 +64,10 @@ export function createIconStyle (attributes, feature, isClustered) {
  * @return {ol.Style} style
  */
 export function createSVGStyle (svgPath) {
-    const size = PointStyle.prototype.getSize();
-
     return new Style({
         image: new Icon({
             crossOrigin: "anonymous",
-            src: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgPath),
-            imgSize: [size, size]
+            src: "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgPath)
         })
     });
 }

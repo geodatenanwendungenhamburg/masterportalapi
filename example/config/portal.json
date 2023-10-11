@@ -56,30 +56,11 @@
       "renderer": "webgl",
       "hitTolerance": 20,
       "isPointLayer": true,
-      "style": {
-          "symbol": {
-              "symbolType": "circle",
-              "size": [
-                  "interpolate",
-                  ["linear"],
-                  ["get", "Total_votes"],
-                  0,
-                  6,
-                  18,
-                  24
-              ],
-              "color": [
-                  "interpolate",
-                  ["linear"],
-                  ["get", "compound"],
-                  -1,
-                  [240, 40, 30],
-                  1,
-                  [0, 200, 60]
-              ],
-              "opacity": 0.8,
-              "rotateWithView": true
-          }
+      "style":{
+          "circle-radius": [ "interpolate", ["linear"], ["get", "Total_votes"],  0, 6, 18, 24 ],
+          "circle-fill-color": [ "interpolate", ["linear"], ["get", "compound"], -1, [240, 40, 30], 1, [0, 200, 60] ],
+          "circle-rotate-with-view": true,
+          "circle-opacity": 0.8
       }
     }
   ],
