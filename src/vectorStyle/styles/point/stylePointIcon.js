@@ -1,6 +1,5 @@
 import {Style, Icon} from "ol/style.js";
 import {prepareValue, isObjectPath} from "../../../lib/attributeMapper";
-import PointStyle from "./stylePoint";
 
 /**
 * Returns the rotation value and its corresponding value according to style.json.
