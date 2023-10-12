@@ -57,7 +57,7 @@
       "hitTolerance": 20,
       "isPointLayer": true,
       "style":{
-          "circle-radius": [ "interpolate", ["linear"], ["get", "Total_votes"],  0, 6, 18, 24 ],
+          "circle-radius": [ "interpolate", ["linear"], ["get", "Total_votes"],  0, 3, 18, 12 ],
           "circle-fill-color": [ "interpolate", ["linear"], ["get", "compound"], -1, [240, 40, 30], 1, [0, 200, 60] ],
           "circle-rotate-with-view": true,
           "circle-opacity": 0.8
