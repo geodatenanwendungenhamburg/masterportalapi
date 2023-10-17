@@ -13,8 +13,8 @@ function createTileSet (rawLayer) {
     if (rawLayer.cesium3DTilesetOptions) {
         Object.assign(options, rawLayer.cesium3DTilesetOptions);
     }
-
-    return Promise.resolve(Cesium.Cesium3DTileset.fromUrl(url, options));
+    options.url = url;
+    return new Cesium.Cesium3DTileset(options);
 }
 
 /**
@@ -33,13 +33,8 @@ export default function Tileset (rawLayer) {
         typ: rawLayer.typ
     };
     if (Cesium) {
-        this.tileset = Promise.resolve(createTileSet(rawLayer));
-        this.tileset.then(function (tileset) {
-            if (tileset) {
-                tileset.layerReferenceId = rawLayer.id;
-            }
-        });
-
+        this.tileset = createTileSet(rawLayer);
+        this.tileset.layerReferenceId = rawLayer.id;
     }
 }
 
@@ -63,11 +58,7 @@ Tileset.prototype.setOpacity = function (opacity) {
         color = splitValues.toString();
     }
 
-    this.tileset.then(function (tileset) {
-        if (tileset) {
-            tileset.style = new Cesium.Cesium3DTileStyle({color});
-        }
-    });
+    this.tileset.style = new Cesium.Cesium3DTileStyle({color});
 };
 
 /**
@@ -80,16 +71,10 @@ Tileset.prototype.setVisible = function (value, map) {
     if (map && typeof map.getCesiumScene === "function") {
         if (value) {
             if (!map.getCesiumScene().primitives.contains(this.tileset)) {
-                this.tileset.then(function (tileset) {
-                    map.getCesiumScene().primitives.add(tileset);
-                });
+                map.getCesiumScene().primitives.add(this.tileset);
             }
         }
-        this.tileset.then(function (tileset) {
-            if (tileset) {
-                tileset.show = value;
-            }
-        });
+        this.tileset.show = value;
     }
 };
 

@@ -6,12 +6,11 @@ describe("tileset.js", function () {
 
     beforeEach(() => {
         global.Cesium = {};
-        global.Cesium.Cesium3DTileset = {};
-        global.Cesium.Cesium3DTileset.fromUrl = jest.fn();
+        global.Cesium.Cesium3DTileset = jest.fn();
         global.Cesium.Cesium3DTileStyle = jest.fn(color => color);
         attr = {
             id: "4002",
-            name: "Gebäude LoD2",
+            name: "GebÃ¤ude LoD2",
             url: "https://geoportal-hamburg.de/gdi3d/datasource-data/LoD2",
             typ: "TileSet3D",
             cesium3DTilesetOptions: {
@@ -29,9 +28,7 @@ describe("tileset.js", function () {
                 };
             }
         };
-        cesium3DTilesetSpy = jest.spyOn(global.Cesium.Cesium3DTileset, "fromUrl").mockImplementation(() => {
-            return Promise.resolve({});
-        });
+        cesium3DTilesetSpy = jest.spyOn(global.Cesium, "Cesium3DTileset");
         console.warn = jest.fn();
     });
 
@@ -41,23 +38,21 @@ describe("tileset.js", function () {
         console.warn = consoleWarn;
     });
 
-    async function checkAttributes (layer, attrs) {
-        const tileset = await layer.tileset;
-
+    function checkAttributes (layer, attrs) {
         expect(layer.get("name")).toEqual(attrs.name);
         expect(layer.get("typ")).toEqual(attrs.typ);
         expect(layer.get("id")).toEqual(attrs.id);
-        expect(tileset.layerReferenceId).toEqual(attrs.id);
+        expect(layer.tileset.layerReferenceId).toEqual(attrs.id);
     }
 
     describe("createLayer", function () {
         it("creates tileset layer without map", function () {
             const layer = new Tileset(attr);
 
+            checkAttributes(layer, attr);
             expect(layer.tileSet).toEqual(undefined);
             expect(layer.tileset.show).toEqual(undefined);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-            checkAttributes(layer, attr);
         });
         it("creates 2 tileset layers  with map and checks attributes", function () {
             const attr2 = {
@@ -75,62 +70,40 @@ describe("tileset.js", function () {
         });
     });
     describe("setOpacity", function () {
-        it("calls setOpacity sets opacity to terrain style", function (done) {
+        it("calls setOpacity sets opacity to terrain style", function () {
             const layer = new Tileset(attr, map);
 
             layer.setOpacity(0.5);
 
-            layer.tileset.then(function (tileset) {
-                if (tileset) {
-                    expect(tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
-                    done();
-                }
-            });
+            expect(layer.tileset.style).toEqual({color: "rgba(255, 255, 255, 0.5)"});
         });
     });
     describe("setVisible", function () {
-        it("calls setVisible without map shall not fail", function (done) {
+        it("calls setVisible without map shall not fail", function () {
             const layer = new Tileset(attr, map);
 
             expect(layer.tileset.show).toEqual(undefined);
             layer.setVisible(true);
 
-            layer.tileset.then(function (tileset) {
-                if (tileset) {
-                    checkAttributes(layer, attr);
-                    expect(layer.tileset.show).toEqual(undefined);
-                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-                    done();
-                }
-            });
+            checkAttributes(layer, attr);
+            expect(layer.tileset.show).toEqual(undefined);
+            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
         });
-        it("sets the tileset layer visible", function (done) {
+        it("sets the tileset layer visible", function () {
             const layer = new Tileset(attr, map);
 
             layer.setVisible(true, map);
-
-            layer.tileset.then(function (tileset) {
-                if (tileset) {
-                    checkAttributes(layer, attr);
-                    expect(tileset.show).toEqual(true);
-                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-                    done();
-                }
-            });
+            checkAttributes(layer, attr);
+            expect(layer.tileset.show).toEqual(true);
+            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
         });
-        it("sets the tileset layer not visible", function (done) {
+        it("sets the tileset layer not visible", function () {
             const layer = new Tileset(attr, map);
 
             layer.setVisible(false, map);
-
-            layer.tileset.then(function (tileset) {
-                if (tileset) {
-                    checkAttributes(layer, attr);
-                    expect(tileset.show).toEqual(false);
-                    expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
-                    done();
-                }
-            });
+            checkAttributes(layer, attr);
+            expect(layer.tileset.show).toEqual(false);
+            expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(1);
         });
     });
     describe("get", function () {

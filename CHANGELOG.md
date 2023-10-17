@@ -35,6 +35,7 @@
         - jest-environment-jsdom: 29.6.2 to 29.7.0
         - parcel: 2.9.3 to 2.10.0
         - sass: 1.64.2 to 1.69.4
+- Revert Cesium.Cesium3DTileset.fromUrl(url, options) adaptions in tileset.js for Cesium v1.107 deprecated warnings
 
 ## Deprecated
 
