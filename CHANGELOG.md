@@ -16,13 +16,20 @@
         - util: 0.12.5
 - The following packages have been added:
     - dependencies:
-        - ol-mapbox-style: 12.0.0 
+        - ol-mapbox-style: 12.0.0
 
 ## Changed
 - The following packages have been updated:
     - dependencies:
+        - dayjs: 1.11.9 to 1.11.10
         - ol: 7.5.2 to 8.1.0 (includes the change of the symbol style format in ol/layer/WebGLPointsLayer)
         - olcs: 2.15.0 to 2.16.0
+        - proj4: 2.9.0 to 2.9.1
+    - devDependencies:
+        - @swc/jest: 0.2.27 to 0.2.29
+        - eslint: 8.46.0 to 8.51.0
+        - jest: 29.6.2 to 29.7.0
+        - jest-environment-jsdom: 29.6.2 to 29.7.0
 
 ## Deprecated
 
