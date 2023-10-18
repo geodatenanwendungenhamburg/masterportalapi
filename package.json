@@ -19,7 +19,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "core-js": "^3.32.0",
+    "core-js": "^3.33.0",
     "dayjs": "^1.11.10",
     "ol": "8.1.0",
     "ol-mapbox-style": "12.0.0",
@@ -28,9 +28,9 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/plugin-transform-modules-commonjs": "^7.22.5",
-    "@parcel/transformer-sass": "^2.9.3",
+    "@babel/core": "^7.23.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.23.0",
+    "@parcel/transformer-sass": "^2.10.0",
     "@swc/jest": "^0.2.29",
     "assert": "^2.1.0",
     "browserify-zlib": "^0.2.0",
@@ -45,10 +45,9 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "jsdoc": "^4.0.2",
-    "parcel": "^2.9.3",
+    "parcel": "^2.10.0",
     "process": "^0.11.10",
-    "punycode": "^1.4.1",
-    "sass": "^1.64.2",
+    "sass": "^1.69.4",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "timers-browserify": "^2.0.12",
