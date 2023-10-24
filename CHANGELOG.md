@@ -20,7 +20,7 @@
 ## Changed
 - The following packages have been updated:
     - dependencies:
-        - core-js: 3.32.0 to 3.33.0
+        - core-js: 3.32.0 to 3.33.1
         - dayjs: 1.11.9 to 1.11.10
         - ol: 7.5.2 to 8.1.0 (includes the change of the symbol style format in ol/layer/WebGLPointsLayer)
         - olcs: 2.15.0 to 2.16.0
@@ -30,7 +30,7 @@
         - @babel/plugin-transform-modules-commonjs: 7.22.5 to 7.23.2
         - @parcel/transformer-sass: 2.9.3 to 2.10.0
         - @swc/jest: 0.2.27 to 0.2.29
-        - eslint: 8.46.0 to 8.51.0
+        - eslint: 8.46.0 to 8.52.0
         - jest: 29.6.2 to 29.7.0
         - jest-environment-jsdom: 29.6.2 to 29.7.0
         - parcel: 2.9.3 to 2.10.0
