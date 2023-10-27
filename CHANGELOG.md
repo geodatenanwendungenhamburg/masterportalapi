@@ -3,6 +3,19 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+### Unreleased - in development
+## Added
+
+## Changed
+
+## Deprecated
+
+## Removed
+
+## Fixed
+
+---
+
 ### 2.29.0 - 2023-10-27
 ## Added
 - The following packages from parcel automatic were installed for node builtin:
@@ -40,6 +53,7 @@
 ## Fixed
 - styleList: styles of type oaf are now also added to the stylelist
 - Issue Masterportal #1052 VectorStyle: path to an icon in the map or in the legend in style.json may be an icon name, a relative path to icon, a complete url or an svg.
+
 ---
 
 ### 2.28.0 - 2023-09-27
