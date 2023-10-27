@@ -32,18 +32,23 @@ export function getRotationValue (rotation, featureValues) {
 */
 export function createIconStyle (attributes, feature, isClustered) {
     const showCluster = isClustered && feature.get("features")?.length > 1,
-
         imageName = showCluster ? attributes.clusterImageName : attributes.imageName,
         imageOffsetX = showCluster ? attributes.clusterImageOffsetY : attributes.imageOffsetX,
         imageOffsetY = showCluster ? attributes.clusterImageOffsetX : attributes.imageOffsetY,
         scale = showCluster ? attributes.clusterImageScale : attributes.imageScale,
-        src = imageName.indexOf("/") === -1 ? attributes.imagePath + imageName : imageName,
-        iconOptions = {
-            crossOrigin: "anonymous",
-            src: src.startsWith("<svg") ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src) : src,
-            scale,
-            anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)]
-        };
+        wfsImgPath = attributes.imagePath;
+    let iconOptions = {},
+        src = imageName;
+
+    if (!imageName.startsWith("https:") && !imageName.startsWith("<svg")) {
+        src = wfsImgPath + imageName;
+    }
+    iconOptions = {
+        crossOrigin: "anonymous",
+        src: src.startsWith("<svg") ? "data:image/svg+xml;charset=utf-8," + encodeURIComponent(src) : src,
+        scale,
+        anchor: [parseFloat(imageOffsetX), parseFloat(imageOffsetY)]
+    };
 
     if (!showCluster) {
         iconOptions.anchorXUnits = attributes.imageOffsetXUnit;

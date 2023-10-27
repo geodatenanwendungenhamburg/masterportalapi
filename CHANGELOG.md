@@ -43,7 +43,7 @@
 
 ## Fixed
 - styleList: styles of type oaf are now also added to the stylelist
-
+- Issue Masterportal #1052 VectorStyle: path to an icon in the map or in the legend in style.json may be an icon name, a relative path to icon, a complete url or an svg.
 ---
 
 ### 2.28.0 - 2023-09-27
