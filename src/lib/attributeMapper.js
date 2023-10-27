@@ -198,29 +198,27 @@ function prepareValueFromObject (key, mappingObj, properties) {
             break;
         }
         case "html": {
-            // create tag
-            if (mappingObj?.html?.tag) {
-                htmltag = document.createElement(mappingObj?.html?.tag);
-            }
-            // create innerHTML
-            if (mappingObj?.html?.innerHTML === "%value%") {
-                htmltag.innerHTML = preparedValue;
-            }
-            else if (mappingObj?.html?.innerHTML) {
-                htmltag.innerHTML = mappingObj?.html?.innerHTML;
-            }
-
-
-            if (htmltag) {
-                if (mappingObj?.html?.properties) {
-                    htmltag = addPropertiesToHtmlTag(htmltag, mappingObj?.html?.properties, preparedValue);
+            if (preparedValue !== undefined) {
+                // create tag
+                if (mappingObj?.html?.tag) {
+                    htmltag = document.createElement(mappingObj?.html?.tag);
                 }
-                preparedValue = serializer.serializeToString(htmltag);
-                // remove xmlns
-                preparedValue = preparedValue.replace(/ xmlns="(.*?)"/g, "");
-
+                // create innerHTML
+                if (mappingObj?.html?.innerHTML === "%value%") {
+                    htmltag.innerHTML = preparedValue;
+                }
+                else if (mappingObj?.html?.innerHTML) {
+                    htmltag.innerHTML = mappingObj?.html?.innerHTML;
+                }
+                if (htmltag) {
+                    if (mappingObj?.html?.properties) {
+                        htmltag = addPropertiesToHtmlTag(htmltag, mappingObj?.html?.properties, preparedValue);
+                    }
+                    preparedValue = serializer.serializeToString(htmltag);
+                    // remove xmlns
+                    preparedValue = preparedValue.replace(/ xmlns="(.*?)"/g, "");
+                }
             }
-
             break;
         }
         // default equals to mappingObj.type === "string"

@@ -13,7 +13,7 @@
 ## Removed
 
 ## Fixed
-
+- Issue Masterportal #1088: gfiAttibutes with type=html are not displayed if there is no value in the data.
 ---
 
 ### 2.29.0 - 2023-10-27
