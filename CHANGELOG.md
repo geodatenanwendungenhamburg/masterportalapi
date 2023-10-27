@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-### Unreleased - in development
+### 2.29.0 - 2023-10-27
 ## Added
 - The following packages from parcel automatic were installed for node builtin:
     - dependencies:
@@ -36,10 +36,6 @@
         - parcel: 2.9.3 to 2.10.0
         - sass: 1.64.2 to 1.69.4
 - Revert Cesium.Cesium3DTileset.fromUrl(url, options) adaptions in tileset.js for Cesium v1.107 deprecated warnings
-
-## Deprecated
-
-## Removed
 
 ## Fixed
 - styleList: styles of type oaf are now also added to the stylelist
