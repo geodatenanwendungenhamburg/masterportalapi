@@ -13,6 +13,7 @@
 ## Removed
 
 ## Fixed
+- Issue Masterportal #1052 VectorStyle: fixed blinking of initial loaded features on great amount of features with a lot of conditional styles.
 - Issue Masterportal #1088: gfiAttibutes with type=html are not displayed if there is no value in the data.
 ---
 
