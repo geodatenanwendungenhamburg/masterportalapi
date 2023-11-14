@@ -303,14 +303,13 @@ describe("src/utils/attributeMapper.js", () => {
                 url: "<a href=\"http://random.url.de\"></a>"
             });
         });
-        it("should map object with mapping object and type:html and tag a", () => {
+        it("should NOT map object with mapping object and type:html and tag a - value not defined", () => {
             const mappingObj = {
                 random_url: {
                     name: "url",
                     type: "html",
                     html: {
                         tag: "a",
-                        innerHTML: "%value%",
                         properties: {
                             href: "%value%"
                         }
@@ -319,8 +318,27 @@ describe("src/utils/attributeMapper.js", () => {
             };
 
             expect(mapAttributes(props, mappingObj)).toEqual({
-                url: "<a href=\"http://random.url.de\">http://random.url.de</a>"
+                url: "<a href=\"http://random.url.de\"></a>"
             });
+        });
+        it("should map object with mapping object and type:html and tag a", () => {
+            const mappingObj = {
+                    random_url: {
+                        name: "url",
+                        type: "html",
+                        html: {
+                            tag: "a",
+                            innerHTML: "%value%",
+                            properties: {
+                                href: "%value%"
+                            }
+                        }
+                    }
+                },
+                properties = Object.assign({}, props);
+
+            properties.random_url = undefined;
+            expect(mapAttributes(properties, mappingObj)).toEqual({});
         });
         it("should map object with mapping object and type:html and tag a without innerHTML and properties", () => {
             const mappingObj = {

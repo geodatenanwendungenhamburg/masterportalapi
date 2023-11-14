@@ -13,6 +13,47 @@
 ## Removed
 
 ## Fixed
+- Issue Masterportal #1052 VectorStyle: fixed blinking of initial loaded features on great amount of features with a lot of conditional styles.
+- Issue Masterportal #1088: gfiAttibutes with type=html are not displayed if there is no value in the data.
+---
+
+### 2.29.0 - 2023-10-27
+## Added
+- The following packages from parcel automatic were installed for node builtin:
+    - dependencies:
+        - assert": 2.1.0,
+        - browserify-zlib: 0.2.0,
+        - https-browserify: 1.0.0
+        - stream-http: 3.2.0
+        - url: 0.11.3
+        - util: 0.12.5
+- The following packages have been added:
+    - dependencies:
+        - ol-mapbox-style: 12.0.0
+
+## Changed
+- The following packages have been updated:
+    - dependencies:
+        - core-js: 3.32.0 to 3.33.1
+        - dayjs: 1.11.9 to 1.11.10
+        - ol: 7.5.2 to 8.1.0 (includes the change of the symbol style format in ol/layer/WebGLPointsLayer)
+        - olcs: 2.15.0 to 2.16.0
+        - proj4: 2.9.0 to 2.9.1
+    - devDependencies:
+        - @babel/core: 7.22.9 to 7.23.2
+        - @babel/plugin-transform-modules-commonjs: 7.22.5 to 7.23.2
+        - @parcel/transformer-sass: 2.9.3 to 2.10.0
+        - @swc/jest: 0.2.27 to 0.2.29
+        - eslint: 8.46.0 to 8.52.0
+        - jest: 29.6.2 to 29.7.0
+        - jest-environment-jsdom: 29.6.2 to 29.7.0
+        - parcel: 2.9.3 to 2.10.0
+        - sass: 1.64.2 to 1.69.4
+- Revert Cesium.Cesium3DTileset.fromUrl(url, options) adaptions in tileset.js for Cesium v1.107 deprecated warnings
+
+## Fixed
+- styleList: styles of type oaf are now also added to the stylelist
+- Issue Masterportal #1052 VectorStyle: path to an icon in the map or in the legend in style.json may be an icon name, a relative path to icon, a complete url or an svg.
 
 ---
 

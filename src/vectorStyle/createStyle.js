@@ -216,7 +216,7 @@ function captureLegendFromFeature (styleId, legendInformation) {
 }
 
 /**
-     * Function is called from layer models for each feature.
+     * Creates the style for the feature regarding the styleObject and sets style at feature.
      * @param   {String}  styleObject     id of the style
      * @param   {ol/feature}  feature     the feature to style
      * @param   {Boolean} isClustered is feature clustered
@@ -261,6 +261,7 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
             styleObjectGeometry.setText(getLabelStyle(feature, style, isClustered));
         }
     }
+    feature.setStyle(styleObjectGeometry);
     return styleObjectGeometry;
 }
 

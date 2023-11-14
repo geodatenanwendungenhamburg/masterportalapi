@@ -15,14 +15,11 @@ import {packColor, parseLiteralStyle} from "ol/webgl/styleparser.js";
  * @private
  */
 const defaultPointStyle = {
-        symbol: {
-            symbolType: "circle",
-            size: 20,
-            color: "#006688",
-            rotateWithView: false,
-            offset: [0, 0],
-            opacity: 0.6
-        }
+        "circle-radius": 10,
+        "circle-fill-color": "#006688",
+        "circle-rotate-with-view": false,
+        "circle-displacement": [0, 0],
+        "circle-opacity": 0.6
     },
 
     defaultPolygonStyle = {
@@ -33,14 +30,13 @@ const defaultPointStyle = {
     },
 
     /** @type {import('ol/style/literal.js').LiteralStyle} */
-    style = {
+    style = Object.assign({
         "stroke-color": ["get", "strokeColor"],
         "stroke-width": ["get", "strokeWidth", "number"],
         "fill-color": ["get", "fillColor"],
         "opacity": ["get", "opacity", "number"],
-        "size": ["get", "circleSize", "number"],
-        symbol: defaultPointStyle.symbol
-    };
+        "size": ["get", "circleSize", "number"]
+    }, defaultPointStyle);
 
 /**
  *  Creates a vector layer with custom renderer.
@@ -194,14 +190,14 @@ export function formatFeatureStyles (feature, styleObject) {
         feature.set("strokeColor", strokeColor || defaultPolygonStyle.strokeColor);
         feature.set("strokeWidth", strokeWidth || defaultPolygonStyle.strokeWidth);
         feature.set("opacity", fillColor ? (rule.style.polygonFillColor || rule.style.circleFillColor)[3] : defaultPolygonStyle.opacity);
-        feature.set("circleSize", size || defaultPointStyle.symbol.size);
+        feature.set("circleSize", size || defaultPointStyle["circle-radius"] * 2);
     }
     else {
         feature.set("fillColor", defaultPolygonStyle.fillColor);
         feature.set("strokeColor", defaultPolygonStyle.strokeColor);
         feature.set("strokeWidth", defaultPolygonStyle.strokeWidth);
         feature.set("opacity", defaultPolygonStyle.opacity);
-        feature.set("circleSize", defaultPointStyle.symbol.size);
+        feature.set("circleSize", defaultPointStyle["circle-radius"] * 2);
     }
 }
 
