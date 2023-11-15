@@ -1,0 +1,45 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:app="http://www.deegree.org/app" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="http://www.deegree.org/app" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  <element name="umring" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="geom" minOccurs="0" type="gml:MultiPolygonPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+  <element name="strecken" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="Name" minOccurs="0" type="string"/>
+            <element name="visual" minOccurs="0" type="string"/>
+            <element name="geom" minOccurs="0" type="gml:MultiLineStringPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+  <element name="poi" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="titel" minOccurs="0" type="string"/>
+            <element name="kurztext" minOccurs="0" type="string"/>
+            <element name="internet" minOccurs="0" type="string"/>
+            <element name="bild" minOccurs="0" type="string"/>
+            <element name="copyright" minOccurs="0" type="string"/>
+            <element name="kategorie" minOccurs="0" type="string"/>
+            <element name="icon_vi" minOccurs="0" type="string"/>
+            <element name="geom" minOccurs="0" type="gml:PointPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>

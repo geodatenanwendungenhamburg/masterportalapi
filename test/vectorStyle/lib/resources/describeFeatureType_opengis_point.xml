@@ -1,0 +1,24 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:de.hh.up="https://registry.gdi-de.org/id/de.hh.up" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="https://registry.gdi-de.org/id/de.hh.up" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  <element name="bike_und_ride" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="haltestelle" minOccurs="0" type="string"/>
+            <element name="symbol" minOccurs="0" type="string"/>
+            <element name="adresse" minOccurs="0" type="string"/>
+            <element name="davon_nicht_ueberdachte_stellplaetze" minOccurs="0" type="integer"/>
+            <element name="davon_ueberdachte_stellplaetze" minOccurs="0" type="integer"/>
+            <element name="davon_gesicherte_mietstellplaetze" minOccurs="0" type="integer"/>
+            <element name="schliessfaecher" minOccurs="0" type="integer"/>
+            <element name="internet" minOccurs="0" type="string"/>
+            <element name="email" minOccurs="0" type="string"/>
+            <element name="stand" minOccurs="0" type="string"/>
+            <element name="geom" minOccurs="0" type="gml:PointPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>

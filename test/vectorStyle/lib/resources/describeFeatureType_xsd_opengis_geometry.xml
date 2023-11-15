@@ -1,0 +1,18 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:fis="http://www.berlin.de/broker" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.berlin.de/broker">
+	<xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+	<xsd:element name="s_parkraumbewirt" substitutionGroup="gml:AbstractFeature" type="fis:s_parkraumbewirtType"/>
+	<xsd:complexType name="s_parkraumbewirtType">
+		<xsd:complexContent>
+			<xsd:extension base="gml:AbstractFeatureType">
+				<xsd:sequence>
+					<xsd:element minOccurs="0" name="parkzone" nillable="true" type="xsd:string"/>
+					<xsd:element minOccurs="0" name="bezirk" nillable="true" type="xsd:string"/>
+					<xsd:element minOccurs="0" name="zeiten" nillable="true" type="xsd:string"/>
+					<xsd:element minOccurs="0" name="gebuehr" nillable="true" type="xsd:string"/>
+					<xsd:element minOccurs="0" name="bemerkung" nillable="true" type="xsd:string"/>
+					<xsd:element minOccurs="0" name="geom" nillable="true" type="gml:GeometryPropertyType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+</xsd:schema>

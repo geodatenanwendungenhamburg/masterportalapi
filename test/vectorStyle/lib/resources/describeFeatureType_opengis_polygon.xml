@@ -1,0 +1,22 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:de.hh.up="https://registry.gdi-de.org/id/de.hh.up" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="https://registry.gdi-de.org/id/de.hh.up" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  <element name="nr_f_biosphaerenreservat" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="gebietsname" minOccurs="0" type="string"/>
+            <element name="gebietsnummer" minOccurs="0" type="string"/>
+            <element name="rechtsgrundlage" minOccurs="0" type="string"/>
+            <element name="schutzzone" minOccurs="0" type="integer"/>
+            <element name="erfassungsgrundlage" minOccurs="0" type="string"/>
+            <element name="info_kontakt" minOccurs="0" type="string"/>
+            <element name="iucn_kategorie" minOccurs="0" type="string"/>
+            <element name="stand_bearbeitung" minOccurs="0" type="string"/>
+            <element name="geom" minOccurs="0" type="gml:PolygonPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>

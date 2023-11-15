@@ -1,6 +1,16 @@
 import {createLegendInfo} from "./createLegendInfo";
 
 /**
+ * Returns true, if sibling element's tag name end with 'complexType' and its name contains the featureType.
+ * @param {String} sibling XML-Element to inspect
+ * @param {String } featureType  wfs feature type from layer without namespace
+ * @returns {boolean} true, if sibling element's tag name end with 'complexType' and its name contains the featureType
+ */
+function siblingContainsFeatureType (sibling, featureType) {
+    return sibling && sibling.tagName.endsWith("complexType") && sibling.hasAttribute("name") && sibling.getAttribute("name").includes(featureType);
+}
+
+/**
  * Parses the xml with another structure to get the subelements from the layer
  * @param   {string} xml response xml
  * @param   {string} featureType wfs feature type from layer without namespace
@@ -12,10 +22,17 @@ function getSubelementsFromXMLOtherStructure (xml, featureType) {
 
     elements.forEach(element => {
         if (element.getAttribute("name") === featureType) {
-            const sibling = element.nextElementSibling;
+            let sibling = element.nextElementSibling;
 
-            if (sibling && sibling.tagName.endsWith("complexType") && sibling.hasAttribute("name")) {
+            if (siblingContainsFeatureType(sibling, featureType)) {
                 subElements = Array.from(sibling.getElementsByTagNameNS("*", "element"));
+            }
+            else if (element.previousElementSibling) {
+                sibling = element.previousElementSibling;
+
+                if (siblingContainsFeatureType(sibling, featureType)) {
+                    subElements = Array.from(sibling.getElementsByTagNameNS("*", "element"));
+                }
             }
         }
     });
@@ -160,5 +177,7 @@ function getGeometryTypeFromOAF (rules, oafURL, collection, wfsImgPath, callback
 
 export default {
     getGeometryTypeFromWFS,
-    getGeometryTypeFromOAF
+    getGeometryTypeFromOAF,
+    getSubelementsFromXML,
+    getTypeAttributesFromSubelements
 };

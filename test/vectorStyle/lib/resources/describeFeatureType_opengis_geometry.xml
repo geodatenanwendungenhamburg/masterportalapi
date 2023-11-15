@@ -1,0 +1,69 @@
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml" xmlns:app="http://www.deegree.org/app" xmlns:xlink="http://www.w3.org/1999/xlink" targetNamespace="http://www.deegree.org/app" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <import namespace="http://www.opengis.net/gml" schemaLocation="http://schemas.opengis.net/gml/3.1.1/base/gml.xsd"/>
+  <element name="hamburgconvention" substitutionGroup="gml:_Feature">
+    <complexType>
+      <complexContent>
+        <extension base="gml:AbstractFeatureType">
+          <sequence>
+            <element name="flaechenname" minOccurs="0" type="string"/>
+            <element name="flaechenid" minOccurs="0" type="decimal"/>
+            <element name="bezirk" minOccurs="0" type="string"/>
+            <element name="stadtteil" minOccurs="0" type="string"/>
+            <element name="flaeche_gesamt_m" minOccurs="0" type="decimal"/>
+            <element name="flaeche_eventlotse_m" minOccurs="0" type="decimal"/>
+            <element name="dist_flghf_km" minOccurs="0" type="decimal"/>
+            <element name="dist_hbf_km" minOccurs="0" type="decimal"/>
+            <element name="dist_ubahn_m" minOccurs="0" type="decimal"/>
+            <element name="dist_sbahn_m" minOccurs="0" type="decimal"/>
+            <element name="dist_bus_m" minOccurs="0" type="decimal"/>
+            <element name="dist_faehre_m" minOccurs="0" type="decimal"/>
+            <element name="ubahn" minOccurs="0" type="string"/>
+            <element name="sbahn" minOccurs="0" type="string"/>
+            <element name="bus" minOccurs="0" type="string"/>
+            <element name="faehre" minOccurs="0" type="string"/>
+            <element name="plz" minOccurs="0" type="decimal"/>
+            <element name="anschluss" minOccurs="0" type="string"/>
+            <element name="anschluss_en" minOccurs="0" type="string"/>
+            <element name="hinweisstempel" minOccurs="0" type="string"/>
+            <element name="hinweisstempel_en" minOccurs="0" type="string"/>
+            <element name="bild" minOccurs="0" type="string"/>
+            <element name="video" minOccurs="0" type="string"/>
+            <element name="dokument" minOccurs="0" type="string"/>
+            <element name="flaechengeber" minOccurs="0" type="string"/>
+            <element name="flaechengeber_en" minOccurs="0" type="string"/>
+            <element name="premiumflaeche" minOccurs="0" type="boolean"/>
+            <element name="kontaktname" minOccurs="0" type="string"/>
+            <element name="kontakttel" minOccurs="0" type="string"/>
+            <element name="kontaktmail" minOccurs="0" type="string"/>
+            <element name="flaechengeber2" minOccurs="0" type="string"/>
+            <element name="flaechengeber2_en" minOccurs="0" type="string"/>
+            <element name="kontaktname2" minOccurs="0" type="string"/>
+            <element name="kontakttel2" minOccurs="0" type="string"/>
+            <element name="kontaktmail2" minOccurs="0" type="string"/>
+            <element name="beschreibung" minOccurs="0" type="string"/>
+            <element name="beschreibung_en" minOccurs="0" type="string"/>
+            <element name="nichtverfuegbarvon" minOccurs="0" type="string"/>
+            <element name="nichtverfuegbarbis" minOccurs="0" type="string"/>
+            <element name="strasse" minOccurs="0" type="string"/>
+            <element name="hausnr" minOccurs="0" type="string"/>
+            <element name="boden" minOccurs="0" type="string"/>
+            <element name="boden_en" minOccurs="0" type="string"/>
+            <element name="emission" minOccurs="0" type="string"/>
+            <element name="url" minOccurs="0" type="string"/>
+            <element name="url_en" minOccurs="0" type="string"/>
+            <element name="x_min" minOccurs="0" type="decimal"/>
+            <element name="x_max" minOccurs="0" type="decimal"/>
+            <element name="y_min" minOccurs="0" type="decimal"/>
+            <element name="y_max" minOccurs="0" type="decimal"/>
+            <element name="x_min_klein" minOccurs="0" type="decimal"/>
+            <element name="x_max_klein" minOccurs="0" type="decimal"/>
+            <element name="y_min_klein" minOccurs="0" type="decimal"/>
+            <element name="y_max_klein" minOccurs="0" type="decimal"/>
+            <element name="active" minOccurs="0" type="boolean"/>
+            <element name="the_geom" minOccurs="0" type="gml:GeometryPropertyType"/>
+          </sequence>
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+</schema>
