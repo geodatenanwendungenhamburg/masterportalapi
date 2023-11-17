@@ -7,6 +7,7 @@
 ## Added
 
 ## Changed
+- WMS-Layer and WMTS-Layer: create Layer no longer evaluates the minScale and maxScale attributes, but instead minResolution and maxResolution can be transferred.
 
 ## Deprecated
 

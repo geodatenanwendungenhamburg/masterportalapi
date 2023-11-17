@@ -135,8 +135,8 @@ export function createLayerSource (rawLayer, options) {
  * @param {object} rawLayer - layer specification as in services.json
  * @param {string} [rawLayer.id] - optional id of the layer, passed to help identification in services.json
  * @param {string} [rawLayer.url] - WMS service URL
- * @param {string} [rawLayer.minScale] - optional the minimal resolution
- * @param {string} [rawLayer.maxScale] - optional the maximal resolution
+ * @param {string} [rawLayer.minResolution] - optional the minimal resolution
+ * @param {string} [rawLayer.maxResolution] - optional the maximal resolution
  * @param {string} [rawLayer.serverType] - optional servertype definition: "geoserver" or "mapserver" or "qgis"
  * @param {string} [rawLayer.gutter] - optional the size in pixels of the gutter around image tiles to ignore
  * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
@@ -156,8 +156,8 @@ export function createLayer (rawLayer, layerParams = {}, options) {
 
     return new Layer(Object.assign({
         source,
-        minResolution: rawLayer.minScale,
-        maxResolution: rawLayer.maxScale,
+        minResolution: typeof rawLayer.minResolution === "string" ? parseFloat(rawLayer.minResolution) : rawLayer.minResolution,
+        maxResolution: typeof rawLayer.maxResolution === "string" ? parseFloat(rawLayer.maxResolution) : rawLayer.maxResolution,
         id: rawLayer.id
     }, layerParams));
 }
