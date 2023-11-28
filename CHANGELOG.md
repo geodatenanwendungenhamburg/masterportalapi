@@ -3,6 +3,18 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+### Unreleased - in development
+## Added
+
+## Changed
+
+## Deprecated
+
+## Removed
+
+## Fixed
+
+---
 ### 2.30.0 - 2023-11-28
 ## Changed
 - WMS-Layer and WMTS-Layer: create Layer no longer evaluates the minScale and maxScale attributes, but instead minResolution and maxResolution can be transferred.
