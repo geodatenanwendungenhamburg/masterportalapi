@@ -158,7 +158,8 @@ export function createLayer (rawLayer, layerParams = {}, options) {
         source,
         minResolution: typeof rawLayer.minResolution === "string" ? parseFloat(rawLayer.minResolution) : rawLayer.minResolution,
         maxResolution: typeof rawLayer.maxResolution === "string" ? parseFloat(rawLayer.maxResolution) : rawLayer.maxResolution,
-        id: rawLayer.id
+        id: rawLayer.id,
+        extent: rawLayer.extent
     }, layerParams));
 }
 

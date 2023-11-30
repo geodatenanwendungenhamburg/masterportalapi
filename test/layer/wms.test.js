@@ -213,11 +213,12 @@ describe("wms.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = wms.createLayer({singleTile: false, tilesize: "10"}, layerParams, options);
+                layer = wms.createLayer({singleTile: false, tilesize: "10", extent: [10, 20, 11, 22]}, layerParams, options);
 
             expect(layer).toBeInstanceOf(TileLayer);
             expect(layer.get("name")).toEqual("name");
             expect(layer.get("layers")).toEqual("layer1, layer2");
+            expect(layer.get("extent")).toEqual([10, 20, 11, 22]);
             expect(layer.getSource().getTileGrid()).toBeInstanceOf(TileGrid);
             expect(layer.getSource().getTileGrid().getOrigin()).toEqual(options.origin);
             expect(layer.getSource().getTileGrid().getResolutions()).toEqual(options.resolutions);

@@ -18,6 +18,7 @@
 ### 2.30.0 - 2023-11-28
 ## Changed
 - WMS-Layer and WMTS-Layer: create Layer no longer evaluates the minScale and maxScale attributes, but instead minResolution and maxResolution can be transferred.
+- WMS-Layer: the attribute extent of rawlayer is set at ol-layer.
 
 ## Fixed
 - Issue Masterportal #1052 VectorStyle: fixed blinking of initial loaded features on great amount of features with a lot of conditional styles.
