@@ -5,6 +5,7 @@
 
 ### Unreleased - in development
 ## Added
+- Added support for Node LTS version ^20.9.0 and npm Version ^10.1.0.
 
 ## Changed
 
