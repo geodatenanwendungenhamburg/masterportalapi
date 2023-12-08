@@ -105,13 +105,7 @@
     "url": "https://api.hamburg.de/datasets/v1/schulen",
     "collection": "staatliche_schulen",
     "typ": "OAF",
-    "bbox": "",
-    "bboxCrs": "",
-    "datetime": "",
-    "crs": "EPSG:25832",
-    "params": {
-      "anzahl_schueler": ">1000"
-    }
+    "crs": "http://www.opengis.net/def/crs/EPSG/0/25832"
   },
   {
     "id": "8712",

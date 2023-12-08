@@ -8,23 +8,26 @@
 - Added support for Node LTS version ^20.9.0 and npm Version ^10.1.0.
 
 ## Changed
+- WMS-Layer: the attribute extent of rawlayer is set at ol-layer.
 
 ## Deprecated
 
 ## Removed
 
 ## Fixed
+- fix wfs layer in examples
 
 ---
+
 ### 2.30.0 - 2023-11-28
 ## Changed
 - WMS-Layer and WMTS-Layer: create Layer no longer evaluates the minScale and maxScale attributes, but instead minResolution and maxResolution can be transferred.
-- WMS-Layer: the attribute extent of rawlayer is set at ol-layer.
 
 ## Fixed
 - Issue Masterportal #1052 VectorStyle: fixed blinking of initial loaded features on great amount of features with a lot of conditional styles.
 - Issue Masterportal #1088: gfiAttibutes with type=html are not displayed if there is no value in the data.
 - Issue Masterportal #1091: VectorStyle: read geometry type from geoserver featureTypeRequest
+
 ---
 
 ### 2.29.0 - 2023-10-27
