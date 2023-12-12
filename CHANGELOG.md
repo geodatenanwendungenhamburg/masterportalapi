@@ -15,7 +15,7 @@
 ## Removed
 
 ## Fixed
-- fix wfs layer in examples
+- OAF-Layer: fix oaf layer in examples
 
 ---
 
