@@ -3,16 +3,12 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-### Unreleased - in development
+### 2.31.0 - 2023-12-13
 ## Added
 - Added support for Node LTS version ^20.9.0 and npm Version ^10.1.0.
 
 ## Changed
 - WMS-Layer: the attribute extent of rawlayer is set at ol-layer.
-
-## Deprecated
-
-## Removed
 
 ## Fixed
 - OAF-Layer: fix oaf layer in examples
