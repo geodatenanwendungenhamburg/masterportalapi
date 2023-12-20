@@ -7,6 +7,9 @@
 ### Added
 
 ### Changed
+- The following package has been updated:
+    - dependencies:
+        - ol: 8.1.0 to 8.2.0
 
 ### Deprecated
 
