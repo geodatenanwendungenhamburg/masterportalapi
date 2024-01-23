@@ -6,12 +6,13 @@
  * @returns {void}
  */
 async function createTerrainProvider (rawLayer) {
-    const options = {},
-        terrainProvider = await Cesium.CesiumTerrainProvider.fromUrl(rawLayer.url, options);
+    const options = {};
+    let terrainProvider = "";
 
     if (rawLayer.cesiumTerrainProviderOptions) {
         Object.assign(options, rawLayer.cesiumTerrainProviderOptions);
     }
+    terrainProvider = await Cesium.CesiumTerrainProvider.fromUrl(rawLayer.url, options);
 
     return terrainProvider;
 }

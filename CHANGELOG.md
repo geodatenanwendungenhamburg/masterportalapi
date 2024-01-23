@@ -13,7 +13,7 @@
 ### Removed
 
 ### Fixed
-
+- 3D: the options are set correctly again for terrain.
 ---
 
 ### 2.32.0 - 2024-01-17
