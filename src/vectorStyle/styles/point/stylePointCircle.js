@@ -24,6 +24,7 @@ export function createCircleStyle (attributes, isClustered) {
                 color: strokecolor,
                 width: strokewidth
             })
-        })
+        }),
+        zIndex: -1
     });
 }
