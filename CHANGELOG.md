@@ -7,6 +7,7 @@
 ### Added
 
 ### Changed
+- createStyle: setting style to feature is limited to Point and MultiPoint geometries.
 
 ### Deprecated
 
