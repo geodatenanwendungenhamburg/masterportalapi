@@ -4,19 +4,27 @@
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
 ## Unreleased - in development
+
 ### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+
+---
+
+## 2.33.0 - 2024-02-07
 
 ### Changed
-
-### Deprecated
-
-### Removed
+- createStyle: setting style to feature is limited to Point and MultiPoint geometries.
 
 ### Fixed
 - 3D: the options are set correctly again for terrain.
+
 ---
 
-### 2.32.0 - 2024-01-17
+
+## 2.32.0 - 2024-01-17
 ### Added
 
 ### Changed
@@ -28,31 +36,31 @@
 
 ---
 
-### 2.31.0 - 2023-12-13
-## Added
+## 2.31.0 - 2023-12-13
+### Added
 - Added support for Node LTS version ^20.9.0 and npm Version ^10.1.0.
 
-## Changed
+### Changed
 - WMS-Layer: the attribute extent of rawlayer is set at ol-layer.
 
-## Fixed
+### Fixed
 - OAF-Layer: fix oaf layer in examples
 
 ---
 
-### 2.30.0 - 2023-11-28
-## Changed
+## 2.30.0 - 2023-11-28
+### Changed
 - WMS-Layer and WMTS-Layer: create Layer no longer evaluates the minScale and maxScale attributes, but instead minResolution and maxResolution can be transferred.
 
-## Fixed
+### Fixed
 - Issue Masterportal #1052 VectorStyle: fixed blinking of initial loaded features on great amount of features with a lot of conditional styles.
 - Issue Masterportal #1088: gfiAttibutes with type=html are not displayed if there is no value in the data.
 - Issue Masterportal #1091: VectorStyle: read geometry type from geoserver featureTypeRequest
 
 ---
 
-### 2.29.0 - 2023-10-27
-## Added
+## 2.29.0 - 2023-10-27
+### Added
 - The following packages from parcel automatic were installed for node builtin:
     - dependencies:
         - assert": 2.1.0,
@@ -65,7 +73,7 @@
     - dependencies:
         - ol-mapbox-style: 12.0.0
 
-## Changed
+### Changed
 - The following packages have been updated:
     - dependencies:
         - core-js: 3.32.0 to 3.33.1
@@ -85,35 +93,35 @@
         - sass: 1.64.2 to 1.69.4
 - Revert Cesium.Cesium3DTileset.fromUrl(url, options) adaptions in tileset.js for Cesium v1.107 deprecated warnings
 
-## Fixed
+### Fixed
 - styleList: styles of type oaf are now also added to the stylelist
 - Issue Masterportal #1052 VectorStyle: path to an icon in the map or in the legend in style.json may be an icon name, a relative path to icon, a complete url or an svg.
 
 ---
 
-### 2.28.0 - 2023-09-27
-## Added
+## 2.28.0 - 2023-09-27
+### Added
 - GfiAttributes: GFI Attributes can now be configured as HTML tags, e.g <a>, <img> or <iframe>
 
-## Changed
+### Changed
 - The following packages have been updated:
     - dependencies:
         - ol: 7.5.1 to 7.5.2 (This version fix a bug for vectorTiles with declutter: true)
-## Fixed
+### Fixed
 - Issue Masterportal #1067 VectorStyle: if there is a ? in the services URL, no further one is added
 - Cesium tileset: set visibility and set opacity was fixed.
 - Webgl: set default style for feature and fix the opacity problem
 
 ---
 
-### 2.27.0 - 2023-08-31
-## Changed
+## 2.27.0 - 2023-08-31
+### Changed
 - VectorStyle: 'initializeStyleList' is asynchron, waits for loading finished and returns the loaded styles.
 
 ---
 
-### 2.26.0 - 2023-08-23
-## Changed
+## 2.26.0 - 2023-08-23
+### Changed
 - The following packages have been updated:
     - dependencies:
         - ol: 7.4.0 to 7.5.1

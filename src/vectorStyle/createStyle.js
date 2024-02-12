@@ -261,7 +261,9 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
             styleObjectGeometry.setText(getLabelStyle(feature, style, isClustered));
         }
     }
-    feature.setStyle(styleObjectGeometry);
+    if (feature?.getGeometry().getType() === "Point" || feature?.getGeometry().getType() === "MultiPoint") {
+        feature.setStyle(styleObjectGeometry);
+    }
     return styleObjectGeometry;
 }
 

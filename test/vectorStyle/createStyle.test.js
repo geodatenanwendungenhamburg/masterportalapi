@@ -263,7 +263,6 @@ describe("createStyle", () => {
         style.forEach(aStyle => {
             expect(aStyle).toBeInstanceOf(Style);
         });
-        expect(multiLineStringFeature.getStyle()).toEqual(style);
     });
 
     it("should return the correct style for a feature with geometry of type MultiPolygon ", () => {
@@ -297,7 +296,6 @@ describe("createStyle", () => {
         style.forEach(aStyle => {
             expect(aStyle).toBeInstanceOf(Style);
         });
-        expect(multiPolygonFeature.getStyle()).toEqual(style);
     });
 
     it("should return the correct style for a feature with geometry of type GeometryCollection ", () => {
@@ -331,7 +329,6 @@ describe("createStyle", () => {
         style.forEach(aStyle => {
             expect(aStyle).toBeInstanceOf(Style);
         });
-        expect(geometryCollectionFeature.getStyle()).toEqual(style);
     });
 
     it("should return the correct style for a feature with geometry of type MultiPoint ", () => {
