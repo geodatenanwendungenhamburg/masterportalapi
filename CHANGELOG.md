@@ -7,6 +7,7 @@
 
 ### Added
 ### Changed
+- stylePointCircle.js now has a zIndex of -1 to put unclustered Labels above clustered ones.
 ### Deprecated
 ### Removed
 ### Fixed
