@@ -76,11 +76,18 @@ export function makeParams (rawLayer) {
     return params;
 }
 
-async function defaultLoadFunction (image, src) {
-    const response = await fetch(src),
-        data = await response.blob();
+/**
+ * Return a ol tile or image load function for the rawLayer.
+ * @param {object} rawLayer - layer specification as in services.json
+ * @returns {function} tile/image load function
+ */
+export function defaultLoadFunction ({isSecured}) {
+    return async (image, src) => {
+        const response = await fetch(src, {credentials: isSecured ? "include" : "omit"}),
+            data = await response.blob();
 
-    image.getImage().src = URL.createObjectURL(data);
+        image.getImage().src = URL.createObjectURL(data);
+    };
 }
 
 /**
@@ -93,6 +100,7 @@ async function defaultLoadFunction (image, src) {
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {string} [rawLayer.cqlFilter] - optional CQL filter to add to the request
+ * @param {boolean} [rawLayer.isSecured] - whether the layer is secured by BasicAuth and should include or omit the credentials prompt
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
@@ -112,7 +120,7 @@ export function createLayerSource (rawLayer, options) {
             projection: projection,
             attributions: rawLayer.olAttribution,
             crossOrigin: rawLayer.crossOrigin,
-            imageLoadFunction: defaultLoadFunction
+            imageLoadFunction: defaultLoadFunction(rawLayer)
         });
     }
     if (options && options.resolutions) {
@@ -130,7 +138,7 @@ export function createLayerSource (rawLayer, options) {
         projection: projection,
         attributions: rawLayer.olAttribution,
         crossOrigin: rawLayer.crossOrigin,
-        tileLoadFunction: defaultLoadFunction
+        tileLoadFunction: defaultLoadFunction(rawLayer)
     });
 }
 

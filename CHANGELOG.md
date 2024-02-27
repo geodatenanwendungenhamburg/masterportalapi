@@ -10,6 +10,7 @@
 ### Deprecated
 ### Removed
 ### Fixed
+- Issue Masterportal #1114: `isSecured` parameter is considered for WMS load function
 - Issue Masterportal #1114: custom loading function for WMS is now applied on non-tiled WMS, too
 
 ---

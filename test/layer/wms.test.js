@@ -102,6 +102,40 @@ describe("wms.js", function () {
         });
     });
 
+    describe("defaultLoadFunction", function () {
+        beforeEach(() => {
+            const blob = new Blob();
+
+            global.fetch = jest.fn().mockImplementation(async (url, {credentials}) => {
+                if ((url === "SECURE_WMS" && credentials === "include") ||
+                    (url === "INSECURE_WMS" && (typeof credentials === "undefined" || credentials === "omit"))) {
+                    return {
+                        ok: true,
+                        status: 200,
+                        blob: () => Promise.resolve(blob)
+                    };
+                }
+                throw new Error("Bad request");
+            });
+            URL.createObjectURL = jest.fn().mockImplementation(value => value === blob ? "blob:BLOB" : null);
+        });
+
+        it("passes credentials if isSecured is set", async function () {
+            const result = wms.defaultLoadFunction({isSecured: true}),
+                input = {src: ""};
+
+            await result({getImage: () => input}, "SECURE_WMS");
+            expect(input.src).toEqual("blob:BLOB");
+        });
+        it("does not pass credentials if isSecured is not set", async function () {
+            const result = wms.defaultLoadFunction({isSecured: false}),
+                input = {src: ""};
+
+            await result({getImage: () => input}, "INSECURE_WMS");
+            expect(input.src).toEqual("blob:BLOB");
+        });
+    });
+
     describe("createLayerSource", function () {
         it("creates a TileWMS for multi tile requests", function () {
             const source = wms.createLayerSource({singleTile: false});
