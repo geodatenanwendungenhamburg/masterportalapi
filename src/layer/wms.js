@@ -76,11 +76,11 @@ export function makeParams (rawLayer) {
     return params;
 }
 
-async function defaultTileLoadFunction (imageTile, src) {
+async function defaultLoadFunction (image, src) {
     const response = await fetch(src),
         data = await response.blob();
 
-    imageTile.getImage().src = URL.createObjectURL(data);
+    image.getImage().src = URL.createObjectURL(data);
 }
 
 /**
@@ -111,7 +111,8 @@ export function createLayerSource (rawLayer, options) {
             serverType: rawLayer.serverType,
             projection: projection,
             attributions: rawLayer.olAttribution,
-            crossOrigin: rawLayer.crossOrigin
+            crossOrigin: rawLayer.crossOrigin,
+            imageLoadFunction: defaultLoadFunction
         });
     }
     if (options && options.resolutions) {
@@ -129,7 +130,7 @@ export function createLayerSource (rawLayer, options) {
         projection: projection,
         attributions: rawLayer.olAttribution,
         crossOrigin: rawLayer.crossOrigin,
-        tileLoadFunction: defaultTileLoadFunction
+        tileLoadFunction: defaultLoadFunction
     });
 }
 
