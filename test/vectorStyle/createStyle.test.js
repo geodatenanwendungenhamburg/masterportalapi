@@ -5,76 +5,14 @@ import PolygonStyle from "../../src/vectorStyle/styles/polygon/stylePolygon";
 import {Style, Stroke, Fill} from "ol/style.js";
 import {GeoJSON} from "ol/format.js";
 
+let rules,
+    jsonObjects,
+    multiLineStringRules,
+    multiPolygonRules,
+    isClustered;
+
 const wfsImgPathFromConfig = "/path/to/wfs/images",
-    rules = [
-        {
-            conditions: {
-                properties: {
-                    id: "test1"
-                }
-            },
-            style: {
-                legendValue: "legendValueText",
-                circleStrokeColor: [255, 0, 0, 1],
-                type: "circle",
-                lineStrokeColor: [100, 0, 0, 1],
-                polygonStrokeColor: [100, 100, 0, 1]
-            }
-        },
-        {
-            style: {
-                legendValue: "LineStringLegend",
-                lineStrokeColor: [255, 0, 0, 1]
-            }
-        },
-        {
-            style: {
-                legendValue: "PolygonLegend",
-                polygonStrokeColor: [255, 0, 0, 255]
-            }
-        },
-        {
-            conditions: {
-                properties: {
-                    value: [0, 50, "@min", "@max"]
-                }
-            },
-            style: {
-                legendValue: "legendValueText",
-                circleStrokeColor: [255, 0, 0, 1]
-            }
-        },
-        {
-            style: {
-                legendValue: "legendValueText",
-                circleStrokeColor: [255, 255, 255, 1]
-            }
-        }
-    ],
-    multiLineStringRules = [{
-        style: {
-            legendValue: "legendValueText",
-            lineStrokeColor: [255, 255, 255, 1]
-        }
-    },
-    {
-        style: {
-            legendValue: "legendValueText",
-            lineStrokeColor: [255, 0, 0, 1]
-        }
-    }],
-    multiPolygonRules = [{
-        style: {
-            legendValue: "legendValueText",
-            polygonStrokeColor: [100, 100, 0, 1]
-        }
-    },
-    {
-        style: {
-            legendValue: "legendValueText",
-            polygonStrokeColor: [255, 0, 0, 1]
-        }
-    }],
+    defaultStrokeColor = [0, 0, 0, 1],
     geojsonReader = new GeoJSON(),
     jsonFeatures = {
         "type": "FeatureCollection",
@@ -221,8 +159,6 @@ const wfsImgPathFromConfig = "/path/to/wfs/images",
         null;
     });
 
-let jsonObjects;
-
 
 beforeAll(function () {
     jsonObjects = geojsonReader.readFeatures(jsonFeatures);
@@ -231,10 +167,82 @@ afterAll(() => {
     warn.mockReset();
 });
 
+beforeEach(() => {
+    isClustered = false;
+    rules = [
+        {
+            conditions: {
+                properties: {
+                    id: "test1"
+                }
+            },
+            style: {
+                legendValue: "legendValueText",
+                circleStrokeColor: [255, 0, 0, 1],
+                type: "circle",
+                lineStrokeColor: [100, 0, 0, 1],
+                polygonStrokeColor: [100, 100, 0, 1]
+            }
+        },
+        {
+            style: {
+                legendValue: "LineStringLegend",
+                lineStrokeColor: [255, 0, 0, 1]
+            }
+        },
+        {
+            style: {
+                legendValue: "PolygonLegend",
+                polygonStrokeColor: [255, 0, 0, 255]
+            }
+        },
+        {
+            conditions: {
+                properties: {
+                    value: [0, 50, "@min", "@max"]
+                }
+            },
+            style: {
+                legendValue: "legendValueText",
+                circleStrokeColor: [255, 0, 0, 1]
+            }
+        },
+        {
+            style: {
+                legendValue: "legendValueText",
+                circleStrokeColor: [255, 255, 255, 1]
+            }
+        }
+    ];
+    multiLineStringRules = [{
+        style: {
+            legendValue: "legendValueText",
+            lineStrokeColor: [255, 255, 255, 1]
+        }
+    },
+    {
+        style: {
+            legendValue: "legendValueText",
+            lineStrokeColor: [255, 0, 0, 1]
+        }
+    }];
+    multiPolygonRules = [{
+        style: {
+            legendValue: "legendValueText",
+            polygonStrokeColor: [100, 100, 0, 1]
+        }
+    },
+    {
+        style: {
+            legendValue: "legendValueText",
+            polygonStrokeColor: [255, 0, 0, 1]
+        }
+    }];
+});
+
 describe("createStyle", () => {
     it("should return the correct style for a feature", () => {
         const styleObject = {styleId: "myStyle", rules: [{style: {type: "Point"}}]},
-            isClustered = false,
             style = createStyle.createStyle(styleObject, jsonObjects[0], isClustered, wfsImgPathFromConfig);
 
         expect(style).toBeInstanceOf(Style);
@@ -254,7 +262,6 @@ describe("createStyle", () => {
                 }
             }],
             styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
-            isClustered = false,
             multiLineStringFeature = jsonObjects[4],
             style = createStyle.createStyle(styleObject, multiLineStringFeature, isClustered, wfsImgPathFromConfig);
 
@@ -287,7 +294,6 @@ describe("createStyle", () => {
                 }
             }],
             styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
-            isClustered = false,
             multiPolygonFeature = jsonObjects[5],
             style = createStyle.createStyle(styleObject, multiPolygonFeature, isClustered, wfsImgPathFromConfig);
 
@@ -320,7 +326,6 @@ describe("createStyle", () => {
                 }
             }],
             styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
-            isClustered = false,
             geometryCollectionFeature = jsonObjects[6],
             style = createStyle.createStyle(styleObject, geometryCollectionFeature, isClustered, wfsImgPathFromConfig);
 
@@ -353,7 +358,6 @@ describe("createStyle", () => {
                 }
             }],
             styleObject = {styleId: "styleId", styleMultiGeomOnlyWithRule: true, rules: stylingRules},
-            isClustered = false,
             multiPointFeature = jsonObjects[3],
             style = createStyle.createStyle(styleObject, multiPointFeature, isClustered, wfsImgPathFromConfig);
 
@@ -367,8 +371,6 @@ describe("createStyle", () => {
 });
 
 describe("getSimpleGeometryStyle", function () {
-    let isClustered = false;
-
     it("should return ol point style - not clustered", function () {
         const styleObject = createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], isClustered, wfsImgPathFromConfig);
 
@@ -405,7 +407,7 @@ describe("getSimpleGeometryStyle", function () {
 
         expect(styleObject).toBeInstanceOf(PointStyle);
         expect(typeof styleObject).toBe("object");
-        expect(styleObject.getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+        expect(styleObject.getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
         expect(styleObject.getLegendInfos()[0].styleObject.circleStrokeColor).toEqual([255, 0, 0, 1]);
     });
     it("should return ol linestring style - clustered", function () {
@@ -435,51 +437,157 @@ describe("getSimpleGeometryStyle", function () {
 
 describe("getMultiGeometryStyle", function () {
     it("should return style array for multipoint", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig).length).toEqual(2);
+        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
     });
-    it("should include ol point style", function () {
-        expect(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig)[0]).toBeInstanceOf(PointStyle);
-        expect(typeof createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig)[0]).toBe("object");
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig)[0].getStyle().getImage().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, wfsImgPathFromConfig)[0].getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+    it("should include ol point style - use defaultStyle for stroke color", function () {
+        delete rules[0].style.circleStrokeColor;
+        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[1]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+    });
+    it("should include ol point style - is clustered and use defaultStyle for stroke color", function () {
+        isClustered = true;
+        delete rules[0].style.circleStrokeColor;
+        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[1]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+    });
+    it("should include ol point style- use rules for stroke color", function () {
+        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[1]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
+        expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
+    });
+    it("should include ol point style- is clustered and use rules for stroke color", function () {
+        isClustered = true;
+        rules[0].style.clusterCircleStrokeColor = [1, 2, 3, 4];
+        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[1]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.clusterCircleStrokeColor);
+        expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.clusterCircleStrokeColor);
     });
     it("should return style array for MultiLineString", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig).length).toEqual(2);
+        const style = createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
     });
-    it("should include ol stroke style", function () {
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig)[0]).toBeInstanceOf(LineStringStyle);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig)[0].getStyle().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, wfsImgPathFromConfig)[0].getStyle().getStroke().getColor()).toEqual([255, 255, 255, 1]);
+    it("MultiLineString: should include ol line style - use defaultStyle for stroke color", function () {
+        delete multiLineStringRules[0].style.lineStrokeColor;
+        delete multiLineStringRules[1].style.lineStrokeColor;
+        const style = createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(LineStringStyle);
+        expect(style[1]).toBeInstanceOf(LineStringStyle);
+        expect(style[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
+    });
+    it("MultiLineString: should include ol line style - use rules for stroke color", function () {
+        const style = createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], multiLineStringRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(LineStringStyle);
+        expect(style[1]).toBeInstanceOf(LineStringStyle);
+        expect(style[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getStroke().getColor()).toEqual(multiLineStringRules[0].style.lineStrokeColor);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(multiLineStringRules[0].style.lineStrokeColor);
     });
     it("should return style array for MultiPolygon", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig).length).toEqual(2);
+        const style = createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
     });
-    it("should include ol polygon style", function () {
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig)[0]).toBeInstanceOf(PolygonStyle);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig)[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig)[0].getStyle().getFill()).toBeInstanceOf(Fill);
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig)[0].getStyle().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, wfsImgPathFromConfig)[0].getStyle().getStroke().getColor()).toEqual([100, 100, 0, 1]);
+    it("should include ol polygon style - use defaultStyle for stroke color", function () {
+        delete multiPolygonRules[0].style.polygonStrokeColor;
+        delete multiPolygonRules[1].style.polygonStrokeColor;
+        const style = createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PolygonStyle);
+        expect(style[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getFill()).toBeInstanceOf(Fill);
+        expect(style[0].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getFill()).toBeInstanceOf(Fill);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
+    });
+    it("should include ol polygon style - use rules for stroke color", function () {
+        const style = createStyle.getMultiGeometryStyle("MultiPolygon", jsonObjects[5], multiPolygonRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PolygonStyle);
+        expect(style[0].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getFill()).toBeInstanceOf(Fill);
+        expect(style[0].getStyle().getStroke().getColor()).toEqual(multiPolygonRules[0].style.polygonStrokeColor);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getFill()).toBeInstanceOf(Fill);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(multiPolygonRules[0].style.polygonStrokeColor);
     });
     it("should return style array for GeometryCollection", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig).length).toEqual(2);
+        const style = createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
     });
-    it("should include ol line and point style", function () {
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig)[0]).toBeInstanceOf(PointStyle);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, wfsImgPathFromConfig)[1]).toBeInstanceOf(LineStringStyle);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig)[0].getStyle().getImage().getStroke()).toBeInstanceOf(Stroke);
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig)[0].getStyle().getImage().getStroke().getColor())).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, wfsImgPathFromConfig)[0].getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
-        expect(createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, wfsImgPathFromConfig)[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+    it("should include ol line and point style - use defaultStyle for stroke color", function () {
+        delete rules[0].style.circleStrokeColor;
+        delete rules[0].style.lineStrokeColor;
+        delete multiLineStringRules[0].style.lineStrokeColor;
+        const style = createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, isClustered, wfsImgPathFromConfig),
+            multiLineStyle = createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(style[1]).toBeInstanceOf(LineStringStyle);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
+
+        expect(multiLineStyle[0]).toBeInstanceOf(PointStyle);
+        expect(multiLineStyle[0].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(multiLineStyle[1]).toBeInstanceOf(LineStringStyle);
+        expect(multiLineStyle[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(multiLineStyle[1].getStyle().getStroke().getColor()).toEqual(defaultStrokeColor);
     });
-    it("features with more geometries than rules (rules: 1, geometries: 2) should have style for all geometries - styleMultiGeomOnlyWithRule=false", function () {
-        expect(Array.isArray(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rulesWithOneEntry, wfsImgPathFromConfig))).toBe(true);
-        expect(createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rulesWithOneEntry, wfsImgPathFromConfig).length).toEqual(2);
+    it("should include ol line and point style - use rules for stroke color", function () {
+        const style = createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], rules, isClustered, wfsImgPathFromConfig),
+            multiLineStyle = createStyle.getMultiGeometryStyle("GeometryCollection", jsonObjects[6], multiLineStringRules, isClustered, wfsImgPathFromConfig);
+
+        expect(style[0]).toBeInstanceOf(PointStyle);
+        expect(style[0].getStyle().getImage().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
+        expect(style[1]).toBeInstanceOf(LineStringStyle);
+        expect(style[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(style[1].getStyle().getStroke().getColor()).toEqual(rules[0].style.lineStrokeColor);
+
+        expect(multiLineStyle[0]).toBeInstanceOf(PointStyle);
+        // multiLineStringRules[0].style.circleStrokeColor is not defined --> use defaultStrokeColor
+        expect(multiLineStyle[0].getStyle().getImage().getStroke().getColor()).toEqual(defaultStrokeColor);
+        expect(multiLineStyle[1]).toBeInstanceOf(LineStringStyle);
+        expect(multiLineStyle[1].getStyle().getStroke()).toBeInstanceOf(Stroke);
+        expect(multiLineStyle[1].getStyle().getStroke().getColor()).toEqual(multiLineStringRules[0].style.lineStrokeColor);
+    });
+    it("features with more geometries than rules (rules: 1, geometries: 2) should have style for all geometries - 'styleMultiGeomOnlyWithRule' is not set", function () {
+        const style = createStyle.getMultiGeometryStyle("MultiLineString", jsonObjects[4], rulesWithOneEntry, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
+        expect(style[0].getStyle().getStroke().getColor()).toEqual(rulesWithOneEntry[0].style.lineStrokeColor);
+        expect(style[1].getStyle()).toEqual(null);
     });
 });
 
@@ -494,12 +602,22 @@ describe("isMultiGeometry", function () {
 });
 
 describe("getGeometryStyle", function () {
-    it("should return ol style with correct settings", function () {
-        expect(createStyle.getGeometryStyle(jsonObjects[0], rules, wfsImgPathFromConfig)).toBeInstanceOf(PointStyle);
-        expect(Array.isArray(createStyle.getGeometryStyle(jsonObjects[0], rules, wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor())).toBe(true);
-        expect(createStyle.getGeometryStyle(jsonObjects[0], rules, wfsImgPathFromConfig).getStyle().getImage().getStroke().getColor()).toEqual([0, 0, 0, 1]);
+    it("should return point style with correct settings", function () {
+        const style = createStyle.getGeometryStyle(jsonObjects[0], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(style).toBeInstanceOf(PointStyle);
+        expect(Array.isArray(style.getStyle().getImage().getStroke().getColor())).toBe(true);
+        expect(style.getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
+    });
+    it("should return 'MultiPoint' style with correct settings", function () {
+        const style = createStyle.getGeometryStyle(jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+
+        expect(Array.isArray(style)).toBe(true);
+        expect(style.length).toEqual(2);
+        expect(style[0].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
+        expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
     });
     it("should return null as style if no rule is found", function () {
-        expect(createStyle.getGeometryStyle(jsonObjects[0], [], wfsImgPathFromConfig).getStyle()).toBe(null);
+        expect(createStyle.getGeometryStyle(jsonObjects[0], [], isClustered, wfsImgPathFromConfig).getStyle()).toBe(null);
     });
 });
