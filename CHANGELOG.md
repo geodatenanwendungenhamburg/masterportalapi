@@ -3,14 +3,10 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.34.0 - 2024-03-04
 
-### Added
 ### Changed
 - stylePointCircle.js now has a zIndex of -1 to put unclustered Labels above clustered ones.
-### Deprecated
-### Removed
-### Fixed
 
 ---
 
