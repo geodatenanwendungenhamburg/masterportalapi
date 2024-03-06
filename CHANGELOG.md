@@ -10,6 +10,7 @@
 ### Deprecated
 ### Removed
 ### Fixed
+- Issue Masterportal #1127: fixed styling of clustered and not clustered circles.
 
 ---
 ## 2.34.0 - 2024-03-04

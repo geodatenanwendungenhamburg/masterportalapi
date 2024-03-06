@@ -402,8 +402,19 @@ describe("getSimpleGeometryStyle", function () {
     });
 
     it("should return ol point style - clustered", function () {
+        const geometry = jsonObjects[0].getGeometry();
+        let styleObject;
+
         isClustered = true;
-        const styleObject = createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], isClustered, wfsImgPathFromConfig);
+
+        isClustered = true;
+        jsonObjects[0].get = (key) => {
+            if (key === "features") {
+                return [{id: "cluster1"}, {id: "cluster2"}];
+            }
+            return geometry;
+        };
+        styleObject = createStyle.getSimpleGeometryStyle("Point", jsonObjects[0], rules[0], isClustered, wfsImgPathFromConfig);
 
         expect(styleObject).toBeInstanceOf(PointStyle);
         expect(typeof styleObject).toBe("object");
@@ -470,9 +481,18 @@ describe("getMultiGeometryStyle", function () {
         expect(style[1].getStyle().getImage().getStroke().getColor()).toEqual(rules[0].style.circleStrokeColor);
     });
     it("should include ol point style- is clustered and use rules for stroke color", function () {
+        const geometry = jsonObjects[3].getGeometry();
+        let style;
+
         isClustered = true;
+        jsonObjects[3].get = (key) => {
+            if (key === "features") {
+                return [{id: "cluster1"}, {id: "cluster2"}];
+            }
+            return geometry;
+        };
         rules[0].style.clusterCircleStrokeColor = [1, 2, 3, 4];
-        const style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
+        style = createStyle.getMultiGeometryStyle("MultiPoint", jsonObjects[3], rules, isClustered, wfsImgPathFromConfig);
 
         expect(style[0]).toBeInstanceOf(PointStyle);
         expect(style[1]).toBeInstanceOf(PointStyle);
