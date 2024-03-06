@@ -406,8 +406,6 @@ describe("getSimpleGeometryStyle", function () {
         let styleObject = null;
 
         isClustered = true;
-
-        isClustered = true;
         jsonObjects[0].get = (key) => {
             if (key === "features") {
                 return [{id: "cluster1"}, {id: "cluster2"}];
