@@ -403,7 +403,7 @@ describe("getSimpleGeometryStyle", function () {
 
     it("should return ol point style - clustered", function () {
         const geometry = jsonObjects[0].getGeometry();
-        let styleObject;
+        let styleObject = null;
 
         isClustered = true;
 
@@ -482,7 +482,7 @@ describe("getMultiGeometryStyle", function () {
     });
     it("should include ol point style- is clustered and use rules for stroke color", function () {
         const geometry = jsonObjects[3].getGeometry();
-        let style;
+        let style = null;
 
         isClustered = true;
         jsonObjects[3].get = (key) => {
