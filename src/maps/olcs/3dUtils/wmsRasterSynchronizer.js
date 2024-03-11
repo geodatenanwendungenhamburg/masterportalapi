@@ -112,7 +112,8 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
             provider = this.createProviderForTileWMS(source, viewProj, olLayer);
         }
         else if (source instanceof ImageWMS) {
-            return [this.createImageryLayerForImageWMS(olLayer, viewProj)];
+            cesiumLayer = this.createImageryLayerForImageWMS(olLayer, viewProj);
+            return cesiumLayer ? [cesiumLayer] : null;
         }
         else if (source instanceof StaticImageSource) {
             provider = this.createProviderForStaticImageSource(source);
