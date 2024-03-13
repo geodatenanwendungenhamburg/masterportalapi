@@ -11,6 +11,7 @@
 ### Removed
 ### Fixed
 - Issue Masterportal #1127: fixed styling of clustered and not clustered circles.
+- WFST parsing featureType wfs.js with attribute required true by defaut
 
 ---
 ## 2.34.0 - 2024-03-04

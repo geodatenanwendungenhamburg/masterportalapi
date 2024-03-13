@@ -447,7 +447,7 @@ function parseDescribeFeatureTypeResponse (responseData, featureType) {
             key: "",
             value: null,
             type: "string",
-            required: false
+            required: true
         }));
     }
     return [];
