@@ -1,4 +1,4 @@
-import OverlaySynchronizer from "olcs/OverlaySynchronizer.js";
+import OverlaySynchronizer from "olcs";
 
 /**
  * Represents a FixedOverlaySynchronizer.
@@ -17,8 +17,12 @@ class FixedOverlaySynchronizer extends OverlaySynchronizer {
      * @struct
      */
     constructor (map, scene) {
-        super(map, scene);
+        super({map, scene});
     }
+
+    // synchronize(){
+    //     super.synchronize()
+    // }
 
     /**
      * @api

@@ -2,12 +2,12 @@
  * @module olcs.WMSRasterSynchronizer
  */
 import olLayerGroup from "ol/layer/Group.js";
-import {getUid} from "olcs/util.js";
+import {getUid} from "olcs";
 import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
 import WMTS from "ol/source/WMTS.js";
-import olcsAbstractSynchronizer from "olcs/AbstractSynchronizer.js";
-import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs/core.js";
+import olcsAbstractSynchronizer from "olcs";
+import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
 import {stableSort} from "ol/array.js";
 import {getBottomLeft, getBottomRight, getTopRight, getTopLeft} from "ol/extent.js";
@@ -31,7 +31,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
      * @struct
      */
     constructor (map, scene) {
-        super(map, scene);
+        super({map, scene});
         /**
          * @type {!Cesium.ImageryLayerCollection}
          * @private

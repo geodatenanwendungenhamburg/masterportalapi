@@ -1,6 +1,6 @@
-import OLCesium from "olcs/OLCesium.js";
+import OLCesium from "olcs";
 import {transform, get} from "ol/proj.js";
-import VectorSynchronizer from "olcs/VectorSynchronizer.js";
+import VectorSynchronizer from "olcs";
 
 import FixedOverlaySynchronizer from "./3dUtils/fixedOverlaySynchronizer.js";
 import WMSRasterSynchronizer from "./3dUtils/wmsRasterSynchronizer.js";
@@ -110,7 +110,7 @@ export function createMap (settings) {
         time: settings?.shadowTime,
         stopOpenLayersEventsPropagation: true,
         createSynchronizers: (olMap, scene) => {
-            return [new WMSRasterSynchronizer(olMap, scene), new VectorSynchronizer(olMap, scene), new FixedOverlaySynchronizer(olMap, scene)];
+            return [new WMSRasterSynchronizer(olMap, scene), new VectorSynchronizer({map: olMap, scene}), new FixedOverlaySynchronizer(olMap, scene)];
         }
     });
 
