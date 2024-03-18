@@ -6,6 +6,8 @@
 ## Unreleased - in development
 
 ### Added
+- WMS: Support for using CQL filters by attribute added.
+
 ### Changed
 ### Deprecated
 ### Removed

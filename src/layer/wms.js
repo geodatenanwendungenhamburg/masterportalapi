@@ -55,6 +55,7 @@ export function addOptionalParams (params, rawLayer) {
  * @param {boolean} rawLayer.singleTile - whether only one tile shall be requested that fills the whole view
  * @param {boolean} rawLayer.STYLES - styles of the layer, if available
  * @param {(string|number)} rawLayer.tilesize - if singleTile is true, this is the requested tilesize
+ * @param {string} rawLayer.cqlFilter - CQL filter
  * @returns {object} maps query parameter names to values
  */
 export function makeParams (rawLayer) {
@@ -66,7 +67,8 @@ export function makeParams (rawLayer) {
         LAYERS: rawLayer.layers,
         VERSION: rawLayer.version,
         TRANSPARENT: rawLayer.transparent,
-        SINGLETILE: rawLayer.singleTile
+        SINGLETILE: rawLayer.singleTile,
+        CQL_FILTER: rawLayer.cqlFilter
     }, rawLayer.singleTile ? {} : {WIDTH: rawLayer.tilesize, HEIGHT: rawLayer.tilesize});
 
     params = addOptionalParams(params, rawLayer);
@@ -90,6 +92,7 @@ async function defaultTileLoadFunction (imageTile, src) {
  * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
+ * @param {string} [rawLayer.cqlFilter] - optional CQL filter to add to the request
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid

@@ -25,7 +25,8 @@ describe("wms.js", function () {
                 LAYERS: "b",
                 VERSION: "c",
                 TRANSPARENT: "d",
-                SINGLETILE: "e"
+                SINGLETILE: "e",
+                CQL_FILTER: "f"
             };
         });
 
@@ -38,6 +39,7 @@ describe("wms.js", function () {
             expect(extendedParams.VERSION).toEqual("c");
             expect(extendedParams.TRANSPARENT).toEqual("d");
             expect(extendedParams.SINGLETILE).toEqual("e");
+            expect(extendedParams.CQL_FILTER).toEqual("f");
             expect(extendedParams.TIME).toEqual("The time");
             expect(extendedParams.STYLES).not.toBeDefined();
         });
@@ -50,6 +52,7 @@ describe("wms.js", function () {
             expect(extendedParams.VERSION).toEqual("c");
             expect(extendedParams.TRANSPARENT).toEqual("d");
             expect(extendedParams.SINGLETILE).toEqual("e");
+            expect(extendedParams.CQL_FILTER).toEqual("f");
             expect(extendedParams.STYLES).toEqual("The style");
             expect(extendedParams.TIME).not.toBeDefined();
         });
