@@ -2,12 +2,12 @@
  * @module olcs.WMSRasterSynchronizer
  */
 import olLayerGroup from "ol/layer/Group.js";
-import {getUid} from "olcs";
+import {getUid} from "olcs/src/olcs/util";
 import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
 import WMTS from "ol/source/WMTS.js";
-import olcsAbstractSynchronizer from "olcs";
-import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs";
+import AbstractSynchronizer from "olcs/src/olcs/AbstractSynchronizer";
+import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs/src/olcs/core";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
 import {stableSort} from "ol/array.js";
 import {getBottomLeft, getBottomRight, getTopRight, getTopLeft} from "ol/extent.js";
@@ -18,7 +18,7 @@ import proj4 from "proj4";
 /**
  * Represents a WMSRasterSynchronizer.
  */
-class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
+class WMSRasterSynchronizer extends AbstractSynchronizer {
     /**
      * This object takes care of one-directional synchronization of
      * Openlayers WMS raster layers to the given Cesium globe. This Synchronizer
@@ -31,7 +31,7 @@ class WMSRasterSynchronizer extends olcsAbstractSynchronizer {
      * @struct
      */
     constructor (map, scene) {
-        super({map, scene});
+        super(map, scene);
         /**
          * @type {!Cesium.ImageryLayerCollection}
          * @private
