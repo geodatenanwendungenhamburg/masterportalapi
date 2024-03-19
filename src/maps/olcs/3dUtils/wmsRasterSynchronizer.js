@@ -2,12 +2,12 @@
  * @module olcs.WMSRasterSynchronizer
  */
 import olLayerGroup from "ol/layer/Group.js";
-import {getUid} from "olcs/src/olcs/util.ts";
+import {getUid} from "olcs/lib/olcs/util.js";
 import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
 import WMTS from "ol/source/WMTS.js";
-import AbstractSynchronizer from "olcs/src/olcs/AbstractSynchronizer.ts";
-import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs/src/olcs/core.ts";
+import AbstractSynchronizer from "olcs/lib/olcs/AbstractSynchronizer.js";
+import {extentToRectangle, tileLayerToImageryLayer, updateCesiumLayerProperties} from "olcs/lib/olcs/core.js";
 import {Tile, Image as ImageLayer} from "ol/layer.js";
 import {stableSort} from "ol/array.js";
 import {getBottomLeft, getBottomRight, getTopRight, getTopLeft} from "ol/extent.js";
