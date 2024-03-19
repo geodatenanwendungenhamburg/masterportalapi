@@ -7,6 +7,11 @@
 
 ### Added
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 8.2.0 to 9.0.0
+        - ol-mapbox-style: 12.0.0 to 12.2.1
+        - olcs: 2.16.0 to 2.19.3
 ### Deprecated
 ### Removed
 ### Fixed

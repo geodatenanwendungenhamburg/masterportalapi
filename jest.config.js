@@ -11,9 +11,10 @@ module.exports = {
     "collectCoverageFrom": ["src/**/*.js"],
     /** coverage reporters */
     "coverageReporters": ["json", "lcov", "text", "clover", "cobertura"],
-    /** mapping svg to string representation since jest can't handle svg */
+    /** mapping svg to string representation since jest can't handle svg and mapping olcs paths*/
     "moduleNameMapper": {
-        "marker.svg": "<rootDir>/public/stringMarker.js"
+        "marker.svg": "<rootDir>/public/stringMarker.js",
+        "olcs/src/olcs/(.*)$": "<rootDir>/node_modules/olcs/src/olcs/$1"
     },
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": ["./jest.setup.js"],
