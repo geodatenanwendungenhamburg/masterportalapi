@@ -11,7 +11,8 @@
 ### Removed
 ### Fixed
 - Issue Masterportal #1114: `isSecured` parameter is considered for WMS load function
-- Issue Masterportal #1114: custom loading function for WMS is now applied on non-tiled WMS, too
+- Issue Masterportal #1114: custom loading function for WMS is now applied on non-tiled WMS, too.
+  However, because of issue 666 in ol-cesium it does not work for 3D and is enabled for `isSecured: true` layers only
 - Image layers that cannot be converted by olcs are now properly handled
 
 ---

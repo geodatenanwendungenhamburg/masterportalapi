@@ -120,7 +120,9 @@ export function createLayerSource (rawLayer, options) {
             projection: projection,
             attributions: rawLayer.olAttribution,
             crossOrigin: rawLayer.crossOrigin,
-            imageLoadFunction: defaultLoadFunction(rawLayer)
+            ...rawLayer.isSecured ? { // TODO: Remove this guard when olcs#666 is resolved
+                imageLoadFunction: defaultLoadFunction(rawLayer)
+            } : {}
         });
     }
     if (options && options.resolutions) {
