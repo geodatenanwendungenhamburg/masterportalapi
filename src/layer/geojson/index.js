@@ -1,4 +1,4 @@
-import VectorLayer from "ol/layer/Vector";
+import VectorLayer from "ol/layer/Vector.js";
 import GeoJSON from "ol/format/GeoJSON.js";
 import style, {setCustomStyles} from "./style";
 import * as webgl from "../../renderer/webgl";
