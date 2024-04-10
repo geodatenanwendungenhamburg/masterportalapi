@@ -26,7 +26,7 @@ async function createTerrainProvider (rawLayer) {
  * @param {OLCesium} map ol cesium map
  * @returns {void}
  */
-async function setVisible (value, rawLayer, map) {
+export async function setVisible (value, rawLayer, map) {
     if (map && typeof map.getCesiumScene === "function") {
         if (value) {
             map.getCesiumScene().terrainProvider = await createTerrainProvider(rawLayer);
@@ -64,5 +64,3 @@ export function get (key) {
     }
     return this.values[key];
 }
-
-module.exports.setVisible = setVisible;
