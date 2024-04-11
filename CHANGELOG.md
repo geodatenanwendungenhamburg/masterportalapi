@@ -3,9 +3,8 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.36.0 - 2024-04-11
 
-### Added
 ### Changed
 - The following packages have been updated:
     - dependencies:
@@ -13,9 +12,6 @@
         - ol-mapbox-style: 12.0.0 to 12.2.1
         - olcs: 2.16.0 to 2.19.3
         - proj4: 2.9.1 to 2.10.0
-### Deprecated
-### Removed
-### Fixed
 
 ---
 
