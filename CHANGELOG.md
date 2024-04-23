@@ -3,12 +3,8 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.37.0 - 2024-04-23
 
-### Added
-### Changed
-### Deprecated
-### Removed
 ### Fixed
 - Issue Masterportal #1114: `isSecured` parameter is considered for WMS load function
 - Issue Masterportal #1114: custom loading function for WMS is now applied on non-tiled WMS, too.
