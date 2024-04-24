@@ -107,6 +107,7 @@ export function createVectorTileLayerRenderer () {
                         fragment: result.builder.getSymbolFragmentShader(),
                         vertex: result.builder.getSymbolVertexShader()
                     },
+                    builder: result.builder,
                     attributes: {
                         fillColor: {
                             size: 2,
