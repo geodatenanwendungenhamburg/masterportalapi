@@ -17,6 +17,7 @@
 ### Removed
 
 ### Fixed
+- The mitigation for issue 666 in ol-cesium since version 2.37.0 is removed
 
 ---
 
