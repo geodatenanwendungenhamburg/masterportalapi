@@ -6,9 +6,16 @@
 ## Unreleased - in development
 
 ### Added
+
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - olcs: 2.19.3 to 2.20.0
+
 ### Deprecated
+
 ### Removed
+
 ### Fixed
 
 ---
