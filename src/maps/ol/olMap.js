@@ -148,7 +148,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     crs.registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
-    
+
     const selectedInteractions = Object.assign({}, {dragPan: false, altShiftDragRotate: false, pinchRotate: false}, config.mapInteractions?.interactionModes),
         map = new Map(Object.assign({
             target: config.target || defaults.target,
