@@ -148,7 +148,8 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
     crs.registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
-    const selectedInteractions = Object.assign({}, config.mapInteractions?.interactionModes, {dragPan: false, altShiftDragRotate: false, pinchRotate: false}),
+    
+    const selectedInteractions = Object.assign({}, {dragPan: false, altShiftDragRotate: false, pinchRotate: false}, config.mapInteractions?.interactionModes),
         map = new Map(Object.assign({
             target: config.target || defaults.target,
             interactions: olDefaultInteractions(selectedInteractions).extend([
@@ -157,7 +158,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
                         if (event.originalEvent.shiftKey) {
                             return false;
                         }
-                        return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.twoFingerPan && this.getPointerCount() === 2) || !config.twoFingerPan;
+                        return (!event.originalEvent.pointerType || event.originalEvent.pointerType === "mouse") || (config.mapInteractions?.interactionModes?.twoFingerPan && this.getPointerCount() === 2) || !config.mapInteractions?.interactionModes?.twoFingerPan;
                     }
                 })
             ]),
