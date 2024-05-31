@@ -152,7 +152,7 @@ export function checkProperties (feature, rule) {
 
                 key = properties[i].attrName;
 
-                if (checkProperty(featureProperties, key, value)) {
+                if (!checkProperty(featureProperties, key, value)) {
                     return false;
                 }
             }

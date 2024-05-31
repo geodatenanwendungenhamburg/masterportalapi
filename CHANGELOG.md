@@ -34,6 +34,7 @@
 - The mitigation for issue 666 in ol-cesium since version 2.37.0 is removed
 - Webgl: vectorTiles were not displayed.
 - WMS-Layer: special loadFunction is only used if layer's attribute `isSecured` is true.
+- Issue#1170: checkProperty was not negated, although it should be, so that styling-rules can be properly excluded.
 
 ---
 
