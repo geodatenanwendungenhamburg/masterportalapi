@@ -178,7 +178,7 @@ function createUrl (rawLayer) {
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
  */
-export function createLayerSource (rawLayer, options = {}) {
+function createLayerSource (rawLayer, options = {}) {
     if (!options.loadingStrategy) {
         options.loadingStrategy = bbox;
     }
@@ -203,7 +203,7 @@ export function createLayerSource (rawLayer, options = {}) {
  * @param {options} [optionalParams.options] - additional options
  * @returns {ol.Layer} Layer that can be added to map.
  */
-export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
+function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
     let layer, source;
 
     // use WebGL render pipeline, if specified
@@ -246,7 +246,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
  * @param {module:ol/vector/Source} layerSource - the source of the layer
  * @returns {void}
  */
-export function loadFeaturesManually (layerAttributes, layerSource) {
+function loadFeaturesManually (layerAttributes, layerSource) {
     const getUrl = createUrl(layerAttributes, layerAttributes.version, {getCode: () => layerAttributes.crs}, "");
 
     fetch(getUrl, layerSource)
@@ -260,3 +260,5 @@ export function loadFeaturesManually (layerAttributes, layerSource) {
             console.error(error);
         });
 }
+
+export default {createLayer,createLayerSource, loadFeaturesManually};

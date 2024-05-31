@@ -6,7 +6,7 @@ import wmts from "./layer/wmts";
 import wfs from "./layer/wfs";
 import * as geojson from "./layer/geojson";
 import * as vectorTile from "./layer/vectorTile";
-import * as oaf from "./layer/oaf";
+import oaf from "./layer/oaf";
 import * as terrain from "./layer/terrain";
 import * as entities from "./layer/entities";
 import * as webgl from "./renderer/webgl";

@@ -5,7 +5,7 @@ import {Style, Icon} from "ol/style.js";
 import map from "../../src/maps/map.js";
 import defaults from "../../src/defaults";
 import GeoJSON from "ol/format/GeoJSON.js";
-import * as oaf from "../../src/layer/oaf";
+import oaf from "../../src/layer/oaf";
 import {featureCollection} from "./resources/oafFeatures";
 import * as webgl from "../../src/renderer/webgl.js";
 
