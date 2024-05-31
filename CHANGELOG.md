@@ -28,6 +28,7 @@
     - dependencies:
         - ol: 9.1.0 to 9.2.4
         - olcs: 2.19.3 to 2.20.0
+- Exports in src/layer/oaf.js changed to export default {} to provide  ES-Syntax.
 
 ### Fixed
 - The mitigation for issue 666 in ol-cesium since version 2.37.0 is removed
