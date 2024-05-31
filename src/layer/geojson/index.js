@@ -167,3 +167,28 @@ export function showFeaturesById (layer, featureIdList) {
     hideAllFeatures(layer);
     setFeatureStyle(features, undefined);
 }
+
+/**
+ * Load the features manually.
+ * @param {Object} layerAttributes raw layer attributes.
+ * @param {module:ol/vector/Source} layerSource - the source of the layer
+ * @returns {void}
+ */
+export function loadFeaturesManually (layerAttributes, layerSource) {
+    const getUrl = layerAttributes.url;
+
+    fetch(getUrl, layerSource)
+        .then(response => response.text())
+        .then(responseString => {
+            const features = layerSource.getFormat().readFeatures(responseString);
+
+            layerSource.addFeatures(features);
+            layerSource.dispatchEvent({
+                type: "featuresloadend",
+                features: layerSource.getFeatures()
+            });
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}

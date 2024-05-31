@@ -167,4 +167,34 @@ describe("geojson/index", function () {
             expect(features[1].getStyle()()).toBeNull();
         });
     });
+    describe("loadFeaturesManually", function () {
+        it("loadFeaturesManually shall call fetch", function () {
+            console.error = jest.fn();
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        json: () => {
+                            return [];
+                        }
+                    });
+                });
+            });
+
+            const layerParams = {
+                    id: "id",
+                    url: "url",
+                    featureNS: "http://www.deegree.org/app",
+                    featureType: "krankenhaeuser_hh",
+                    version: "1.0.0"
+                },
+                options = {},
+                layer = geojson.createLayer(layerParams, {options});
+
+            geojson.loadFeaturesManually(layerParams, layer.getSource());
+
+            expect(global.fetch.mock.calls.length).toBe(1);
+        });
+    });
 });

@@ -21,6 +21,7 @@
 
 ### Added
 - Added support for Node LTS version ^20.12.2 and npm Version ^10.5.0.
+- OAF, GeoJSON: added function loadFeaturesManually.
 
 ### Changed
 - The following packages have been updated:

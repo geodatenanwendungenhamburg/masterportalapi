@@ -287,4 +287,34 @@ describe("oaf.js", function () {
             expect(webgl.afterLoading).toHaveBeenCalledWith(features, layerParams.styleId, layerParams.excludeTypesFromParsing, layerParams.isPointLayer);
         });
     });
+    describe("loadFeaturesManually", function () {
+        it("loadFeaturesManually shall call fetch", function () {
+            console.error = jest.fn();
+            global.fetch = jest.fn().mockImplementationOnce(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        json: () => {
+                            return featureCollection;
+                        }
+                    });
+                });
+            });
+
+            const rawLayer = {
+                    id: "id",
+                    url: "url",
+                    featureNS: "http://www.deegree.org/app",
+                    featureType: "krankenhaeuser_hh",
+                    version: "1.0.0"
+                },
+                options = {},
+                layer = oaf.createLayer(rawLayer, {options});
+
+            oaf.loadFeaturesManually(rawLayer, layer.getSource());
+
+            expect(global.fetch.mock.calls.length).toBe(1);
+        });
+    });
 });
