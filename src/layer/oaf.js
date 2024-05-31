@@ -261,4 +261,4 @@ function loadFeaturesManually (layerAttributes, layerSource) {
         });
 }
 
-export default {createLayer,createLayerSource, loadFeaturesManually};
+export default {createLayer, createLayerSource, loadFeaturesManually};
