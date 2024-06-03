@@ -11,6 +11,7 @@
 ### Changed
 - The following packages have been updated:
     - dependencies:
+        - ol: 9.1.0 to 9.2.4
         - olcs: 2.19.3 to 2.20.0
 
 ### Deprecated
