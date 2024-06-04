@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+## 2.38.0 - 2024-06-04
 
 ### Added
 - Added support for Node LTS version ^20.12.2 and npm Version ^10.5.0.
@@ -13,10 +13,6 @@
     - dependencies:
         - ol: 9.1.0 to 9.2.4
         - olcs: 2.19.3 to 2.20.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - The mitigation for issue 666 in ol-cesium since version 2.37.0 is removed
