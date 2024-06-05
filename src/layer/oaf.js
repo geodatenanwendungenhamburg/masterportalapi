@@ -120,8 +120,6 @@ function loadSource (url, source, {onErrorFn, success, failure}, options, collec
 export function createUrl (rawLayer, loadingParams) {
     let url = rawLayer.url;
     const bboxParam = loadingParams?.bbox || rawLayer.bbox;
-    console.log("new - loadingParams?.bbox", loadingParams?.bbox);
-    console.log("new - rawLayer.bbox", rawLayer.bbox);
 
     url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
     url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
@@ -135,30 +133,6 @@ export function createUrl (rawLayer, loadingParams) {
     url += typeof rawLayer.crs === "string" ? "crs=" + encodeURIComponent(rawLayer.crs) + "&" : "";
     url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
     url += getParamsUrl(rawLayer.params);
-    console.log("new url", url);
-    return url;
-}
-export function createUrOld (rawLayer) {
-    let url = rawLayer.url,
-        appendingString;
-    const crsDefault = "";
-    console.log("old - rawLayer.bbox", rawLayer.bbox);
-    url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
-    url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
-    if (Array.isArray(rawLayer.bbox) && rawLayer.bbox.length === 4) {
-        appendingString = "";
-        rawLayer.bbox.forEach((bboxEntry, i) => {
-            appendingString += i !== rawLayer.bbox.length - 1 ? bboxEntry + "," : bboxEntry;
-        });
-        url += "bbox=" + appendingString + "&";
-    }
-    url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
-    if (rawLayer.crs !== false) {
-        url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
-    }
-    url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
-    url += getParamsUrl(rawLayer.params);
-    console.log("old url", url);
     return url;
 }
 
@@ -175,12 +149,10 @@ function getLayerSource (rawLayer, options) {
     let source = null;
 
     function loader (extent, _, __, success, failure) {
-        console.log("loader extent", extent);
-        const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox;
-        console.log("loader use extent", bboxParam);
-           const url = createUrl(rawLayer, {
-                ...options.loadingParams
-                // ,bbox: bboxParam
+        const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox,
+            url = createUrl(rawLayer, {
+                ...options.loadingParams,
+                bbox: bboxParam
             });
 
         loadSource(url, source, {onErrorFn: onError, success, failure}, options);
@@ -188,7 +160,7 @@ function getLayerSource (rawLayer, options) {
     source = createVectorSource(loader, options.loadingStrategy, format);
 
     if (options.beforeLoading) {
-        source.on("featuresloadstart", () => options.beforeLoading());
+        source.once("featuresloadstart", () => options.beforeLoading());
     }
 
     if (rawLayer.clusterDistance) {
