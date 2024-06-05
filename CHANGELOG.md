@@ -18,6 +18,7 @@
 ### Removed
 
 ### Fixed
+- OAF-Layer: bbox and bboxCrs are respected when building url.
 
 ---
 ## 2.38.0 - 2024-06-04

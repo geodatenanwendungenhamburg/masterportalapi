@@ -111,19 +111,50 @@ function loadSource (url, source, {onErrorFn, success, failure}, options, collec
 }
 
 /**
+ * Creates the url for OAF request.
+ * @param {rawLayer} rawLayer layer specification as in services.json
+ * @param {object} loadingParams added as params to url
+ * @param {number[]} [extent] the current viewport extent
+ * @returns {string} the url
+ */
+export function createUrl (rawLayer, loadingParams) {
+    let url = rawLayer.url;
+    const bboxParam = loadingParams?.bbox || rawLayer.bbox;
+
+    url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
+    url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
+    if (Array.isArray(bboxParam) && bboxParam.length === 4) {
+        url += "bbox=" + bboxParam.join(",") + "&";
+    }
+    else if (typeof bboxParam === "string" && bboxParam.length) {
+        url += "bbox=" + bboxParam + "&";
+    }
+    url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
+    url += typeof rawLayer.crs === "string" ? "crs=" + encodeURIComponent(rawLayer.crs) + "&" : "";
+    url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
+    url += getParamsUrl(rawLayer.params);
+    return url;
+}
+
+/**
  * Creates an ol/source element for the rawLayer by using a loader.
  * The 'featuresloadend' and 'featuresloaderror' events will be fired by using success and failure callbacks of the loader.
  * @param {rawLayer} rawLayer layer specification as in services.json
  * @param {options} [options] additional options
- * @param {String} url the parsed url
  * {@link https://openlayers.org/en/latest/apidoc/module-ol_source_Vector-VectorSource.html failure/success see}
  * @returns {(ol.source.VectorSource|ol.source.Cluster)} VectorSource or Cluster, depending on whether clusterDistance is set.
  */
-function getLayerSource (rawLayer, options, url) {
+function getLayerSource (rawLayer, options) {
     const format = new GeoJSON();
     let source = null;
 
-    function loader (extent, resolution, projection, success, failure) {
+    function loader (extent, _, __, success, failure) {
+        const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox,
+            url = createUrl(rawLayer, {
+                ...options.loadingParams,
+                bbox: bboxParam
+            });
+
         loadSource(url, source, {onErrorFn: onError, success, failure}, options);
     }
     source = createVectorSource(loader, options.loadingStrategy, format);
@@ -136,36 +167,6 @@ function getLayerSource (rawLayer, options, url) {
         return createClusterVectorSource(source, rawLayer.clusterDistance, options.clusterGeometryFunction);
     }
     return source;
-}
-
-/**
- * Creates the url for OAF request.
- * @param {rawLayer} rawLayer layer specification as in services.json
- * @returns {string} the url
- */
-function createUrl (rawLayer) {
-    let url = rawLayer.url,
-        appendingString;
-    const crsDefault = "";
-
-    url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
-    url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
-    if (Array.isArray(rawLayer.bbox) && rawLayer.bbox.length === 4) {
-        appendingString = "";
-
-        rawLayer.bbox.forEach((bboxEntry, i) => {
-            appendingString += i !== rawLayer.bbox.length - 1 ? bboxEntry + "," : bboxEntry;
-        });
-        url += "bbox=" + appendingString + "&";
-    }
-    url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
-    if (rawLayer.crs !== false) {
-        url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
-    }
-    url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
-    url += getParamsUrl(rawLayer.params);
-
-    return url;
 }
 
 /**
@@ -182,9 +183,7 @@ function createLayerSource (rawLayer, options = {}) {
     if (!options.loadingStrategy) {
         options.loadingStrategy = bbox;
     }
-
-    const url = createUrl(rawLayer),
-        source = getLayerSource(rawLayer, options, url);
+    const source = getLayerSource(rawLayer, options);
 
     if (rawLayer.renderer === "webgl") {
         source.once("featuresloadend", event => {
@@ -261,4 +260,4 @@ function loadFeaturesManually (layerAttributes, layerSource) {
         });
 }
 
-export default {createLayer, createLayerSource, loadFeaturesManually};
+export default {createLayer, createLayerSource, createUrl, loadFeaturesManually};
