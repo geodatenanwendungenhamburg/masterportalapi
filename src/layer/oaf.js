@@ -120,8 +120,8 @@ function loadSource (url, source, {onErrorFn, success, failure}, options, collec
 export function createUrl (rawLayer, loadingParams) {
     let url = rawLayer.url;
     const bboxParam = loadingParams?.bbox || rawLayer.bbox;
-    console.log("old - loadingParams?.bbox", loadingParams?.bbox);
-    console.log("old - rawLayer.bbox", rawLayer.bbox);
+    console.log("new - loadingParams?.bbox", loadingParams?.bbox);
+    console.log("new - rawLayer.bbox", rawLayer.bbox);
 
     url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
     url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
@@ -142,6 +142,7 @@ export function createUrOld (rawLayer) {
     let url = rawLayer.url,
         appendingString;
     const crsDefault = "";
+    console.log("old - rawLayer.bbox", rawLayer.bbox);
     url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
     url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
     if (Array.isArray(rawLayer.bbox) && rawLayer.bbox.length === 4) {
