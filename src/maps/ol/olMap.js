@@ -8,7 +8,7 @@ import wmts from "../../layer/wmts";
 import * as geojson from "../../layer/geojson";
 import wfs from "../../layer/wfs";
 import * as vectortile from "../../layer/vectorTile";
-import * as oaf from "../../layer/oaf";
+import oaf from "../../layer/oaf";
 import {createMapView} from "../../maps/mapView";
 import rawLayerList from "../../rawLayerList";
 import crs from "../../crs";

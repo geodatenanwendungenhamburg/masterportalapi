@@ -9,6 +9,8 @@
 ### Added
 
 ### Changed
+    - peerDependencies:
+        - @cesium/engine: 6.2.0 to 9.2.0
 
 ### Deprecated
 
