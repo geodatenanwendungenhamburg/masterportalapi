@@ -14,6 +14,7 @@ let styleList,
     configuredTools,
     mapMarkerPointStyleId,
     mapMarkerPolygonStyleId,
+    additionalPolygonStyleId,
     highlightFeaturesPointStyleId,
     highlightFeaturesPolygonStyleId,
     highlightFeaturesLineStyleId,
@@ -141,6 +142,22 @@ function getStyleIdForMapMarkerPolygon () {
 }
 
 /**
+ * gets style id from MapMarker
+ * @returns {String} - Style id of mapMarker
+ */
+function getStyleIdForAdditionalMapMarkerPolygon () {
+    let styleId;
+
+    if (additionalPolygonStyleId) {
+        styleId = additionalPolygonStyleId;
+    }
+    else {
+        styleId = "defaultAdditionalMapMarkerPolygon";
+    }
+    return styleId;
+}
+
+/**
  * gets style id from HighlightFeatures
  * @returns {String} - Style id of highlightFeatures.
  */
@@ -186,6 +203,7 @@ function parseStyles (data) {
     dataWithDefaultValue.push({styleId: "default", rules: [{style: {}}]},
         defaultStyle.defaultMapMarkerPoint,
         defaultStyle.defaultMapMarkerPolygon,
+        defaultStyle.defaultAdditionalMapMarkerPolygon,
         defaultStyle.defaultHighlightFeaturesPoint,
         defaultStyle.defaultHighlightFeaturesPolygon,
         defaultStyle.defaultHighlightFeaturesLine);
@@ -193,6 +211,7 @@ function parseStyles (data) {
     styleIds.push(getStyleIdsFromLayers(),
         getStyleIdForMapMarkerPoint(),
         getStyleIdForMapMarkerPolygon(),
+        getStyleIdForAdditionalMapMarkerPolygon(),
         getStyleIdForHighlightFeaturesPoint(),
         getStyleIdForHighlightFeaturesPolygon(),
         getStyleIdForHighlightFeaturesLine(),
@@ -222,6 +241,7 @@ async function initializeStyleList (styleGetters, Config, layers, tools, callbac
 
     mapMarkerPointStyleId = styleGetters.mapMarkerPointStyleId;
     mapMarkerPolygonStyleId = styleGetters.mapMarkerPolygonStyleId;
+    additionalPolygonStyleId = styleGetters.additionalPolygonStyleId;
     highlightFeaturesPointStyleId = styleGetters.highlightFeaturesPointStyleId;
     highlightFeaturesPolygonStyleId = styleGetters.highlightFeaturesPolygonStyleId;
     highlightFeaturesLineStyleId = styleGetters.highlightFeaturesLineStyleId;

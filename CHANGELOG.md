@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- vectorStyle: enables support for additional polygon highlighting, including default styles.
 
 ### Changed
     - peerDependencies:

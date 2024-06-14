@@ -137,6 +137,17 @@ const defaultColors = {
                 }
             }]
         },
+        defaultAdditionalMapMarkerPolygon: {
+            styleId: "defaultAdditionalMapMarkerPolygon",
+            rules: [{
+                style: {
+                    polygonStrokeColor: [255, 255, 0, 1],
+                    polygonStrokeWidth: 4,
+                    polygonFillColor: [255, 255, 0, 0.3],
+                    polygonStrokeDash: [8]
+                }
+            }]
+        },
         defaultHighlightFeaturesPoint: {
             styleId: "defaultHighlightFeaturesPoint",
             rules: [{
