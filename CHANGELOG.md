@@ -3,20 +3,11 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.39.0 - 2024-06-18
 
 ### Changed
     - peerDependencies:
         - @cesium/engine: 6.2.0 to 9.2.0
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 ## 2.38.0 - 2024-06-04
