@@ -142,8 +142,9 @@ function getStyleIdForMapMarkerPolygon () {
 }
 
 /**
- * gets style id from MapMarker
- * @returns {String} - Style id of mapMarker
+ * Gets the style id for an additional MapMarker.
+ * If the additionalPolygonStyleId exists, return it; otherwise, returns the default styleId.
+ * @returns {String} - The styleId of the additional MapMarker
  */
 function getStyleIdForAdditionalMapMarkerPolygon () {
     let styleId;
