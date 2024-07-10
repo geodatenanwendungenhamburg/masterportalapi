@@ -38,7 +38,7 @@ describe("oaf.js", function () {
             const attr = {
                     "id": "id",
                     "name": "Schulen",
-                    "url": "https://url.de",
+                    "url": "https://url",
                     "collection": "staatliche_schulen",
                     "typ": "OAF",
                     "bbox": "",
@@ -153,7 +153,7 @@ describe("oaf.js", function () {
             const rawLayer = {
                     id: "id",
                     name: "Schulen",
-                    url: "https://url.de",
+                    url: "https://url",
                     collection: "staatliche_schulen",
                     typ: "OAF",
                     limit: 10,
@@ -184,7 +184,7 @@ describe("oaf.js", function () {
             const rawLayer = {
                     id: "id",
                     name: "Schulen",
-                    url: "https://url.de",
+                    url: "https://url",
                     collection: "staatliche_schulen",
                     typ: "OAF",
                     limit: 10,
@@ -223,7 +223,7 @@ describe("oaf.js", function () {
                 rawLayer = {
                     id: "id",
                     name: "Schulen",
-                    url: "https://url.de",
+                    url: "https://url",
                     collection: "staatliche_schulen",
                     typ: "OAF",
                     limit: 10,
@@ -259,7 +259,7 @@ describe("oaf.js", function () {
         });
         it("creates a vectorSource with an additional listener, when renderer is \"webgl\"", () => {
             const
-                url = "https://url.de",
+                url = "https://url",
                 rawLayer = {
                     id: "id",
                     url: url,
@@ -304,7 +304,7 @@ describe("oaf.js", function () {
 
             const rawLayer = {
                     id: "id",
-                    url: "url",
+                    url: "https://url",
                     featureNS: "http://www.deegree.org/app",
                     featureType: "krankenhaeuser_hh",
                     version: "1.0.0"
@@ -332,9 +332,15 @@ describe("oaf.js", function () {
                     crs: "EPSG:25832"
                 },
                 loadingParams = undefined,
-                url = oaf.createUrl(rawLayer, loadingParams);
+                createdUrl = oaf.createUrl(rawLayer, loadingParams);
 
-            expect(url).toEqual("https://url.de/collections/staatliche_schulen/items?limit=10&bbox=0,0,10,10&bbox-crs=EPSG%3A4326&crs=EPSG%3A25832&datetime=123&");
+            expect(createdUrl.origin).toEqual(rawLayer.url);
+            expect(createdUrl.pathname).toEqual("/collections/" + rawLayer.collection + "/items");
+            expect(createdUrl.searchParams.get("limit")).toEqual("10");
+            expect(createdUrl.searchParams.get("bbox")).toEqual("0,0,10,10");
+            expect(createdUrl.searchParams.get("bbox-crs")).toEqual(rawLayer.bboxCrs);
+            expect(createdUrl.searchParams.get("crs")).toEqual(rawLayer.crs);
+            expect(createdUrl.searchParams.get("datetime")).toEqual(rawLayer.datetime);
         });
         it("should append the bbox, if provided as string in rawLayer", () => {
             const rawLayer = {
@@ -343,41 +349,52 @@ describe("oaf.js", function () {
                     url: "https://url.de",
                     collection: "staatliche_schulen",
                     typ: "OAF",
-                    bbox: "0,0,10,10"
+                    bbox: "0,0,10,10",
+                    bboxCrs: "EPSG:4326"
                 },
                 loadingParams = undefined,
-                url = oaf.createUrl(rawLayer, loadingParams);
+                createdUrl = oaf.createUrl(rawLayer, loadingParams);
 
-            expect(url).toEqual("https://url.de/collections/staatliche_schulen/items?bbox=0,0,10,10&");
+            expect(createdUrl.origin).toEqual(rawLayer.url);
+            expect(createdUrl.pathname).toEqual("/collections/" + rawLayer.collection + "/items");
+            expect(createdUrl.searchParams.get("bbox")).toEqual("0,0,10,10");
+            expect(createdUrl.searchParams.get("bbox-crs")).toEqual(rawLayer.bboxCrs);
         });
         it("should append the bbox, if provided as string in loadingParams", () => {
             const rawLayer = {
                     id: "id",
                     name: "Schulen",
-                    url: "https://url.de",
+                    url: "https://mapservice.regensburg.de/cgi-bin/mapserv?map=wfs.map",
                     collection: "staatliche_schulen",
                     typ: "OAF"
                 },
                 loadingParams = {bbox: "0,0,10,10"},
-                url = oaf.createUrl(rawLayer, loadingParams);
+                createdUrl = oaf.createUrl(rawLayer, loadingParams);
 
-            expect(url).toEqual("https://url.de/collections/staatliche_schulen/items?bbox=0,0,10,10&");
+            expect(createdUrl.origin).toEqual("https://mapservice.regensburg.de");
+            expect(createdUrl.pathname).toEqual("/cgi-bin/mapserv/collections/" + rawLayer.collection + "/items");
+            expect(createdUrl.searchParams.get("map")).toEqual("wfs.map");
+            expect(createdUrl.searchParams.get("bbox")).toEqual("0,0,10,10");
         });
         it("should append additional key:value filters, if provided as in rawLayer.params", () => {
             const rawLayer = {
                     id: "id",
                     name: "Schulen",
-                    url: "https://url.de",
+                    url: "https://url/",
                     collection: "staatliche_schulen",
                     typ: "OAF",
                     params: {
-                        kapitelbezeichnung: "Gymnasien"
+                        kapitelbezeichnung: "Gymnasien",
+                        anzahl_schueler: ">1000"
                     }
                 },
                 loadingParams = undefined,
-                url = oaf.createUrl(rawLayer, loadingParams);
+                createdUrl = oaf.createUrl(rawLayer, loadingParams);
 
-            expect(url).toEqual("https://url.de/collections/staatliche_schulen/items?&kapitelbezeichnung=Gymnasien");
+            expect(createdUrl.origin).toEqual("https://url");
+            expect(createdUrl.pathname).toEqual("/collections/" + rawLayer.collection + "/items");
+            expect(createdUrl.searchParams.get("kapitelbezeichnung")).toEqual("Gymnasien");
+            expect(createdUrl.searchParams.get("anzahl_schueler")).toEqual(">1000");
         });
     });
 });
