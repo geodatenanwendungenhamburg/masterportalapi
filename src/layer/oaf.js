@@ -117,19 +117,20 @@ function loadSource (url, source, {onErrorFn, success, failure}, options, collec
  * @returns {string} the url
  */
 export function createUrl (rawLayer, loadingParams) {
-    const bboxParam = loadingParams?.bbox || rawLayer.bbox;
-    let rawUrl = rawLayer.url,
-        bboxValue = typeof bboxParam === "string" && bboxParam.length ? bboxParam : null,
+    const bboxParam = loadingParams?.bbox || rawLayer.bbox,
+        rawUrl = rawLayer.url;
+    let bboxValue = typeof bboxParam === "string" && bboxParam.length ? bboxParam : null,
         url = null;
+
     url = new URL(rawUrl);
     if (typeof rawLayer.collection === "string") {
-        if(!url.pathname.endsWith("/")){
-            url.pathname += "/collections/" + rawLayer.collection + "/items"
+        if (!url.pathname.endsWith("/")) {
+            url.pathname += "/collections/" + rawLayer.collection + "/items";
         }
-        else{
-            url.pathname = "collections/" + rawLayer.collection + "/items"
+        else {
+            url.pathname = "collections/" + rawLayer.collection + "/items";
         }
-        
+
     }
     if (typeof rawLayer.limit === "number") {
         url.searchParams.set("limit", rawLayer.limit);
