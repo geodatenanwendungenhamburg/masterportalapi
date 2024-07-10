@@ -3,7 +3,6 @@ import {bbox} from "ol/loadingstrategy.js";
 import GeoJSON from "ol/format/GeoJSON.js";
 import {createVectorSource, createClusterVectorSource} from "./vector";
 import {onError, onLoad} from "../lib/wfsUtil";
-import {getParamsUrl} from "../lib/oafUtil";
 import * as webgl from "../renderer/webgl";
 
 /**
@@ -118,47 +117,44 @@ function loadSource (url, source, {onErrorFn, success, failure}, options, collec
  * @returns {string} the url
  */
 export function createUrl (rawLayer, loadingParams) {
-    let url = rawLayer.url;
     const bboxParam = loadingParams?.bbox || rawLayer.bbox;
-    console.log("new - loadingParams?.bbox", loadingParams?.bbox);
-    console.log("new - rawLayer.bbox", rawLayer.bbox);
-
-    url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
-    url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
+    let rawUrl = rawLayer.url,
+        bboxValue = typeof bboxParam === "string" && bboxParam.length ? bboxParam : null,
+        url = null;
+    url = new URL(rawUrl);
+    if (typeof rawLayer.collection === "string") {
+        if(!url.pathname.endsWith("/")){
+            url.pathname += "/collections/" + rawLayer.collection + "/items"
+        }
+        else{
+            url.pathname = "collections/" + rawLayer.collection + "/items"
+        }
+        
+    }
+    if (typeof rawLayer.limit === "number") {
+        url.searchParams.set("limit", rawLayer.limit);
+    }
     if (Array.isArray(bboxParam) && bboxParam.length === 4) {
-        url += "bbox=" + bboxParam.join(",") + "&";
+        bboxValue = bboxParam.join(",");
     }
-    else if (typeof bboxParam === "string" && bboxParam.length) {
-        url += "bbox=" + bboxParam + "&";
+    if (bboxValue) {
+        url.searchParams.set("bbox", bboxParam);
+        if (typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "") {
+            url.searchParams.set("bbox-crs", rawLayer.bboxCrs);
+        }
     }
-    url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
-    url += typeof rawLayer.crs === "string" ? "crs=" + encodeURIComponent(rawLayer.crs) + "&" : "";
-    url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
-    url += getParamsUrl(rawLayer.params);
-    console.log("new url", url);
-    return url;
-}
-export function createUrOld (rawLayer) {
-    let url = rawLayer.url,
-        appendingString;
-    const crsDefault = "";
-    console.log("old - rawLayer.bbox", rawLayer.bbox);
-    url += typeof rawLayer.collection === "string" ? "/collections/" + rawLayer.collection + "/items?" : "";
-    url += typeof rawLayer.limit === "number" ? "limit=" + rawLayer.limit + "&" : "";
-    if (Array.isArray(rawLayer.bbox) && rawLayer.bbox.length === 4) {
-        appendingString = "";
-        rawLayer.bbox.forEach((bboxEntry, i) => {
-            appendingString += i !== rawLayer.bbox.length - 1 ? bboxEntry + "," : bboxEntry;
+    if (typeof rawLayer.crs === "string") {
+        url.searchParams.set("crs", rawLayer.crs);
+    }
+    if (typeof rawLayer.datetime === "string" && rawLayer.datetime !== "") {
+        url.searchParams.set("datetime", rawLayer.datetime);
+    }
+    if (typeof rawLayer.params === "object" && Object.keys(rawLayer.params).length) {
+        Object.entries(rawLayer.params).forEach(([key, value]) => {
+            url.searchParams.set(key, value);
         });
-        url += "bbox=" + appendingString + "&";
     }
-    url += typeof rawLayer.bboxCrs === "string" && rawLayer.bboxCrs !== "" ? "bbox-crs=" + encodeURIComponent(rawLayer.bboxCrs) + "&" : "";
-    if (rawLayer.crs !== false) {
-        url += "crs=" + encodeURIComponent(typeof rawLayer.crs === "string" && rawLayer.crs !== "" ? rawLayer.crs : crsDefault) + "&";
-    }
-    url += typeof rawLayer.datetime === "string" && rawLayer.datetime !== "" ? "datetime=" + rawLayer.datetime + "&" : "";
-    url += getParamsUrl(rawLayer.params);
-    console.log("old url", url);
+
     return url;
 }
 
@@ -175,12 +171,10 @@ function getLayerSource (rawLayer, options) {
     let source = null;
 
     function loader (extent, _, __, success, failure) {
-        console.log("loader extent", extent);
-        const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox;
-        console.log("loader use extent", bboxParam);
-           const url = createUrl(rawLayer, {
-                ...options.loadingParams
-                // ,bbox: bboxParam
+        const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox,
+            url = createUrl(rawLayer, {
+                ...options.loadingParams,
+                bbox: bboxParam
             });
 
         loadSource(url, source, {onErrorFn: onError, success, failure}, options);
