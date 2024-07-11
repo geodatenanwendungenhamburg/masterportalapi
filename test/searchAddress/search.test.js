@@ -33,7 +33,7 @@ jest.mock("../../src/searchAddress/searchGazetteer", () => {
 
 import {searchGazetteer as mockedSearchGazetteer} from "../../src/searchAddress/searchGazetteer";
 
-describe.only("searchAddress", function () {
+describe("searchAddress", function () {
     describe("search", function () {
         it("rejects if missing configuration of what to search for", function (done) {
             search("Pflugacker", {}).catch(e => {
