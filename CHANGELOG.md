@@ -19,6 +19,7 @@
 
 ### Fixed
 - OAF-Layer: bbox and bboxCrs are respected when building url.
+- OAF-Layer: prevent url to not use more than one questionmark.
 
 ---
 ## 2.38.0 - 2024-06-04
