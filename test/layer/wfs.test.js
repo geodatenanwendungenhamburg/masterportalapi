@@ -152,7 +152,7 @@ describe("wfs.js", function () {
         });
 
         it("creates a VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -202,7 +202,7 @@ describe("wfs.js", function () {
             });
         });
         it("creates a VectorSource with doNotLoadInitially", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -255,7 +255,7 @@ describe("wfs.js", function () {
         it("creates a VectorSource with wfsFilter", function () {
             let secondFetchCalled = false;
 
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -265,7 +265,7 @@ describe("wfs.js", function () {
                         }
                     });
                 });
-            }).mockImplementationOnce(() => {
+            }).mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -317,7 +317,7 @@ describe("wfs.js", function () {
             });
         });
         it("creates a VectorSource and onLoadingError is called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 // NOTE: fetch only rejects if a network error occurs, which do not apply to 4xx or 5xx http codes.
                 return new Promise((resolve) => {
                     resolve({
@@ -360,7 +360,7 @@ describe("wfs.js", function () {
             });
         });
         it("creates a clustered VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -442,7 +442,7 @@ describe("wfs.js", function () {
             expect(webgl.afterLoading).toHaveBeenCalledWith(features, layerParams.styleId, layerParams.excludeTypesFromParsing, layerParams.isPointLayer);
         });
         it("creates a vectorSource with credentials: include as params", () => {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 // NOTE: fetch only rejects if a network error occurs, which do not apply to 4xx or 5xx http codes.
                 return new Promise((resolve) => {
                     resolve({
@@ -1068,7 +1068,7 @@ describe("wfs.js", function () {
         });
 
         it("load features manually", async function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,

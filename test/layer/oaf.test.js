@@ -137,7 +137,7 @@ describe("oaf.js", function () {
             console.error = consoleError;
         });
         it("creates a GeoJSON VectorSource", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -167,7 +167,7 @@ describe("oaf.js", function () {
             expect(layer.getSource().getFormat()).toBeInstanceOf(GeoJSON);
         });
         it("creates a VectorSource and onLoadingError is called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: false,
@@ -206,7 +206,7 @@ describe("oaf.js", function () {
             });
         });
         it("creates a clustered VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
@@ -290,7 +290,7 @@ describe("oaf.js", function () {
     describe("loadFeaturesManually", function () {
         it("loadFeaturesManually shall call fetch", function () {
             console.error = jest.fn();
-            global.fetch = jest.fn().mockImplementationOnce(() => {
+            global.fetch = jest.fn().mockImplementation(() => {
                 return new Promise((resolve) => {
                     resolve({
                         ok: true,
