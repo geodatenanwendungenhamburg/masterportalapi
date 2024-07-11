@@ -26,28 +26,25 @@ function initializeLayerList (layerConf = defaults.layerConf, callback) {
     }
 
     // case: parameter is URL
-    const Http = new XMLHttpRequest();
-
-    Http.open("GET", layerConf);
-    Http.timeout = 10000;
-    Http.send();
-    Http.onload = function () {
-        try {
-            layerList = JSON.parse(Http.responseText);
-        }
-        catch (error) {
-            console.error("An error occured when parsing the response after loading '" + layerConf + "':", error);
-            return callback(false, error);
-        }
-        if (typeof callback === "function") {
-            return callback(layerList);
-        }
-        return true;
-    };
-    Http.onerror = function (e) {
-        console.error("An error occured when trying to fetch services from '" + layerConf + "':", e);
-        callback(false, e);
-    };
+    fetch(layerConf, {method: "GET", timeout: 10000})
+        .then((response) => {
+            response.json()
+                .then((json) => {
+                    layerList = json;
+                    if (typeof callback === "function") {
+                        return callback(layerList);
+                    }
+                    return true;
+                })
+                .catch((error) => {
+                    console.error("An error occured when parsing the response after loading '" + layerConf + "':", error);
+                    return callback(false, error);
+                });
+        })
+        .catch((error) => {
+            console.error("An error occured when trying to fetch services from '" + layerConf + "':", error);
+            callback(false, error);
+        });
 }
 
 /**

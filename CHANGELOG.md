@@ -10,8 +10,9 @@
 - vectorStyle: enables support for additional polygon highlighting, including default styles.
 
 ### Changed
-    - peerDependencies:
-        - @cesium/engine: 6.2.0 to 9.2.0
+- peerDependencies:
+    - @cesium/engine: 6.2.0 to 9.2.0
+- Replace `XMLHttpRequest` with `fetch` in `initializeLayerList`
 
 ### Deprecated
 
