@@ -183,7 +183,7 @@ function getLayerSource (rawLayer, options) {
     source = createVectorSource(loader, options.loadingStrategy, format);
 
     if (options.beforeLoading) {
-        source.on("featuresloadstart", () => options.beforeLoading());
+        source.once("featuresloadstart", () => options.beforeLoading());
     }
 
     if (rawLayer.clusterDistance) {
