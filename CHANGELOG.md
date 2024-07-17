@@ -3,26 +3,28 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.40.0 - 2024-07-17
 
 ### Added
 - vectorStyle: enables support for additional polygon highlighting, including default styles.
 
 ### Changed
-- peerDependencies:
-    - @cesium/engine: 6.2.0 to 9.2.0
 - Replace `XMLHttpRequest` with `fetch` in `initializeLayerList`
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - OAF-Layer: bbox and bboxCrs are respected when building url.
 - OAF-Layer: prevent url to not use more than one questionmark.
 
 ---
+
+## 2.39.0 - 2024-06-18
+
+### Changed
+- peerDependencies:
+    - @cesium/engine: 6.2.0 to 9.2.0
+
+---
+
 ## 2.38.0 - 2024-06-04
 
 ### Added
