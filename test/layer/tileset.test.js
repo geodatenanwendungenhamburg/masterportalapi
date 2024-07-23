@@ -73,6 +73,17 @@ describe("tileset.js", function () {
             checkAttributes(layer2, attr2);
             expect(cesium3DTilesetSpy).toHaveBeenCalledTimes(2);
         });
+        it("add tileset.json to url, when url is not pointing to json file", function () {
+            const layer = new Tileset(attr);
+
+            expect(layer.url).toEqual(attr.url + "/tileset.json");
+        });
+        it("should not add tileset.json to url, when url is pointing to json file", function () {
+            const attr2 = Object.assign({}, attr, {url: "https://url/root.json"}),
+                layer = new Tileset(attr2);
+
+            expect(layer.url).toEqual(attr2.url);
+        });
     });
     describe("setOpacity", function () {
         it("calls setOpacity sets opacity to terrain style", function (done) {

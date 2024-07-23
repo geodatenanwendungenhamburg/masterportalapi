@@ -1,21 +1,22 @@
 /**
  * Creates the tileset.
+ * @param {Object} mpapiTileset - masterportal API Tileset object
  * @param {Object} rawLayer  attributes of the layer
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
  * @returns {Cesium.Cesium3DTileset} the tileset
  */
-function createTileSet (rawLayer) {
+function createTileSet (mpapiTileset, rawLayer) {
     const baseUrl = rawLayer.url.split("?")[0],
         // when no json file is given by url, use tileset.json as default
         url = baseUrl + (baseUrl.endsWith(".json") ? "" : "/tileset.json"),
         options = {};
 
+    mpapiTileset.url = url;
 
     if (rawLayer.cesium3DTilesetOptions) {
         Object.assign(options, rawLayer.cesium3DTilesetOptions);
     }
-
     return Promise.resolve(Cesium.Cesium3DTileset.fromUrl(url, options));
 }
 
@@ -35,7 +36,7 @@ export default function Tileset (rawLayer) {
         typ: rawLayer.typ
     };
     if (Cesium) {
-        this.tileset = Promise.resolve(createTileSet(rawLayer));
+        this.tileset = Promise.resolve(createTileSet(this, rawLayer));
         this.tileset.then(function (tileset) {
             if (tileset) {
                 tileset.layerReferenceId = rawLayer.id;
