@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Tileset-Layer: custom tileset filename is allowed
 
 ---
 
