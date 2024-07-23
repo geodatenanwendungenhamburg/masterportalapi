@@ -6,7 +6,9 @@
  * @returns {Cesium.Cesium3DTileset} the tileset
  */
 function createTileSet (rawLayer) {
-    const url = rawLayer.url.split("?")[0] + "/tileset.json",
+    const baseUrl = rawLayer.url.split("?")[0],
+        // when no json file is given by url, use tileset.json as default
+        url = baseUrl + (baseUrl.endsWith(".json") ? "" : "/tileset.json"),
         options = {};
 
 
