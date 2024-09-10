@@ -338,12 +338,13 @@ async function sendTransaction (srsName, feature, url, layer, transactionMethod)
         response,
         xmlDocument = null,
         transactionSummary = null,
-        data = null;
+        data = null,
+        baseUrl = new URL(url);
 
     const {featureNS, featurePrefix, featureType, version} = layer;
 
     try {
-        response = await fetch(url, {
+        response = await fetch(baseUrl, {
             method: "POST",
             headers: {"Content-Type": "text/xml"},
             credentials: layer.isSecured ? "include" : "omit",
@@ -358,6 +359,9 @@ async function sendTransaction (srsName, feature, url, layer, transactionMethod)
 
         xmlDocument = new DOMParser().parseFromString(data, "text/xml");
         transactionSummary = xmlDocument.getElementsByTagName("wfs:TransactionSummary");
+        if (transactionSummary.length === 0) {
+            transactionSummary = xmlDocument.getElementsByTagName("TransactionSummary");
+        }
 
         // NOTE: WFS-T services respond errors with the transaction as an XML response, even though it's the http code indicates different...
         if (transactionSummary.length === 0) {
@@ -464,7 +468,8 @@ function parseDescribeFeatureTypeResponse (responseData, featureType) {
  * @returns {Promise<Array>} If the request is successful, an array of prepared feature properties.
  */
 async function receivePossibleProperties (url, version, featureType, isSecured) {
-    const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
+    // const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
+    const baseUrl =createReceivePossiblePropertiesUrl(url, version, featureType);
     let response;
 
     try {
@@ -478,6 +483,27 @@ async function receivePossibleProperties (url, version, featureType, isSecured) 
         console.error(e);
         throw e;
     }
+}
+
+/**
+ * Creates the Url to get possible properties from.
+ *
+ * @param {string} url from the WFS-T
+ * @param {string} version of the WFS-T
+ * @param {string} featureType Name of the FeatureType according to the capabilities document
+ * @returns {URL} the created url
+ */
+function createReceivePossiblePropertiesUrl (url, version, featureType) {
+    // const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
+    const baseUrl = new URL(decodeURI(url));
+
+    baseUrl.searchParams.set("SERVICE", "WFS");
+    baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
+    baseUrl.searchParams.set("TYPENAME", featureType);
+    if(!baseUrl.searchParams.has("VERSION") && !baseUrl.searchParams.has("version")){
+        baseUrl.searchParams.set("VERSION", version);
+    }
+    return baseUrl;
 }
 
 /**
@@ -499,4 +525,4 @@ function loadFeaturesManually (layerAttributes, layerSource) {
         });
 }
 
-export default {createLayerSource, createLayer, sendTransaction, receivePossibleProperties, parseDescribeFeatureTypeResponse, writeTransactionBody, loadFeaturesManually};
+export default {createLayerSource, createLayer, createReceivePossiblePropertiesUrl, sendTransaction, receivePossibleProperties, parseDescribeFeatureTypeResponse, writeTransactionBody, loadFeaturesManually};
