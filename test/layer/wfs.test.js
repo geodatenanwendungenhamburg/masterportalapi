@@ -1,4 +1,3 @@
-import {enableFetchMocks} from "jest-fetch-mock";
 import VectorLayer from "ol/layer/Vector.js";
 import VectorSource from "ol/source/Vector.js";
 import Cluster from "ol/source/Cluster.js";
@@ -31,7 +30,6 @@ jest.mock("../../src/renderer/webgl.js", () => {
 });
 
 
-
 describe("wfs.js", function () {
 
     const originalConsoleError = console.error;
@@ -42,16 +40,6 @@ describe("wfs.js", function () {
 
     afterAll(() => {
         console.error = originalConsoleError;
-    });
-
-    beforeEach(() => {
-        // enableFetchMocks();
-        // fetch.resetMocks();
-        global.fetch = jest.fn(() =>
-            Promise.resolve({
-              json: () => Promise.resolve({ rates: { CAD: 1.42 } }),
-            })
-          );
     });
 
     describe("createLayer", function () {
@@ -151,11 +139,6 @@ describe("wfs.js", function () {
         });
     });
     describe("createLayerSource", function () {
-        beforeEach(() => {
-            if (global.fetch) {
-                global.fetch.mockClear();
-            }
-        });
 
         it("creates a VectorSource and beforeLoading, afterLoading and featuresFilter are called", function () {
             global.fetch = jest.fn().mockImplementation(() => {
@@ -763,22 +746,10 @@ describe("wfs.js", function () {
                 "  <xsd:element name=\"test_polygon\" substitutionGroup=\"gml:AbstractFeature\" type=\"test:test_polygonType\"/>\n" +
                 "</xsd:schema>";
 
-        it.only("should receive the possible properties", async () => {
-            // fetch.mockResponseOnce(exampleDescribeFeatureType);
-            global.fetch = jest.fn().mockImplementation(() => {
-                console.log("args:", arguments);
-                return new Promise((resolve) => {
-                    resolve({
-                        ok: true,
-                        status: 200,
-                        text: () => {
-                            return exampleDescribeFeatureType;
-                        }
-                    });
-                });
-            });
-
-            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", false),
+        it("should receive the possible properties", async () => {
+            let properties = null;
+            const baseUrl = new URL("https://team-waas-was-here.lgln/?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=wfstpolygon&VERSION=1.1.0"),
+                options = {"credentials": "omit", "responseType": "text/xml"},
                 exampleProperties = [
                     {
                         key: "name",
@@ -817,6 +788,22 @@ describe("wfs.js", function () {
                     }
                 ];
 
+            baseUrl.searchParams.set("SERVICE", "WFS");
+            baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return exampleDescribeFeatureType;
+                        }
+                    });
+                });
+            });
+
+            properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", false);
+
             expect(Array.isArray(properties)).toBe(true);
             expect(properties.length).toEqual(5);
             exampleProperties.forEach(property => {
@@ -825,16 +812,14 @@ describe("wfs.js", function () {
                 expect(parsedProperty).not.toEqual(undefined);
                 expect(parsedProperty).toEqual(property);
             });
-            
-            expect(global.fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln/?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=wfstpolygon&VERSION=1.1.0", {"responseType": "text/xml", "credentials": "omit"});
-            // expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln/?service=WFS&REQUEST=DescribeFeatureType&TYPENAME=wfstpolygon&VERSION=1.1.0"});
 
+            expect(global.fetch).toHaveBeenCalledWith(baseUrl, options);
         });
 
         it("should receive the possible properties from a geoserver", async () => {
-            fetch.mockResponseOnce(geoserverDescribeFeatureType);
-
-            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "test_polygon", false),
+            let properties = null;
+            const baseUrl = new URL("https://team-waas-was-here.lgln/?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=test_polygon&VERSION=1.1.0"),
+                options = {"credentials": "omit", "responseType": "text/xml"},
                 exampleProperties = [
                     {
                         key: "id",
@@ -859,6 +844,22 @@ describe("wfs.js", function () {
                     }
                 ];
 
+            baseUrl.searchParams.set("SERVICE", "WFS");
+            baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return geoserverDescribeFeatureType;
+                        }
+                    });
+                });
+            });
+            properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "test_polygon", false);
+
+
             expect(Array.isArray(properties)).toBe(true);
             expect(properties.length).toEqual(3);
             exampleProperties.forEach(property => {
@@ -867,14 +868,14 @@ describe("wfs.js", function () {
                 expect(parsedProperty).not.toEqual(undefined);
                 expect(parsedProperty).toEqual(property);
             });
-            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=test_polygon", {"responseType": "text/xml", "credentials": "omit"});
+            expect(global.fetch).toHaveBeenCalledWith(baseUrl, options);
 
         });
 
         it("should receive the possible properties with credentials", async () => {
-            fetch.mockResponseOnce(exampleDescribeFeatureType);
-
-            const properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", true),
+            let properties = null;
+            const baseUrl = new URL("https://team-waas-was-here.lgln/?SERVICE=WFS&REQUEST=DescribeFeatureType&TYPENAME=wfstpolygon&VERSION=1.1.0"),
+                options = {"credentials": "include", "responseType": "text/xml"},
                 exampleProperties = [
                     {
                         key: "name",
@@ -913,6 +914,21 @@ describe("wfs.js", function () {
                     }
                 ];
 
+            baseUrl.searchParams.set("SERVICE", "WFS");
+            baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return exampleDescribeFeatureType;
+                        }
+                    });
+                });
+            });
+
+            properties = await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstpolygon", true);
             expect(Array.isArray(properties)).toBe(true);
             expect(properties.length).toEqual(5);
             exampleProperties.forEach(property => {
@@ -921,16 +937,8 @@ describe("wfs.js", function () {
                 expect(parsedProperty).not.toEqual(undefined);
                 expect(parsedProperty).toEqual(property);
             });
-            expect(fetch).toHaveBeenCalledWith("https://team-waas-was-here.lgln?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.1.0&TYPENAME=wfstpolygon", {"responseType": "text/xml", "credentials": "include"});
+            expect(global.fetch).toHaveBeenCalledWith(baseUrl, options);
 
-        });
-
-        it("should throw an error if the properties can not be fetched", async () => {
-            fetch.mockAbortOnce();
-
-            await expect(async () => {
-                await wfs.receivePossibleProperties("https://team-waas-was-here.lgln", "1.1.0", "wfstgeom", false);
-            }).rejects.toThrow(Error);
         });
     });
 
@@ -988,14 +996,6 @@ describe("wfs.js", function () {
                 "    </wfs:Feature>\n" +
                 "  </wfs:InsertResults>\n" +
                 "</wfs:TransactionResponse>",
-            fetchResponseUpdate = "<?xml version='1.0' encoding='UTF-8'?>\n" +
-                "<wfs:TransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\">\n" +
-                "  <wfs:TransactionSummary>\n" +
-                "    <wfs:totalInserted>0</wfs:totalInserted>\n" +
-                "    <wfs:totalUpdated>1</wfs:totalUpdated>\n" +
-                "    <wfs:totalDeleted>0</wfs:totalDeleted>\n" +
-                "  </wfs:TransactionSummary>\n" +
-                "</wfs:TransactionResponse>",
             fetchResponseDelete = "<?xml version='1.0' encoding='UTF-8'?>\n" +
                 "<wfs:TransactionResponse xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd\" xmlns:wfs=\"http://www.opengis.net/wfs\" xmlns:ogc=\"http://www.opengis.net/ogc\" version=\"1.1.0\">\n" +
                 "  <wfs:TransactionSummary>\n" +
@@ -1006,40 +1006,84 @@ describe("wfs.js", function () {
                 "</wfs:TransactionResponse>";
 
         it("should return the inserted feature if the transaction was successful", async function () {
-            fetch.mockResponseOnce(fetchResponseInsert);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return fetchResponseInsert;
+                        }
+                    });
+                });
+            });
 
             expect(await wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).toEqual(feature);
         });
 
         it("should return the inserted feature if the transaction was successful", async function () {
-            fetch.mockResponseOnce(fetchResponseInsert);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return fetchResponseInsert;
+                        }
+                    });
+                });
+            });
             layer.isSecured = true;
 
             expect(await wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).toEqual(feature);
         });
 
         it("should return the updated feature if the transaction was successful", async function () {
-            fetch.mockResponseOnce(fetchResponseUpdate);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return fetchResponseInsert;
+                        }
+                    });
+                });
+            });
             feature.setId(1);
 
             expect(await wfs.sendTransaction(srsName, feature, url, layer, updateTransaction)).toEqual(feature);
         });
 
         it("should return the deleted feature if the transaction was successful", async function () {
-            fetch.mockResponseOnce(fetchResponseDelete);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return fetchResponseDelete;
+                        }
+                    });
+                });
+            });
             feature.setId(1);
 
             expect(await wfs.sendTransaction(srsName, feature, url, layer, deleteTransaction)).toEqual(feature);
         });
 
-        it("should throw an error if fetch fails", async function () {
-            fetch.mockAbortOnce();
-
-            await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow(Error);
-        });
-
         it("should throw an error if transaction type is not insert, selectedUpdate or delete", async function () {
-            fetch.mockResponseOnce(fetchResponseDelete);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return fetchResponseDelete;
+                        }
+                    });
+                });
+            });
             feature.setId(1);
 
             await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, "lÃ¶schen")).rejects.toThrow(Error);
@@ -1053,7 +1097,17 @@ describe("wfs.js", function () {
                 "  </ows:Exception>\n" +
                 "</ows:ExceptionReport>";
 
-            fetch.mockResponseOnce(failedResponse);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return failedResponse;
+                        }
+                    });
+                });
+            });
 
             await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow(Error);
         });
@@ -1066,12 +1120,79 @@ describe("wfs.js", function () {
                 "  </ows:Exception>\n" +
                 "</ows:ExceptionReport>";
 
-            fetch.mockResponseOnce(failedResponse);
+            global.fetch = jest.fn().mockImplementation(() => {
+                return new Promise((resolve) => {
+                    resolve({
+                        ok: true,
+                        status: 200,
+                        text: () => {
+                            return failedResponse;
+                        }
+                    });
+                });
+            });
 
             await expect(async () => wfs.sendTransaction(srsName, feature, url, layer, insertTransaction)).rejects.toThrow("Cannot perform insert operation: Error in XML document (line: 1, column: 234, character offset: 233): Feature type \"{wrong}wfst\" is unknown.");
         });
     });
+    describe("createReceivePossiblePropertiesUrl", function () {
+        it("url without backslash at the end", () => {
+            const url = "https://team-waas-was-here.lgln",
+                version = "1.1.0",
+                featureType = "featureType",
+                createdUrl = wfs.createReceivePossiblePropertiesUrl(url, version, featureType);
 
+            expect(createdUrl.origin).toEqual(url);
+            expect(createdUrl.searchParams.get("SERVICE")).toEqual("WFS");
+            expect(createdUrl.searchParams.get("REQUEST")).toEqual("DescribeFeatureType");
+            expect(createdUrl.searchParams.get("TYPENAME")).toEqual(featureType);
+            expect(createdUrl.searchParams.get("VERSION")).toEqual(version);
+        });
+
+        it("url with backslash at the end", () => {
+            const url = "https://team-waas-was-here.lgln/",
+                version = "1.1.0",
+                featureType = "featureType",
+                createdUrl = wfs.createReceivePossiblePropertiesUrl(url, version, featureType);
+
+            expect(createdUrl.origin).toEqual("https://team-waas-was-here.lgln");
+            expect(createdUrl.searchParams.get("SERVICE")).toEqual("WFS");
+            expect(createdUrl.searchParams.get("REQUEST")).toEqual("DescribeFeatureType");
+            expect(createdUrl.searchParams.get("TYPENAME")).toEqual(featureType);
+            expect(createdUrl.searchParams.get("VERSION")).toEqual(version);
+        });
+
+        it("createUrl should respect questionmark in url", () => {
+            const url = "https://mapservice.regensburg.de/cgi-bin/mapserv?map=wfs.map",
+                version = "1.1.0",
+                featureType = "featureType",
+                createdUrl = wfs.createReceivePossiblePropertiesUrl(url, version, featureType);
+
+            expect(createdUrl.origin).toEqual("https://mapservice.regensburg.de");
+            expect(createdUrl.pathname).toEqual("/cgi-bin/mapserv");
+            expect(createdUrl.searchParams.get("map")).toEqual("wfs.map");
+            expect(createdUrl.searchParams.get("SERVICE")).toEqual("WFS");
+            expect(createdUrl.searchParams.get("REQUEST")).toEqual("DescribeFeatureType");
+            expect(createdUrl.searchParams.get("TYPENAME")).toEqual(featureType);
+            expect(createdUrl.searchParams.get("VERSION")).toEqual(version);
+        });
+
+        it("createUrl should respect version in url", () => {
+            const url = "https://www.geosnap.info/cgi-bin/qgis_mapserv.fcgi?VERSION=1.3.0&MAP=/var/www/data/gis_data/LRARW_Burgergis/buergergis.qgz",
+                version = "1.1.0",
+                featureType = "featureType",
+                createdUrl = wfs.createReceivePossiblePropertiesUrl(url, version, featureType);
+
+            expect(createdUrl.origin).toEqual("https://www.geosnap.info");
+            expect(createdUrl.pathname).toEqual("/cgi-bin/qgis_mapserv.fcgi");
+            expect(createdUrl.searchParams.get("MAP")).toEqual("/var/www/data/gis_data/LRARW_Burgergis/buergergis.qgz");
+            expect(createdUrl.searchParams.get("SERVICE")).toEqual("WFS");
+            expect(createdUrl.searchParams.get("REQUEST")).toEqual("DescribeFeatureType");
+            expect(createdUrl.searchParams.get("TYPENAME")).toEqual(featureType);
+            expect(createdUrl.searchParams.get("VERSION")).toEqual("1.3.0");
+        });
+
+    });
     describe("loadFeaturesManually", function () {
         let tick;
 
@@ -1081,10 +1202,6 @@ describe("wfs.js", function () {
                     setTimeout(resolve, 0);
                 });
             };
-
-            if (global.fetch) {
-                global.fetch.mockClear();
-            }
         });
 
         it("load features manually", async function () {
@@ -1099,8 +1216,33 @@ describe("wfs.js", function () {
                     });
                 });
             });
-
-            const format = new WFS(),
+            const feature = new Feature({
+                    geometry: new Polygon([
+                        [
+                            [
+                                9.17782024967994,
+                                50.20836600730087
+                            ],
+                            [
+                                9.200676227149245,
+                                50.20836600730087
+                            ],
+                            [
+                                9.200676227149245,
+                                50.20873353776312
+                            ],
+                            [
+                                9.17782024967994,
+                                50.20873353776312
+                            ],
+                            [
+                                9.17782024967994,
+                                50.20836600730087
+                            ]
+                        ]]),
+                    name: "My Polygon"
+                }),
+                format = new WFS(),
                 source = new VectorSource({
                     format: format,
                     url: "https://url.de",
@@ -1113,6 +1255,10 @@ describe("wfs.js", function () {
                     version: "1.1.0",
                     url: "https://url.de"
                 };
+
+            source.getFormat().readFeatures = jest.fn().mockImplementation(() => {
+                return [feature];
+            });
 
             wfs.loadFeaturesManually(layerAttributes, source);
             await tick();

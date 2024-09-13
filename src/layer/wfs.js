@@ -338,10 +338,10 @@ async function sendTransaction (srsName, feature, url, layer, transactionMethod)
         response,
         xmlDocument = null,
         transactionSummary = null,
-        data = null,
-        baseUrl = new URL(url);
+        data = null;
+    const baseUrl = new URL(url),
 
-    const {featureNS, featurePrefix, featureType, version} = layer;
+        {featureNS, featurePrefix, featureType, version} = layer;
 
     try {
         response = await fetch(baseUrl, {
@@ -458,6 +458,27 @@ function parseDescribeFeatureTypeResponse (responseData, featureType) {
 }
 
 /**
+ * Creates the Url to get possible properties from.
+ *
+ * @param {string} url from the WFS-T
+ * @param {string} version of the WFS-T
+ * @param {string} featureType Name of the FeatureType according to the capabilities document
+ * @returns {URL} the created url
+ */
+function createReceivePossiblePropertiesUrl (url, version, featureType) {
+    const baseUrl = new URL(decodeURI(url));
+
+    baseUrl.searchParams.set("SERVICE", "WFS");
+    baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
+    baseUrl.searchParams.set("TYPENAME", featureType);
+    if (!baseUrl.searchParams.has("VERSION") && !baseUrl.searchParams.has("version")) {
+        baseUrl.searchParams.set("VERSION", version);
+    }
+
+    return baseUrl;
+}
+
+/**
  * Requests the possible properties of a feature and further values;
  * for more {@see FeatureProperty}.
  *
@@ -468,9 +489,8 @@ function parseDescribeFeatureTypeResponse (responseData, featureType) {
  * @returns {Promise<Array>} If the request is successful, an array of prepared feature properties.
  */
 async function receivePossibleProperties (url, version, featureType, isSecured) {
-    // const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
-    const baseUrl =createReceivePossiblePropertiesUrl(url, version, featureType);
-    let response;
+    const baseUrl = createReceivePossiblePropertiesUrl(url, version, featureType);
+    let response = null;
 
     try {
         response = await fetch(baseUrl, {
@@ -483,27 +503,6 @@ async function receivePossibleProperties (url, version, featureType, isSecured) 
         console.error(e);
         throw e;
     }
-}
-
-/**
- * Creates the Url to get possible properties from.
- *
- * @param {string} url from the WFS-T
- * @param {string} version of the WFS-T
- * @param {string} featureType Name of the FeatureType according to the capabilities document
- * @returns {URL} the created url
- */
-function createReceivePossiblePropertiesUrl (url, version, featureType) {
-    // const baseUrl = `${url}?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=${version}&TYPENAME=${featureType}`;
-    const baseUrl = new URL(decodeURI(url));
-
-    baseUrl.searchParams.set("SERVICE", "WFS");
-    baseUrl.searchParams.set("REQUEST", "DescribeFeatureType");
-    baseUrl.searchParams.set("TYPENAME", featureType);
-    if(!baseUrl.searchParams.has("VERSION") && !baseUrl.searchParams.has("version")){
-        baseUrl.searchParams.set("VERSION", version);
-    }
-    return baseUrl;
 }
 
 /**

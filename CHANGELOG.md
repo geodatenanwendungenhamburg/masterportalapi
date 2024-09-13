@@ -16,6 +16,7 @@
 
 ### Fixed
 - Tileset-Layer: custom tileset filename is allowed
+- WFS-Layer: url for describeFeatureType requests respects questionmark.
 
 ---
 
