@@ -164,7 +164,7 @@ export function createMap (config = defaults, {mapParams, callback, errorCallbac
             ]),
             controls: [],
             view: createMapView(config),
-            keyboardEventTarget: config.mapInteractions?.keyboardEventTarget ? config.mapInteractions?.keyboardEventTarget : false
+            keyboardEventTarget: config.mapInteractions?.keyboardEventTarget ? document : false
         }, mapParams));
 
     map.set("mapMode", "2D");
