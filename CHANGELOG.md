@@ -17,6 +17,7 @@
 ### Fixed
 - Tileset-Layer: custom tileset filename is allowed
 - WFS-Layer: url for describeFeatureType requests respects questionmark.
+- Fixed keyboardEventTarget, so that keyboard interactions like KeyboardZoom and KeyboardPan work, if keyboardEventTarget id defined in config
 
 ---
 
