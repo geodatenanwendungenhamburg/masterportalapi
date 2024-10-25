@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1275: Layers without capabilitiesURL are now working. 
 
 ---
 
