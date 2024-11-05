@@ -3,21 +3,12 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## 2.41.0 - 2024-11-05
 
 ### Fixed
 - Tileset-Layer: custom tileset filename is allowed
 - WFS-Layer: url for describeFeatureType requests respects questionmark.
-- Fixed keyboardEventTarget, so that keyboard interactions like KeyboardZoom and KeyboardPan work, if keyboardEventTarget id defined in config
+- Issue #1279: Fixed keyboardEventTarget, so that keyboard interactions like KeyboardZoom and KeyboardPan work, if keyboardEventTarget id defined in config
 
 ---
 
