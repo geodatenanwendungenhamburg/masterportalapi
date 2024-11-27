@@ -186,7 +186,7 @@ function createLayer (rawLayer, layerParams = {}) {
         infoFormat: rawLayer.infoFormat
     }, layerParams));
 
-    if (rawLayer.optionsFromCapabilities === undefined || !rawLayer.capabilitiesUrl) {
+    if (rawLayer.optionsFromCapabilities === undefined || rawLayer.capabilitiesUrl === undefined) {
         createLayerSourceByDefinitions(rawLayer, tileLayer);
     }
     else {
