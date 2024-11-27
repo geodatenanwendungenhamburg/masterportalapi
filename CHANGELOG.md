@@ -3,10 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.42.0 - 2024-11-27
 
 ### Changed
 - The following packages have been updated:
@@ -16,10 +13,6 @@
         - olcs: 2.20.0 to 2.22.1
     - peerDependencies:
         - cesium/engine: 9.2.0 to 12.0.1
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Issue #1275: Layers without capabilitiesURL are now working. 
