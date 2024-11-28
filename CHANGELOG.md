@@ -3,18 +3,10 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## 2.42.1 - 2024-11-28
 
 ### Fixed
+- Issue #1275: Fixed layers without capabilitiesURL.
 
 ---
 
