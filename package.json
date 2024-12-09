@@ -21,7 +21,7 @@
   "dependencies": {
     "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
-    "ol": "^10.2.1",
+    "ol": "^10.3.1",
     "ol-mapbox-style": "^12.3.5",
     "olcs": "^2.22.1",
     "proj4": "^2.10.0",
@@ -56,7 +56,7 @@
     "util": "^0.12.5"
   },
   "peerDependencies": {
-    "@cesium/engine": "^12.0.1"
+    "@cesium/engine": "^13.0.0"
   },
   "engines": {
     "node": "^16.13.2 || ^18.12.0 || ^20.12.2",
