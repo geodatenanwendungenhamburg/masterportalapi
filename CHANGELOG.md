@@ -9,6 +9,11 @@
 ### Added
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.2.1 to 12.3.1
+    - peerDependencies:
+        - cesium/engine: 12.0.1 to 13.0.0
 
 ### Deprecated
 
