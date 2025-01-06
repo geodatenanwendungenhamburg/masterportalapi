@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- 3D mesh layer was covered on level 0 by setting globe depthTestAgainstTerrain to false
 
 ---
 
@@ -37,7 +38,7 @@
         - cesium/engine: 9.2.0 to 12.0.1
 
 ### Fixed
-- Issue #1275: Layers without capabilitiesURL are now working. 
+- Issue #1275: Layers without capabilitiesURL are now working.
 
 ---
 
