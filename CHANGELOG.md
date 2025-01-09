@@ -17,6 +17,7 @@
 
 ### Fixed
 - Transparency and visibility information in `addLayer` is now interpreted correctly again
+- WMS-Layer: special loadFunction is used for every value attribute `isSecured` (behaviour equals <2.38.0)
 
 ---
 

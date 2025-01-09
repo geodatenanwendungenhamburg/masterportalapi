@@ -102,7 +102,7 @@ describe("wms.js", function () {
         });
     });
 
-    describe("loadFunctionWithCredentials", function () {
+    describe("defaultLoadFunction", function () {
         beforeEach(() => {
             const blob = new Blob();
 
@@ -121,10 +121,17 @@ describe("wms.js", function () {
         });
 
         it("passes credentials if isSecured is set", async function () {
-            const result = wms.loadFunctionWithCredentials(),
+            const result = wms.defaultLoadFunction({isSecured: true}),
                 input = {src: ""};
 
             await result({getImage: () => input}, "SECURE_WMS");
+            expect(input.src).toEqual("blob:BLOB");
+        });
+        it("does not pass credentials if isSecured is not set", async function () {
+            const result = wms.defaultLoadFunction({isSecured: false}),
+                input = {src: ""};
+
+            await result({getImage: () => input}, "INSECURE_WMS");
             expect(input.src).toEqual("blob:BLOB");
         });
     });

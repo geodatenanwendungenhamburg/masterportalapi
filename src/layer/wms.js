@@ -77,12 +77,13 @@ export function makeParams (rawLayer) {
 }
 
 /**
- * Return a ol tile or image load function for the rawLayer. Fetches with credentials: 'include'.
+ * Return a ol tile or image load function for the rawLayer.
+ * @param {object} rawLayer - layer specification as in services.json
  * @returns {function} tile/image load function
  */
-export function loadFunctionWithCredentials () {
+export function defaultLoadFunction ({isSecured}) {
     return async (image, src) => {
-        const response = await fetch(src, {credentials: "include"}),
+        const response = await fetch(src, {credentials: isSecured ? "include" : "omit"}),
             data = await response.blob();
 
         image.getImage().src = URL.createObjectURL(data);
@@ -99,7 +100,7 @@ export function loadFunctionWithCredentials () {
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
  * @param {string} [rawLayer.cqlFilter] - optional CQL filter to add to the request
- * @param {boolean} [rawLayer.isSecured] - if the layer is secured by BasicAuth, images are loaded with credentials: 'include'.
+ * @param {boolean} [rawLayer.isSecured] - whether the layer is secured by BasicAuth and should include or omit the credentials prompt
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
@@ -119,9 +120,7 @@ export function createLayerSource (rawLayer, options) {
             projection: projection,
             attributions: rawLayer.olAttribution,
             crossOrigin: rawLayer.crossOrigin,
-            ...rawLayer.isSecured ? {
-                imageLoadFunction: loadFunctionWithCredentials()
-            } : {}
+            imageLoadFunction: defaultLoadFunction(rawLayer)
         });
     }
     if (options && options.resolutions) {
@@ -139,9 +138,7 @@ export function createLayerSource (rawLayer, options) {
         projection: projection,
         attributions: rawLayer.olAttribution,
         crossOrigin: rawLayer.crossOrigin,
-        ...rawLayer.isSecured ? {
-            tileLoadFunction: loadFunctionWithCredentials()
-        } : {}
+        tileLoadFunction: defaultLoadFunction(rawLayer)
     });
 }
 
