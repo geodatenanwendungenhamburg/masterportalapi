@@ -122,9 +122,9 @@ describe("map.js", function () {
         it("sets visibility and transparency", function () {
             const result1 = Map.prototype.addLayer("works"),
                 result2 = Map.prototype.addLayer("works", {}),
-                result3 = Map.prototype.addLayer("works", {visibility: false}),
-                result4 = Map.prototype.addLayer("works", {transparency: 50}),
-                result5 = Map.prototype.addLayer("works", {visibility: false, transparency: 20});
+                result3 = Map.prototype.addLayer("works", {layerParams: {visibility: false}}),
+                result4 = Map.prototype.addLayer("works", {layerParams: {transparency: 50}}),
+                result5 = Map.prototype.addLayer("works", {layerParams: {visibility: false, transparency: 20}});
 
             expect(result1.getOpacity()).toBe(1);
             expect(result1.getVisible()).toBe(true);
