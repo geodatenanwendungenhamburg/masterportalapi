@@ -83,15 +83,17 @@ function injectErrorCallback (layer, errorCallback) {
  * @param {(string|ol/layer/Base)} layerOrId - if of layer to add to map
  * @param {object} [params] - optional parameter object
  * @param {boolean} [params.layerParams={}] - additional layerParams specified in portalConfig
- * @param {boolean} [params.visibility=true] - whether added layer is initially visible
- * @param {Number} [params.transparency=0] - how visible the layer is initially
+ * @param {boolean} [params.layerParams.visibility=true] - if params.visibility not given, this is used
+ * @param {Number} [params.layerParams.transparency=0] - if params.transparency not given, this is used
+ * @param {boolean} [params.visibility=params.layerParams.visibility] - whether added layer is initially visible
+ * @param {Number} [params.transparency=params.layerParams.transparency] - how visible the layer is initially
  * @param {Function} [params.errorCallback=console.error] - callback for layer source error events
  * @returns {?ol.Layer} added layer
  */
 function addLayer (layerOrId, params) {
-    const visibility = params?.layerParams?.visibility ?? true,
-        transparency = params?.layerParams?.transparency ?? 0,
-        layerParams = {visibility, transparency},
+    const visibility = params?.visibility ?? params?.layerParams?.visibility ?? true,
+        transparency = params?.transparency ?? params?.layerParams?.transparency ?? 0,
+        layerParams = {...params?.layerParams || {}, visibility, transparency},
         errorCallback = typeof params?.errorCallback === "function"
             ? params?.errorCallback
             : console.error;
