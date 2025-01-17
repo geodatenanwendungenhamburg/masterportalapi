@@ -9,15 +9,23 @@
 ### Added
 
 ### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
+## 2.43.0 - 2024-01-17
+
+### Changed
 - The following packages have been updated:
     - dependencies:
         - ol: 10.2.1 to 10.3.1
     - peerDependencies:
         - cesium/engine: 12.0.1 to 13.0.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - 3D mesh layer was covered on level 0 by setting globe depthTestAgainstTerrain to false
