@@ -15,7 +15,7 @@
 ### Removed
 
 ### Fixed
-
+- Transparency and visibility information in `addLayer` is now interpreted correctly again
 ---
 
 ## 2.43.0 - 2024-01-17
@@ -29,7 +29,6 @@
 
 ### Fixed
 - 3D mesh layer was covered on level 0 by setting globe depthTestAgainstTerrain to false
-- Transparency and visibility information in `addLayer` is now interpreted correctly again
 
 ---
 
