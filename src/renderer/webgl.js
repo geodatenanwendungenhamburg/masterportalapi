@@ -3,6 +3,7 @@ import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
 import WebGLVectorTileLayerRenderer from "ol/renderer/webgl/VectorTileLayer.js";
 import VectorTile from "ol/layer/VectorTile.js";
 import VectorLayer from "ol/layer/Layer";
+import WebGLVectorLayer from "ol/layer/WebGLVector.js";
 import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
 import {returnColor} from "../vectorStyle/lib/colorConvertions";
@@ -14,14 +15,27 @@ import {packColor, parseLiteralStyle} from "ol/webgl/styleparser.js";
  * @see https://openlayers.org/en/latest/examples/webgl-points-layer.html
  * @private
  */
-const defaultPointStyle = {
-        "circle-radius": 10,
-        "circle-fill-color": "#006688",
-        "circle-rotate-with-view": false,
-        "circle-displacement": [0, 0],
-        "circle-opacity": 0.6
-    },
-
+const defaultPointStyle = [
+        {
+            style: {
+                "circle-fill-color": ["match", ["get", "selected"], 1, "#0c2026", "#006688"],
+                "circle-radius": [
+                    "interpolate",
+                    ["exponential", 1.5],
+                    ["zoom"],
+                    3, 6,
+                    6, 10,
+                    9, 20,
+                    12, 35,
+                    15, 60,
+                    18, 110
+                ],
+                "circle-rotate-with-view": false,
+                "circle-displacement": [0, 0],
+                "circle-opacity": 0.6
+            }
+        }
+    ],
     defaultPolygonStyle = {
         fillColor: "#006688",
         strokeColor: "#006688",
@@ -52,6 +66,11 @@ export function createVectorLayerRenderer () {
      * @description the temporary class with a custom renderer to render the vector data with WebGL
      */
     class LocalWebGLLayer extends VectorLayer {
+        constructor (options) {
+            super(options);
+            // Initialize with any default style variables
+            this.styleVariables = options.styleVariables || {};
+        }
         /**
          * Creates a new renderer that takes the defined style of the new layer as an input.
          * @returns {module:ol/renderer/webgl/WebGLVectorLayerRenderer} the custom renderer
@@ -61,6 +80,13 @@ export function createVectorLayerRenderer () {
             return new WebGLVectorLayerRenderer(this, {
                 style
             });
+        }
+        /**
+         * Get the current style variables.
+         * @returns {Object} - The current style variables.
+         */
+        getStyleVariables () {
+            return this.styleVariables;
         }
     }
 
@@ -278,7 +304,7 @@ export function afterLoading (features, styleId, excludeTypesFromParsing, isPoin
  * @returns {VectorLayer | WebGLPointsLayer} returns the layer instance
  */
 export function createLayer (attrs) {
-    let LayerConstructor = WebGLPointsLayer;
+    let LayerConstructor = WebGLVectorLayer;
     const options = {
         id: attrs.id,
         source: attrs.source,

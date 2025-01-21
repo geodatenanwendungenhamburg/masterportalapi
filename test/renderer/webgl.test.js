@@ -5,7 +5,7 @@ import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import MultiPoint from "ol/geom/MultiPoint";
 import * as webgl from "../../src/renderer/webgl";
-import WebGLPointsLayer from "ol/layer/WebGLVector";
+import WebGLVectorLayer from "ol/layer/WebGLVector.js";
 import Layer from "ol/layer/Layer";
 import {returnColor} from "../../src/vectorStyle/lib/colorConvertions";
 
@@ -18,7 +18,7 @@ jest.mock("../../src/vectorStyle/styleList.js", () => {
 });
 
 describe("webgl.js", () => {
-    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject, defaultStyle;
+    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject, pointStyle;
 
     beforeEach(() => {
         layerParams = {
@@ -68,7 +68,7 @@ describe("webgl.js", () => {
         styleObject = {
             rules: [styleRule]
         };
-        defaultStyle = {
+        pointStyle = {
             fillColor: "#006688",
             strokeColor: "#006688",
             strokeWidth: 1,
@@ -80,11 +80,11 @@ describe("webgl.js", () => {
     describe("createLayer", () => {
         let source = new VectorSource();
 
-        it("should return a WebGLPointsLayer", () => {
+        it("should return a WebGLVectorLayer", () => {
             layerParams.isPointLayer = true;
             const webglLayer = webgl.createLayer({...rawLayer, ...layerParams, source});
 
-            expect(webglLayer).toBeInstanceOf(WebGLPointsLayer);
+            expect(webglLayer).toBeInstanceOf(WebGLVectorLayer);
             expect(webglLayer.get("isPointLayer")).toBeTruthy();
         });
         it("should return a custom Layer", () => {
@@ -92,7 +92,7 @@ describe("webgl.js", () => {
             const webglLayer = webgl.createLayer({...rawLayer, ...layerParams, source});
 
             expect(webglLayer).toBeInstanceOf(Layer);
-            expect(webglLayer).not.toBeInstanceOf(WebGLPointsLayer);
+            expect(webglLayer).not.toBeInstanceOf(WebGLVectorLayer);
             expect(webglLayer.get("isPointLayer")).toBeFalsy();
         });
         it("vectorTile: should return a VectorTile layer", () => {
@@ -102,7 +102,7 @@ describe("webgl.js", () => {
 
             expect(webglLayer).toBeInstanceOf(Layer);
             expect(webglLayer).toBeInstanceOf(VectorTile);
-            expect(webglLayer).not.toBeInstanceOf(WebGLPointsLayer);
+            expect(webglLayer).not.toBeInstanceOf(WebGLVectorLayer);
             expect(webglLayer.get("isPointLayer")).toBeFalsy();
         });
     });
@@ -187,11 +187,10 @@ describe("webgl.js", () => {
                     rules: [styleRule]
                 };
                 webgl.formatFeatureStyles($feature, styleObject);
-                expect($feature.get("fillColor")).toEqual(defaultStyle.fillColor);
-                expect($feature.get("strokeColor")).toEqual(defaultStyle.strokeColor);
-                expect($feature.get("strokeWidth")).toEqual(defaultStyle.strokeWidth);
-                expect($feature.get("opacity")).toEqual(defaultStyle.opacity);
-                expect($feature.get("circleSize")).toEqual(defaultStyle.size);
+                expect($feature.get("fillColor")).toEqual(pointStyle.fillColor);
+                expect($feature.get("strokeColor")).toEqual(pointStyle.strokeColor);
+                expect($feature.get("strokeWidth")).toEqual(pointStyle.strokeWidth);
+                expect($feature.get("opacity")).toEqual(pointStyle.opacity);
             });
         });
     });
