@@ -16,6 +16,7 @@
 
 ### Fixed
 - Transparency and visibility information in `addLayer` is now interpreted correctly again
+
 ---
 
 ## 2.43.0 - 2024-01-17
