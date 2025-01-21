@@ -33,7 +33,8 @@ export default function Tileset (rawLayer) {
     this.values = {
         name: rawLayer.name,
         id: rawLayer.id,
-        typ: rawLayer.typ
+        typ: rawLayer.typ,
+        transparency: rawLayer.transparency
     };
     if (Cesium) {
         this.tileset = Promise.resolve(createTileSet(this, rawLayer));

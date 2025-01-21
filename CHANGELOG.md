@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Tileset.js: The tileset layer knows now the rawLayer transparency.
 
 ### Changed
 
@@ -35,13 +36,13 @@
 
 ## 2.42.2 - 2024-12-05
 ### Changed
-- Revert Change, because of problems with Routing: 
-    - The following packages have been updated: 
-        - dependencies: 
-            - ol: 9.2.4 to 10.2.1 
-            - ol-mapbox-style: 12.2.1 to 12.3.5 
-            - olcs: 2.20.0 to 2.22.1 
-        - peerDependencies: 
+- Revert Change, because of problems with Routing:
+    - The following packages have been updated:
+        - dependencies:
+            - ol: 9.2.4 to 10.2.1
+            - ol-mapbox-style: 12.2.1 to 12.3.5
+            - olcs: 2.20.0 to 2.22.1
+        - peerDependencies:
             - cesium/engine: 9.2.0 to 12.0.1
 
 ---
