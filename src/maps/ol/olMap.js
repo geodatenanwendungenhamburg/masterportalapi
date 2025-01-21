@@ -83,15 +83,20 @@ function injectErrorCallback (layer, errorCallback) {
  * @param {(string|ol/layer/Base)} layerOrId - if of layer to add to map
  * @param {object} [params] - optional parameter object
  * @param {boolean} [params.layerParams={}] - additional layerParams specified in portalConfig
- * @param {boolean} [params.visibility=true] - whether added layer is initially visible
- * @param {Number} [params.transparency=0] - how visible the layer is initially
+ * @param {boolean} [params.layerParams.visibility=true] - if params.visibility not given, this is used
+ * @param {Number} [params.layerParams.transparency=0] - if params.transparency not given, this is used
+ * @param {boolean} [params.visibility=params.layerParams.visibility] - whether added layer is initially visible
+ * @param {Number} [params.transparency=params.layerParams.transparency] - how visible the layer is initially
  * @param {Function} [params.errorCallback=console.error] - callback for layer source error events
  * @returns {?ol.Layer} added layer
  */
-function addLayer (layerOrId, params = {layerParams: {}, visibility: true, transparency: 0, errorCallback: console.error}) {
-    const errorCallback = typeof params.errorCallback === "function"
-        ? params.errorCallback
-        : console.error;
+function addLayer (layerOrId, params) {
+    const visibility = params?.visibility ?? params?.layerParams?.visibility ?? true,
+        transparency = params?.transparency ?? params?.layerParams?.transparency ?? 0,
+        layerParams = {...params?.layerParams || {}, visibility, transparency},
+        errorCallback = typeof params?.errorCallback === "function"
+            ? params?.errorCallback
+            : console.error;
     let layer, layerBuilder;
 
     // if parameter is id, create and add layer with masterportalAPI mechanisms
@@ -107,9 +112,9 @@ function addLayer (layerOrId, params = {layerParams: {}, visibility: true, trans
             console.error("Layer with id '" + layerOrId + "' has unknown type '" + rawLayer.typ + "'. No layer added to map.");
             return null;
         }
-        layer = layerBuilder.createLayer(rawLayer, {layerParams: params.layerParams}, {map: this});
-        layer.setVisible(typeof params.visibility === "boolean" ? params.visibility : true);
-        layer.setOpacity(typeof params.transparency === "number" ? (100 - params.transparency) / 100 : 1);
+        layer = layerBuilder.createLayer(rawLayer, {layerParams}, {map: this});
+        layer.setVisible(typeof visibility === "boolean" ? visibility : true);
+        layer.setOpacity(typeof transparency === "number" ? (100 - transparency) / 100 : 1);
         injectErrorCallback(layer, errorCallback);
         originalAddLayer.call(this, layer);
         return layer;
