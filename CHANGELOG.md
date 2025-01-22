@@ -3,17 +3,10 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.44.0 - 2025-01-22
 
 ### Added
 - Tileset.js: The tileset layer knows now the rawLayer transparency.
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Transparency and visibility information in `addLayer` is now interpreted correctly again
@@ -21,7 +14,7 @@
 
 ---
 
-## 2.43.0 - 2024-01-17
+## 2.43.0 - 2025-01-17
 
 ### Changed
 - The following packages have been updated:
