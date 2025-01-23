@@ -15,6 +15,9 @@
 ### Removed
 
 ### Fixed
+- vectorStyle: 
+    - fixed styling for type "cesium"
+    - renamed configured style type="Cesium" to type="cesium"
 
 ---
 

@@ -128,5 +128,9 @@ describe("getRuleForIndex", function () {
             expect(Array.isArray(getRulesForFeature(styleObject, jsonObjects[1]))).toBe(true);
             expect(getRulesForFeature(styleObject, jsonObjects[1]).length).toEqual(1);
         });
+        it("should not fail if feature is undefined - is the case for type=Cesium", function () {
+            expect(Array.isArray(getRulesForFeature(styleObject, undefined))).toBe(true);
+            expect(getRulesForFeature(styleObject, jsonObjects[1]).length).toEqual(1);
+        });
     });
 });

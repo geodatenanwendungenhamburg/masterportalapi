@@ -1,6 +1,7 @@
 import createStyle from "../../src/vectorStyle/createStyle";
 import PointStyle from "../../src/vectorStyle/styles/point/stylePoint";
 import LineStringStyle from "../../src/vectorStyle/styles/styleLine";
+import CesiumStyle from "../../src/vectorStyle/styles/styleCesium";
 import PolygonStyle from "../../src/vectorStyle/styles/polygon/stylePolygon";
 import {Style, Stroke, Fill} from "ol/style.js";
 import {GeoJSON} from "ol/format.js";
@@ -9,6 +10,7 @@ let rules,
     jsonObjects,
     multiLineStringRules,
     multiPolygonRules,
+    cesiumRules,
     isClustered;
 
 const wfsImgPathFromConfig = "/path/to/wfs/images",
@@ -238,6 +240,12 @@ beforeEach(() => {
             polygonStrokeColor: [255, 0, 0, 1]
         }
     }];
+    cesiumRules = [{
+        style: {
+            type: "cesium",
+            color: "rgba(50, 154, 26, 0.8)"
+        }
+    }];
 });
 
 describe("createStyle", () => {
@@ -441,6 +449,13 @@ describe("getSimpleGeometryStyle", function () {
     it("should return ol default style - clustered", function () {
         isClustered = true;
         expect(createStyle.getSimpleGeometryStyle("not exist", jsonObjects[0], null, isClustered, wfsImgPathFromConfig)).toBeInstanceOf(Style);
+    });
+    it("should create Cesium style", function () {
+        isClustered = true;
+        const tilesetStyle = createStyle.getSimpleGeometryStyle("cesium", undefined, cesiumRules[0], false, wfsImgPathFromConfig);
+
+        expect(tilesetStyle).toBeInstanceOf(CesiumStyle);
+        expect(tilesetStyle.attributes.color).toEqual(cesiumRules[0].style.color);
     });
 });
 

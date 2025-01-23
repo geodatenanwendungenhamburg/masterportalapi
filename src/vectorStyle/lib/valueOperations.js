@@ -140,7 +140,7 @@ export function checkProperty (featureProperties, key, value) {
  * @returns {Boolean} true if all properties are satisfied
  */
 export function checkProperties (feature, rule) {
-    if (rule?.conditions?.properties) {
+    if (rule?.conditions?.properties && feature) {
         const featureProperties = feature.getProperties(),
             properties = rule.conditions.properties;
         let key,

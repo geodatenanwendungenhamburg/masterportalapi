@@ -7,7 +7,7 @@ import {checkProperties} from "../lib/valueOperations";
  */
 export function getRulesForFeature (styleObject, feature) {
     styleObject.rules.forEach(rule => {
-        if (typeof feature.get("rotation") !== "undefined") {
+        if (typeof feature?.get("rotation") !== "undefined") {
             rule.style.rotation = feature.get("rotation");
         }
     });

@@ -16,7 +16,7 @@ let legendInformationLength = 0;
  * @returns {Boolean} is geometrytype a multiGeometry
  */
 function isMultiGeometry (geometryType) {
-    return geometryType === "MultiPoint" || geometryType === "MultiLineString" || geometryType === "MultiPolygon" || geometryType === "GeometryCollection" || geometryType === "Cesium";
+    return geometryType === "MultiPoint" || geometryType === "MultiLineString" || geometryType === "MultiPolygon" || geometryType === "GeometryCollection" || geometryType === "cesium";
 }
 
 /**
@@ -34,7 +34,9 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
     let styleObject,
         styleObjectForLegend = null;
 
-    feature.legendValue = legendValue ? legendValue : null;
+    if (feature) {
+        feature.legendValue = legendValue ? legendValue : null;
+    }
 
     if (geometryType === "Point") {
         styleObject = new PointStyle(feature, style, isClustered);
@@ -54,10 +56,10 @@ function getSimpleGeometryStyle (geometryType, feature, rule, isClustered, wfsIm
             styleObjectForLegend = new PolygonStyle(feature, style, false);
         }
     }
-    else if (geometryType === "Cesium") {
+    else if (geometryType === "cesium") {
         styleObject = new CesiumStyle(rule);
         styleObject.initialize(rule);
-        styleObject.addLegendInfo("Cesium", styleObject, rule);
+        styleObject.addLegendInfo("cesium", styleObject, rule);
         styleObject.legendValue = legendValue;
         return styleObject;
     }
@@ -128,7 +130,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
             }
         });
     }
-    else if (geometryType === "Cesium") {
+    else if (geometryType === "cesium") {
         rules.forEach(rule => {
             const simpleStyle = getSimpleGeometryStyle(geometryType, feature, rule, isClustered, wfsImgPathFromConfig);
 
@@ -153,7 +155,7 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
  * @returns {ol/style/Style}    style is always returned
  */
 function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
-    const geometryType = feature ? feature.getGeometry().getType() : "Cesium";
+    const geometryType = feature ? feature.getGeometry().getType() : "cesium";
 
     // For simple geometries the first styling rule is used.
     // That algorithm implements an OR statement between multiple valid conditions giving precedence to its order in the style.json.

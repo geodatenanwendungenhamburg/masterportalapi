@@ -185,7 +185,7 @@ describe("checkProperties", function () {
     it("should return true for rule that has no properties", function () {
         expect(checkProperties(jsonObjects[0], rules[2])).toBe(true);
     });
-    it("should return false for rule that has not fitting properties", function () {
-        expect(checkProperties(jsonObjects[1], rules[1])).toBe(false);
+    it("should do nothing if feature is undefined", function () {
+        expect(checkProperties(undefined, rules[1])).toBe(true);
     });
 });

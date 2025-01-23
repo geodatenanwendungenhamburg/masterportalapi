@@ -30,7 +30,7 @@ class CesiumStyle extends StyleClass {
      * @returns {ol/style} - The created style.
      */
     createStyle () {
-        return this.createCondition(this.get("conditions"), this.get("style"));
+        return this.createCondition(this.attributes.conditions, this.style);
     }
 
     /**
@@ -40,7 +40,7 @@ class CesiumStyle extends StyleClass {
      * @returns {*} - Condition for cesium 3d tile style.
      */
     createCondition (conditions, style) {
-        const {color} = style,
+        const color = style?.color || this.attributes.color,
             condition = [];
         let ruleCondition;
 
