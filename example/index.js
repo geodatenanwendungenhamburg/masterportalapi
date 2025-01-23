@@ -235,6 +235,23 @@ window.mpapi.search("Mümmelmannsberg 72", {
 
 
 // Add 3D functionality to the example:
+// ---------------------------------------
+// example style tileset by vectorstyling using style_v3.json
+function getTilesetStyle (styleId) {
+    const styleObject = styleList.returnStyleObject(styleId);
+
+    if (styleObject !== undefined) {
+        const createdStyle = createStyle.createStyle(styleObject, undefined, false, config.wfsImgPath),
+            options = {
+                color: {
+                    conditions: createdStyle
+                }
+            };
+
+        return new Cesium.Cesium3DTileStyle(options);
+    }
+    return undefined;
+}
 
 // add a click-listener to button, that creates a 3D-map on click
 document.getElementById("enable").addEventListener("click", function () {
@@ -275,11 +292,14 @@ document.getElementById("enable").addEventListener("click", function () {
 
             window.mpapi.map = map3D;
             tilesetLayer = new mpapi.Tileset(rawLayerTileset, window.mpapi.map);
+            tilesetLayer.tileset?.then(tileset => {
+                tileset.style = getTilesetStyle(rawLayerTileset.styleId);
+            });
             tilesetLayer.setVisible(true, window.mpapi.map);
 
             // entities are 2 simple buildings in the park 'planten und blomen' near Tiergartenstraße
             mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
-            // mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
+            mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
 
             mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
             mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);

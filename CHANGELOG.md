@@ -7,8 +7,12 @@
 ### __Breaking Changes__
 
 ### Added
+- vectorStyle: 
+    - extended 3d example by tileset styling
 
 ### Changed
+- vectorStyle: 
+    - renamed configured style type="Cesium" to type="cesium"
 
 ### Deprecated
 
@@ -17,7 +21,6 @@
 ### Fixed
 - vectorStyle: 
     - fixed styling for type "cesium"
-    - renamed configured style type="Cesium" to type="cesium"
 
 ---
 

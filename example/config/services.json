@@ -58,6 +58,7 @@
     "name": "Gebäude LoD2",
     "url": "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
     "typ": "TileSet3D",
+    "styleId": "3DTileSetStyle",
     "cesium3DTilesetOptions": {
       "maximumScreenSpaceError": 6
     }
