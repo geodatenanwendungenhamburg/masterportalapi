@@ -128,10 +128,11 @@ export function createUrl (rawLayer, loadingParams) {
             url.pathname += "/collections/" + rawLayer.collection + "/items";
         }
         else {
-            url.pathname = "collections/" + rawLayer.collection + "/items";
+            url.pathname += "collections/" + rawLayer.collection + "/items";
         }
 
     }
+
     if (typeof rawLayer.limit === "number") {
         url.searchParams.set("limit", rawLayer.limit);
     }

@@ -15,21 +15,22 @@
 ### Removed
 
 ### Fixed
+- Issue #1339: oaf: Fix the pathname if the url ends with a slash.
 
 ---
 
 ## 2.45.0 - 2025-01-28
 
 ### Added
-- vectorStyle: 
+- vectorStyle:
     - extended 3d example by tileset styling
 
 ### Changed
-- vectorStyle: 
+- vectorStyle:
     - renamed configured style type="Cesium" to type="cesium"
 
 ### Fixed
-- vectorStyle: 
+- vectorStyle:
     - fixed styling for type "cesium"
 
 ---

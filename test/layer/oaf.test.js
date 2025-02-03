@@ -396,5 +396,21 @@ describe("oaf.js", function () {
             expect(createdUrl.searchParams.get("kapitelbezeichnung")).toEqual("Gymnasien");
             expect(createdUrl.searchParams.get("anzahl_schueler")).toEqual(">1000");
         });
+        it("should create the correct url, if the rawLayer url ends with /", () => {
+            const rawLayer = {
+                    id: "id",
+                    name: "Schulen",
+                    url: "https://url.de/ogcapi/datasets/",
+                    collection: "staatliche_schulen",
+                    typ: "OAF",
+                    bbox: "0,0,10,10",
+                    bboxCrs: "EPSG:4326"
+                },
+                loadingParams = undefined,
+                createdUrl = oaf.createUrl(rawLayer, loadingParams);
+
+            expect(createdUrl.origin).toEqual("https://url.de");
+            expect(createdUrl.pathname).toEqual("/ogcapi/datasets/collections/" + rawLayer.collection + "/items");
+        });
     });
 });
