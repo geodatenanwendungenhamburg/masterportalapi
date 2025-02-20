@@ -5,7 +5,7 @@ import Feature from "ol/Feature";
 import Polygon from "ol/geom/Polygon";
 import MultiPoint from "ol/geom/MultiPoint";
 import * as webgl from "../../src/renderer/webgl";
-import WebGLPointsLayer from "ol/layer/WebGLPoints";
+import WebGLPointsLayer from "ol/layer/WebGLVector";
 import Layer from "ol/layer/Layer";
 import {returnColor} from "../../src/vectorStyle/lib/colorConvertions";
 

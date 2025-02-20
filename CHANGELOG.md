@@ -28,6 +28,10 @@
 ### Changed
 - vectorStyle:
     - renamed configured style type="Cesium" to type="cesium"
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.2.1 to 10.4.0
+        - ol-mapbox-style: 12.3.5 to 12.4.0
 
 ### Fixed
 - vectorStyle:
