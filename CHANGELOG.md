@@ -8,6 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
+- An interface to OGC API Processes has been added.
 
 ### Changed
 

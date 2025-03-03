@@ -15,6 +15,7 @@ import * as layerLib from "./layer/lib";
 import {search, setGazetteerUrl} from "./searchAddress";
 import setBackgroundImage from "./lib/setBackgroundImage";
 import ping from "./lib/ping";
+import ogcApiProcesses from "./api/ogcApiProcesses";
 
 export {
     createMapView,
@@ -34,5 +35,6 @@ export {
     ping,
     search,
     crs,
-    webgl
+    webgl,
+    ogcApiProcesses
 };
