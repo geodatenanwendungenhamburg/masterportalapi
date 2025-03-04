@@ -1,5 +1,5 @@
 /**
- * This is an implementation of the interface to OGC API - Processes.
+ * This is an implementation of the interface to OGC API - Processes - Part 1: Core.
  * @module api/ogcApiProcesses
  * @see {@link https://ogcapi.ogc.org/processes|OGC API - Processes} for further information
  */
@@ -58,7 +58,7 @@ function fetchParams (method, body) {
  * Fetch the url with fetch api and catch errors.
  * @param {string} processUrl The process url.
  * @param {string} [method=GET] The fetch method.
- * @param {object} [body={}] The request body.
+ * @param {object} [body={}] The request body, only used if request-method is POST.
  * @returns {object} The response object.
  */
 function fetchUrl (processUrl, method = "GET", body = {}) {
@@ -90,7 +90,7 @@ function fetchUrl (processUrl, method = "GET", body = {}) {
  * Retrieve the list of available processes.
  * @param {string} processUrl The process url.
  * @param {boolean} [nextLink=false] If processurl is a nextLink.
- * @returns {object[]} the process list.
+ * @returns {object[]} The process list.
  */
 async function processList (processUrl, nextLink = false) {
     const url = nextLink ? processUrl : `${processUrl}/processes`,
@@ -171,7 +171,7 @@ async function jobStatus (processUrl, jobId) {
  * Cancel a job execution, remove a finished job.
  * @param {string} processUrl The process url.
  * @param {string} jobId The job id.
- * @returns {object} The canceld job status.
+ * @returns {object} The canceled job status.
  */
 async function cancelJob (processUrl, jobId) {
     const url = `${processUrl}/jobs/${jobId}`,
@@ -184,10 +184,11 @@ async function cancelJob (processUrl, jobId) {
  * Retrieve the result(s) of a job.
  * @param {string} processUrl The process url.
  * @param {string} jobId The job id.
+ * @param {string} [format=json] The result format can be `html` or `json`.
  * @returns {object} The job dismissed status.
  */
-async function jobResults (processUrl, jobId) {
-    const url = `${processUrl}/jobs/${jobId}/results?f=json`,
+async function jobResults (processUrl, jobId, format = "json") {
+    const url = `${processUrl}/jobs/${jobId}/results?f=${format}`,
         responseJson = await fetchUrl(url);
 
     return responseJson;

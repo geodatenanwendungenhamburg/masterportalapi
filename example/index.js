@@ -231,8 +231,36 @@ window.mpapi.search("Mümmelmannsberg 72", {
     searchAddress: true
 }).then(x => console.log(x)).catch(e => console.error(e));
 
-//*/
+// */
 
+/* OGC API - PROCESSES EXAMPLE */
+/*
+// Enter the URL to an OGC API - Processes service here.
+const ogcApiProcessUrl = ""; // eslint-disable-line
+
+async function testOgcApiProcesses (processUrl) {
+    const processList = await window.mpapi.ogcApiProcesses.processList(processUrl),
+        processDescription = await window.mpapi.ogcApiProcesses.processDescription(processUrl, processList[0].id),
+        jobList = await window.mpapi.ogcApiProcesses.jobList(processUrl),
+        data = {};
+
+    console.log("### OGC API - PROCESSES EXAMPLE ###"); // eslint-disable-line
+    console.log("Process list:", processList); // eslint-disable-line
+    console.log("Process Description:", processDescription); // eslint-disable-line
+
+    // create example data from process input schema
+    Object.keys(processDescription.inputs).forEach(key => data[key] = `Example ${key}`); // eslint-disable-line
+    console.log("Execute Process:", await window.mpapi.ogcApiProcesses.executeProcess(processUrl, processList[0].id, data)); // eslint-disable-line
+
+    console.log("Job List:", jobList); // eslint-disable-line
+    console.log("Job Status of last job:", await window.mpapi.ogcApiProcesses.jobStatus(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
+    console.log("Job Results of last job:", await window.mpapi.ogcApiProcesses.jobResults(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
+    console.log("Cancle the last Job:", await window.mpapi.ogcApiProcesses.cancelJob(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
+    console.log("Job list:", awaitwindow.mpapi.ogcApiProcesses.jobList(processUrl)); // eslint-disable-line
+}
+
+testOgcApiProcesses(ogcApiProcessUrl);
+// */
 
 // Add 3D functionality to the example:
 // ---------------------------------------
