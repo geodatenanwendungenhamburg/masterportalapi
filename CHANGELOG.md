@@ -3,16 +3,13 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.46.0 - 2025-03-10
 
 ### Changed
-
-### Deprecated
-
-### Removed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.2.1 to 10.4.0
+        - ol-mapbox-style: 12.3.5 to 12.4.0
 
 ### Fixed
 - Issue #1339: oaf: Fix the pathname if the url ends with a slash.
@@ -28,10 +25,6 @@
 ### Changed
 - vectorStyle:
     - renamed configured style type="Cesium" to type="cesium"
-- The following packages have been updated:
-    - dependencies:
-        - ol: 10.2.1 to 10.4.0
-        - ol-mapbox-style: 12.3.5 to 12.4.0
 
 ### Fixed
 - vectorStyle:
