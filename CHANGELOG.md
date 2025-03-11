@@ -11,6 +11,9 @@
 - An interface to OGC API Processes has been added.
 
 ### Changed
+- The following package has been updated:
+    - peerDependencies:
+        - cesium/engine: 13.0.0 to 15.0.0
 
 ### Deprecated
 
