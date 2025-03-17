@@ -154,13 +154,15 @@ export function createLayerSource (rawLayer, options) {
  * @param {function} [rawLayer.olAttribution] - optional function that takes a module:ol/Map~FrameState and returns a string or an array of strings representing source attributions
  * @param {string|number} [rawLayer.tilesize] - optional needed to create the tileGrid
  * @param {string|"anonymous"} [rawLayer.crossOrigin] - optional needed for CORS requests of image data, to enable canvas export
- * @param {object} layerParams - additional layer params
+ * @param {object} [optionalParams] - optional params
+ * @param {object} [optionalParams.layerParams] - additional layer params
+ * @param {options} [optionalParams.options] - additional options
  * @param {object} options - optional resolutions and origin to create the TileGrid
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
  * @returns {ol.Layer} Layer that can be added to map.
  */
-export function createLayer (rawLayer, layerParams = {}, options) {
+export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
     const source = createLayerSource(rawLayer, options),
         Layer = rawLayer.singleTile ? ImageLayer : TileLayer;
 

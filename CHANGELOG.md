@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- wms: Fix passing layerParams from layerBuilder.
 
 ---
 
