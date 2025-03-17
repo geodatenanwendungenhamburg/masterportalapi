@@ -20,6 +20,7 @@
 ### Removed
 
 ### Fixed
+- Reset the depthTestAgainstTerrain parameter to true due to problems with the height of the terrain model.
 
 ---
 ## 2.46.0 - 2025-03-10
