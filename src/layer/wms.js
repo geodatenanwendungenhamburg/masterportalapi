@@ -164,7 +164,7 @@ export function createLayer (rawLayer, layerParams = {}, options) {
     const source = createLayerSource(rawLayer, options),
         Layer = rawLayer.singleTile ? ImageLayer : TileLayer;
 
-    source.set("olcs.projection", getProjection(OLCS_DEFAULT_OLCS_PROJECTION_CRS));
+    source.set("olcs_projection", getProjection(OLCS_DEFAULT_OLCS_PROJECTION_CRS));
 
     return new Layer(Object.assign({
         source,
