@@ -45,6 +45,17 @@
     "featureNS": "http://www.deegree.org/app"
   },
   {
+    "id": "2426",
+    "name": "Bezirke",
+    "url": "https://geodienste.hamburg.de/HH_WMS_Verwaltungsgrenzen",
+    "typ": "WMS",
+    "layers": "bezirke",
+    "version": "1.3.0",
+    "singleTile": true,
+    "transparent": true,
+    "transparency": 0
+  },
+  {
     "id": "4001",
     "name": "Gelaende",
     "url": "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende",

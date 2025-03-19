@@ -132,7 +132,7 @@ services.find(({id}) => id === "5001").style = styleOaf;
 map2D = mapsAPI.map.createMap(config, "2D", {errorCallback});
 window.mpapi.map = map2D;
 
-["2001", "2002", "1002", "3001", "5001"].forEach(id => window.mpapi.map.addLayer(id, {errorCallback}));
+["2001", "2002", "1002", "3001", "5001", "2426"].forEach(id => window.mpapi.map.addLayer(id, {errorCallback}));
 
 // ping all layers
 services
