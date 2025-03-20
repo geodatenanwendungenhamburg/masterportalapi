@@ -3,9 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-
-### __Breaking Changes__
+## 2.47.0 - 2025-03-20
 
 ### Added
 - An interface to OGC API Processes has been added.
@@ -15,13 +13,9 @@
     - peerDependencies:
         - cesium/engine: 13.0.0 to 15.0.0
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 - Reset the depthTestAgainstTerrain parameter to true due to problems with the height of the terrain model.
-- WMS-Layer: fixed setting of projection for olcs. 
+- WMS-Layer: fixed setting of projection for olcs.
 
 ---
 ## 2.46.0 - 2025-03-10
