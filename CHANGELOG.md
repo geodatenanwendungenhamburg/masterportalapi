@@ -3,6 +3,22 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## Unreleased - in development
+
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
+
 ## 2.47.0 - 2025-03-20
 
 ### Added
@@ -18,6 +34,7 @@
 - WMS-Layer: fixed setting of projection for olcs.
 
 ---
+
 ## 2.46.0 - 2025-03-10
 
 ### Changed
