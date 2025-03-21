@@ -9,91 +9,84 @@ import defaults from "../../defaults";
 let mapIdCounter = 0;
 
 /**
- * Recursive function.
- * Sets the cesium default scene params.
- * @param {Cesium.scene} scene The cesium scene.
- * @param {Object} params Optional configuration parameters.
+ * Recursively sets parameters on the Cesium scene.
+ *
+ * Certain keys are excluded from being set directly on the scene object:
+ * - "0", "1", "2": These is placeholder keys or indices from certain configurations that should not be interpreted as scene properties.
+ * - "heading", "tilt", "altitude": These are camera-related properties and should be handled separately via specific camera functions.
+ *
+ * @param {Cesium.Scene} scene - The Cesium scene instance.
+ * @param {Object} params - Configuration parameters.
  * @returns {void}
  */
 export function setCesiumSceneParams (scene, params) {
-    Object.keys(params).forEach(paramKey => {
-        const paramValue = params[paramKey];
+    if (!scene || !params || typeof params !== "object") {
+        console.warn("setCesiumSceneParams: Invalid scene or params.");
+        return;
+    }
 
-        if (typeof paramValue === "object") {
-            Object.keys(paramValue).forEach(paramSubKey => {
-                if (paramSubKey !== "heading" && paramSubKey !== "tilt" && paramSubKey !== "altitude") {
-                    setCesiumSceneParams(scene[paramKey], paramValue);
-                }
-            });
+    Object.entries(params).forEach(([key, value]) => {
+        if (["0", "1", "2", "heading", "tilt", "altitude"].includes(key)) {
+            return;
+        }
+
+        if (typeof value === "object" && scene[key]) {
+            setCesiumSceneParams(scene[key], value);
         }
         else {
-            scene[paramKey] = paramValue;
+            scene[key] = value;
         }
     });
 }
 /**
  * Sets the camera parameters either from config or from an trigger.
- * @param {Object} params Params.
- * @param {Object} map3D olcs map.
- * @param {Cesium} cesium cesium.
+ * @param {Object} params - Parameters for setting the camera.
+ * @param {Object} map3D - olcs map instance.
+ * @param {Cesium} cesium - Cesium instance.
  * @returns {void}
  */
 export function setCameraParameter (params, map3D, cesium) {
-    let camera,
-        destination,
-        orientation,
-        heading;
+    if (!params || !map3D) {
+        console.warn("setCameraParameter: Missing parameters or map3D instance.");
+        return;
+    }
 
-    if (params && map3D) {
-        if (typeof params.heading !== "undefined") {
-            heading = parseFloat(params.heading);
-        }
-        else if (typeof params.camera?.heading !== "undefined") {
-            heading = parseFloat(params.camera?.heading);
-        }
-        // if the cameraPosition is given, directly set the cesium camera position, otherwise use olcesium Camera
-        if (params.cameraPosition) {
-            camera = map3D.getCesiumScene().camera;
-            destination = cesium.Cartesian3.fromDegrees(params.cameraPosition[0], params.cameraPosition[1], params.cameraPosition[2]);
+    let camera = map3D.getCesiumScene()?.camera;
+    const heading = parseFloat(params.heading ?? params.camera?.heading ?? 0),
+        pitch = parseFloat(params.pitch ?? params.camera?.pitch ?? 0),
+        roll = parseFloat(params.roll ?? 0),
+        tilt = parseFloat(params.tilt ?? params.camera?.tilt ?? 0),
+        altitude = parseFloat(params.altitude ?? params.camera?.altitude ?? 0);
+
+    if (params.cameraPosition || params.camera?.cameraPosition) {
+        const cameraPosition = params.cameraPosition ?? params.camera.cameraPosition,
+            destination = cesium.Cartesian3.fromDegrees(cameraPosition[0], cameraPosition[1], cameraPosition[2]),
             orientation = {
                 heading: cesium.Math.toRadians(heading),
-                pitch: cesium.Math.toRadians(parseFloat(params.pitch)),
-                roll: cesium.Math.toRadians(parseFloat(params.roll))
+                pitch: cesium.Math.toRadians(pitch),
+                roll: cesium.Math.toRadians(roll)
             };
 
-            camera.setView({
-                destination,
-                orientation
-            });
+        if (params.cameraPosition) {
+            camera.setView({destination, orientation});
         }
         else {
-            let tilt,
-                altitude;
-
-            if (typeof params.tilt !== "undefined") {
-                tilt = parseFloat(params.tilt);
-            }
-            else if (typeof params.camera?.tilt !== "undefined") {
-                tilt = parseFloat(params.camera?.tilt);
-            }
-            if (typeof params.altitude !== "undefined") {
-                altitude = parseFloat(params.altitude);
-            }
-            else if (typeof params.camera?.altitude !== "undefined") {
-                altitude = parseFloat(params.camera?.altitude);
-            }
-            camera = map3D.getCamera();
-
-            if (tilt) {
-                camera.setTilt(tilt);
-            }
-            if (heading) {
-                camera.setHeading(heading);
-            }
-            if (altitude) {
-                camera.setAltitude(altitude);
-            }
+            camera.flyTo({destination, orientation});
         }
+
+        return;
+    }
+
+    camera = map3D.getCamera();
+
+    if (tilt) {
+        camera.setTilt(tilt);
+    }
+    if (heading) {
+        camera.setHeading(heading);
+    }
+    if (altitude) {
+        camera.setAltitude(altitude);
     }
 }
 

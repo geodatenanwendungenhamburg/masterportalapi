@@ -72,7 +72,7 @@ describe("map.js", function () {
                         };
                     }
                 },
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+                cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
             };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
@@ -165,7 +165,7 @@ describe("map.js", function () {
                     heading: -0.30858728378862876,
                     tilt: 0.9321791580603296
                 },
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+                cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
             };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
@@ -200,7 +200,7 @@ describe("map.js", function () {
                         tilt: 0.9321791580603296
                     }
                 },
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+                cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
             };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
@@ -213,48 +213,108 @@ describe("map.js", function () {
             });
         });
         it("set the camera from viewpoint parameter", function () {
-            const config = {
-                map2D: {
-                    getView: () => {
-                        return {
-                            getProjection: () => {
-                                return {getCode: () => "code"};
-                            }
-                        };
+            const mockFlyTo = jest.fn(),
+                config = {
+                    map2D: {
+                        getView: () => {
+                            return {
+                                getProjection: () => {
+                                    return {getCode: () => "code"};
+                                }
+                            };
+                        },
+                        getViewport: () => {
+                            return {
+                                appendChild: jest.fn()
+                            };
+                        }
                     },
-                    getViewport: () => {
-                        return {
-                            appendChild: jest.fn()
-                        };
-                    }
-                },
-                viewpoint: [{"distance": 1660.0290142521517,
-                    "cameraPosition": [
-                        9.982163927085617,
-                        53.532817572762475,
-                        1180.9805498821436
-                    ],
-                    "groundPosition": [
-                        9.983171185370468,
-                        53.54328139366739,
-                        -0.00449886760542777
-                    ],
-                    "heading": 3.281512334248587,
-                    "pitch": -45.35612834848329,
-                    "roll": 0.015054499334397243,
-                    "animate": false,
-                    "duration": 6.006336273348537
-                }],
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
-            };
+                    viewpoint: [{
+                        "distance": 1660.0290142521517,
+                        "cameraPosition": [
+                            9.982163927085617,
+                            53.532817572762475,
+                            1180.9805498821436
+                        ],
+                        "heading": 3.281512334248587,
+                        "pitch": -45.35612834848329,
+                        "roll": 0.015054499334397243
+                    }],
+                    cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
+                };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
-                const map3D = map.createMap(config, "3D");
+                const mockMap3D = {
+                    mapMode: "3D",
+                    getCesiumScene: () => ({
+                        camera: {
+                            flyTo: mockFlyTo
+                        }
+                    })
+                };
 
-                expect(map3D.mapMode).toBe("3D");
-                map.setCameraParameter(config.viewpoint, map3D, config.cesiumLib);
+                map.setCameraParameter(config.viewpoint, mockMap3D, config.cesiumLib);
 
-                // missing test, if the passed parameters are also in the 3D map
+                expect(mockFlyTo).toHaveBeenCalledWith(expect.objectContaining({
+                    destination: expect.any(Object),
+                    orientation: {
+                        heading: expect.any(Number),
+                        pitch: expect.any(Number),
+                        roll: expect.any(Number)
+                    },
+                    duration: config.viewpoint[0].duration
+                }));
+            });
+        });
+
+        it("sets the camera parameters when cameraPosition is not provided", function () {
+            const mockFlyTo = jest.fn(),
+                config = {
+                    map2D: {
+                        getView: () => {
+                            return {
+                                getProjection: () => {
+                                    return {getCode: () => "code"};
+                                }
+                            };
+                        },
+                        getViewport: () => {
+                            return {
+                                appendChild: jest.fn()
+                            };
+                        }
+                    },
+                    viewpoint: [{
+                        "distance": 1660.0290142521517,
+                        "heading": 3.281512334248587,
+                        "pitch": -45.35612834848329,
+                        "roll": 0.015054499334397243,
+                        "tilt": 10,
+                        "altitude": 1500
+                    }],
+                    cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
+                };
+
+            load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
+                const mockMap3D = {
+                    mapMode: "3D",
+                    getCesiumScene: () => ({
+                        camera: {
+                            flyTo: mockFlyTo,
+                            setTilt: jest.fn(),
+                            setHeading: jest.fn(),
+                            setAltitude: jest.fn()
+                        }
+                    })
+                };
+
+                map.setCameraParameter(config.viewpoint[0], mockMap3D, config.cesiumLib);
+
+                expect(mockFlyTo).not.toHaveBeenCalled();
+
+                expect(mockMap3D.getCesiumScene().camera.setTilt).toHaveBeenCalledWith(10);
+                expect(mockMap3D.getCesiumScene().camera.setHeading).toHaveBeenCalledWith(3.281512334248587);
+                expect(mockMap3D.getCesiumScene().camera.setAltitude).toHaveBeenCalledWith(1500);
             });
         });
     });
@@ -281,7 +341,7 @@ describe("map.js", function () {
                     heading: -0.30858728378862876,
                     tilt: 0.9321791580603296
                 },
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+                cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
             };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
@@ -339,7 +399,7 @@ describe("map.js", function () {
                         undergroundColor: undefined
                     }
                 },
-                cesiumLib: "https://lib.virtualcitymap.de/v3.6.x/lib/Cesium/Cesium.js"
+                cesiumLib: "https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js"
             };
 
             load3DScriptModule.load3DScript(config.cesiumLib, function Loaded3DCallback () {
@@ -355,5 +415,4 @@ describe("map.js", function () {
             });
         });
     });
-
 });

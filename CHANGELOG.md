@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- olcsMap: fixed function setCameraParameter.
 
 ---
 
