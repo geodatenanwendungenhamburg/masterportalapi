@@ -169,6 +169,8 @@ function setStyleObject (currentLayout, outerCircle = false) {
                         lineStrokeWidth: currentLayout.strokeWidth,
                         polygonFillColor: fillColorRgba,
                         polygonStrokeColor: currentLayout.strokeColor,
+                        polygonStrokeDash: currentLayout.polygonDash,
+                        polygonStrokeDashOffset: currentLayout.polygonStrokeDashOffset,
                         polygonStrokeWidth: currentLayout.strokeWidth
                     }
                 }

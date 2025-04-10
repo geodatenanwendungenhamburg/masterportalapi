@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Add new parameters polygonStrokeDash, polygonStrokeDashOffset in styleObject of drawInteraction.
 
 ### Changed
 

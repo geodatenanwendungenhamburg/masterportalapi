@@ -86,7 +86,8 @@ describe("src/maps/interactions/drawInteraction.js", () => {
                 fillColor: [55, 126, 184],
                 fillTransparency: 0,
                 strokeColor: [0, 0, 0],
-                strokeWidth: 1
+                strokeWidth: 1,
+                polygonDash: [4]
             };
 
             drawInteractions.setStyleObject(currentLayout);
@@ -124,6 +125,8 @@ describe("src/maps/interactions/drawInteraction.js", () => {
                                 0,
                                 0
                             ],
+                            polygonStrokeDash: [4],
+                            polygonStrokeDashOffset: undefined,
                             polygonStrokeWidth: 1
                         }
                     }
