@@ -4,10 +4,10 @@ import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
 import * as webgl from "../renderer/webgl";
-
-import {stylefunction, apply} from "ol-mapbox-style";
+import {apply, stylefunction} from "ol-mapbox-style";
 
 import defaults from "../defaults";
+
 
 const OL_DEFAULT_VECTOR_TILE_GRID_CRS = "EPSG:3857";
 
