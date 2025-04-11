@@ -10,6 +10,9 @@
 - Add new parameters polygonStrokeDash, polygonStrokeDashOffset in styleObject of drawInteraction.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol-mapbox-style: 12.4.0 to 12.5.0
 
 ### Deprecated
 
