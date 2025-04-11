@@ -15,11 +15,8 @@ module.exports = {
     "moduleNameMapper": {
         "marker.svg": "<rootDir>/public/stringMarker.js",
         "olcs/lib/olcs/(.*)$": "<rootDir>/node_modules/olcs/lib/olcs/$1",
-        "olcs/lib/olcs/(.*)$": "<rootDir>/node_modules/olcs/lib/olcs/$1",
-        "ol-mapbox-style$": '<rootDir>/node_modules/ol-mapbox-style/src/$1'
+        "ol-mapbox-style$": "<rootDir>/node_modules/ol-mapbox-style/src/$1"
     },
-    "moduleFileExtensions":
-         ["js", "json", "jsx", "ts", "tsx", "node"],
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": ["./jest.setup.js"],
     "verbose": true
