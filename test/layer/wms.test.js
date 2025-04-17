@@ -250,7 +250,7 @@ describe("wms.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = wms.createLayer({singleTile: false, tilesize: "10", extent: [10, 20, 11, 22]}, layerParams, options);
+                layer = wms.createLayer({singleTile: false, tilesize: "10", extent: [10, 20, 11, 22]}, {layerParams, options});
 
             expect(layer).toBeInstanceOf(TileLayer);
             expect(layer.get("name")).toEqual("name");
@@ -266,7 +266,7 @@ describe("wms.js", function () {
                     name: "name",
                     layers: "layer1, layer2"
                 },
-                layer = wms.createLayer({singleTile: true}, layerParams);
+                layer = wms.createLayer({singleTile: true}, {layerParams});
 
             expect(layer).toBeInstanceOf(ImageLayer);
             expect(layer.get("name")).toEqual("name");
