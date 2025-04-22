@@ -21,6 +21,7 @@
 ### Fixed
 - wms: Fix passing layerParams from layerBuilder.
 - wms-time: layers that are updated daily don't run into errors due to late promise-resolving anymore.
+- Issue #1386: handle label creation if values are empty.
 
 ---
 
