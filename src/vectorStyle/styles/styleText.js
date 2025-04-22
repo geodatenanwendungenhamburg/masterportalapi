@@ -120,7 +120,7 @@ class TextStyle extends StyleClass {
         const feature = this.feature,
             featureProperties = feature.getProperties(),
             textSuffix = this.attributes.textSuffix;
-        let text = mapAttributes(featureProperties, this.attributes.labelField, false);
+        let text = mapAttributes(featureProperties, this.attributes.labelField, false) ?? "";
 
         if (textSuffix !== "") {
             text = text + " " + textSuffix;
