@@ -20,6 +20,7 @@
 
 ### Fixed
 - wms: Fix passing layerParams from layerBuilder.
+- wms-time: layers that are updated daily don't run into errors due to late promise-resolving anymore.
 
 ---
 
