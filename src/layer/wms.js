@@ -112,8 +112,10 @@ export function createLayerSource (rawLayer, options) {
         projection = rawLayer.crs ? getProjection(rawLayer.crs) : undefined;
     let tileGrid = null;
 
-    // Fix für tagesaktuelle WMS-Time Layer, deren getCapabilities korrekterweise current als default-Wert des time-extent haben.
-    // Der Promise wird hier für die weitere Arbeit mit dem Layer nicht schnell genug resolved und hätte auch den aktuellen Tag als Ergebnis, daher ist hier das aktuelle Datum hardcoded.
+
+    // Fix for daily updated WMS-Time Layer, which use 'current' as the default value of the time-Extent in their getCapabilities
+    // The promise isn't resolved quickly enough for the continued work with the layer.
+    // Its resolved value would be the current date, so it is hardcoded here.
     if (rawLayer.TIME && rawLayer.TIME.toString() === "[object Promise]") {
         params.TIME = new Date().toISOString();
     }
