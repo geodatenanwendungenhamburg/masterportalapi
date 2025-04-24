@@ -1,4 +1,3 @@
-import WebGLPointsLayer from "ol/layer/WebGLVector";
 import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
 import WebGLVectorTileLayerRenderer from "ol/renderer/webgl/VectorTileLayer.js";
 import VectorTile from "ol/layer/VectorTile.js";
