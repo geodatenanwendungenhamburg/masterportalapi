@@ -23,6 +23,7 @@
 
 ### Added
 - Add new parameters polygonStrokeDash, polygonStrokeDashOffset in styleObject of drawInteraction.
+- webgl: extended default style for points.
 
 ### Changed
 - The following packages have been updated:
