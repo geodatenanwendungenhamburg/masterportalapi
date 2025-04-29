@@ -3,8 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.49.0 - 2025-04-294
 
 ### Added
 - Add new parameters polygonStrokeDash, polygonStrokeDashOffset in styleObject of drawInteraction.
@@ -13,10 +12,6 @@
 - The following packages have been updated:
     - dependencies:
         - ol-mapbox-style: 12.4.0 to 12.5.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - wms: Fix passing layerParams from layerBuilder.
