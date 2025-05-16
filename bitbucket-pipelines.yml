@@ -6,7 +6,7 @@ clone:
 pipelines:
     # Start pipeline with tag to build examples zips and copy them to the Bitbucket download folder
     tags:
-        'v3.*.*':
+        'v2.*.*':
             -   step:
                     name: deploy on openCode
                     script:
@@ -29,7 +29,7 @@ pipelines:
         deploy last tag on openCode:
             - variables:
                 - name: BITBUCKET_TAG
-                  description: tag to publish docs for, e.g. v3.1.0
+                  description: tag to publish docs for
             -   step:
                     name: deploy last tag on openCode
                     script:
