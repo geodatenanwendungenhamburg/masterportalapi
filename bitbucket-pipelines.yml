@@ -1,0 +1,43 @@
+image: node:20.12.2
+
+clone:
+    depth: 5000       # include the last five hundred commits
+
+pipelines:
+    # Start pipeline with tag to build examples zips and copy them to the Bitbucket download folder
+    tags:
+        'v3.*.*':
+            -   step:
+                    name: deploy on openCode
+                    script:
+                        - echo 'deploy to opencode:'$BITBUCKET_TAG
+                        - git fetch --all --tags
+                        - git checkout tags/$BITBUCKET_TAG
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git $BITBUCKET_TAG
+                        - git clone --single-branch --branch master https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportalapi.git
+                        - cd masterportalapi
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git -f
+    custom: # Pipelines that are triggered manually
+        npm audit:
+            -   step:
+                    name: npm audit (security)
+                    caches:
+                        - node
+                    script:
+                        - npm install
+                        - npm audit --json
+        deploy last tag on openCode:
+            - variables:
+                - name: BITBUCKET_TAG
+                  description: tag to publish docs for, e.g. v3.1.0
+            -   step:
+                    name: deploy last tag on openCode
+                    script:
+                        - apt-get update && apt-get install -y curl wput jq
+                        - git fetch --all --tags
+                        - echo 'deply to opencode:'$BITBUCKET_TAG
+                        - git checkout tags/$BITBUCKET_TAG
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git $BITBUCKET_TAG
+                        - git clone --single-branch --branch master https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportalapi.git
+                        - cd masterportalapi
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git -f
