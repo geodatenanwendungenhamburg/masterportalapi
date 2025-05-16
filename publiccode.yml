@@ -1,0 +1,88 @@
+# This repository adheres to the publiccode.yml standard by including this
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.3'
+categories:
+  - geographic-information-systems, api
+description:
+  de:
+    apiDocumentation: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/README.md'
+    documentation: 'https://www.masterportal.org/dokumentation'
+    features:
+      - OGC-konform
+      - Konfigurierbar
+      - OpenSource
+      - Adminfreundlich
+      - Modular
+    genericName: 'MasterportalAPI'
+    localisedName: MasterportalAPI
+    longDescription: |2
+       Die MasterportalAPI ist eine API zum Einbinden und Anzeigen von Karteninhalten auf Ihrer Webseite. Sie basiert auf OpenLayers und wurde um Funktionen erweitert, die die einfache Nutzung von Konfigurations- und Infrastrukturdateien des Masterportals, einer funktionsreichen Mapping-App der Geowerkstatt Hamburg, ermöglichen. Sie ermöglicht außerdem die Erstellung einer 3D-Karte mithilfe von OLCS und Cäsium. Weitere Informationen finden Sie auf masterportal.org. Die MasterportalAPI ist Open-Source-Software. Es ist unter der [++MIT-Lizenz++](https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/License.txt) veröffentlicht.
+    shortDescription: 'Die MasterportalAPI ist eine auf OpenLayers basierende API zum Einbinden und Anzeigen von Karteninhalten auf Ihrer Webseite'
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - de
+    - en
+    - es
+    - it
+    - pt
+    - ru
+    - tr
+    - ua
+    - nl
+  scope:
+    - welfare
+    - agriculture
+    - culture
+    - defence
+    - education
+    - emergency-services
+    - employment
+    - energy
+    - environment
+    - finance-and-economic-development
+    - foreign-affairs
+    - government
+    - healthcare
+    - infrastructures
+    - local-authorities
+    - manufacturing
+    - research
+    - justice
+    - science-and-technology
+    - security
+    - society
+    - sport
+    - tourism
+    - transportation
+landingURL: 'https://www.masterportal.org'
+legal:
+  license: MIT
+  mainCopyrightOwner: 'Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung'
+  repoOwner: 'Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung'
+localisation:
+  availableLanguages:
+    - de
+    - en
+  localisationReady: true
+logo: |-
+  https://www.masterportal.org/fileadmin/_processed_/7/d/csm_news_masterportal_ce24f3cc3d.jpg
+maintenance:
+  contacts:
+    - name: Betrieb Webanwendungen
+      affiliation:  Freie und Hansestadt Hamburg, Landesbetrieb Geoinformation und Vermessung
+  contractors:
+    - name: Landesbetrieb Geoinformation und Vermessung
+      until: '2025-12-01'
+      website: 'https://www.hamburg.de/bsw/landesbetrieb-geoinformation-und-vermessung/'
+  type: community
+name: Masterportal
+platforms:
+  - web
+releaseDate: '2025-04-29'
+roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/'
+softwareType: api
+softwareVersion: 2.49.0
+url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git'
