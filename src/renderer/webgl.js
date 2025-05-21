@@ -300,7 +300,7 @@ export function afterLoading (features, styleId, excludeTypesFromParsing, isPoin
  * Creates the OL Layer instance, used to rebuild the layer when shown again after layer has been disposed
  * @param {Object} attrs - the attributes of the layer
  * @public
- * @returns {VectorLayer | WebGLPointsLayer} returns the layer instance
+ * @returns {VectorLayer | WebGLVectorLayer} returns the layer instance
  */
 export function createLayer (attrs) {
     let LayerConstructor = WebGLVectorLayer;

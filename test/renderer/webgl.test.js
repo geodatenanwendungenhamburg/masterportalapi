@@ -18,7 +18,7 @@ jest.mock("../../src/vectorStyle/styleList.js", () => {
 });
 
 describe("webgl.js", () => {
-    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject, pointStyle;
+    let layerParams, layerParamsVectorTile, rawLayer, rawLayerVectorTile, styleRule, styleObject, defaultPointStyle;
 
     beforeEach(() => {
         layerParams = {
@@ -68,12 +68,19 @@ describe("webgl.js", () => {
         styleObject = {
             rules: [styleRule]
         };
-        pointStyle = {
+        defaultPointStyle = {
             fillColor: "#006688",
             strokeColor: "#006688",
             strokeWidth: 1,
             opacity: 1,
-            size: 20
+            zoom: [
+                3, 6,
+                6, 10,
+                9, 20,
+                12, 35,
+                15, 60,
+                18, 110
+            ]
         };
     });
 
@@ -187,11 +194,46 @@ describe("webgl.js", () => {
                     rules: [styleRule]
                 };
                 webgl.formatFeatureStyles($feature, styleObject);
-                expect($feature.get("fillColor")).toEqual(pointStyle.fillColor);
-                expect($feature.get("strokeColor")).toEqual(pointStyle.strokeColor);
-                expect($feature.get("strokeWidth")).toEqual(pointStyle.strokeWidth);
-                expect($feature.get("opacity")).toEqual(pointStyle.opacity);
+                expect($feature.get("fillColor")).toEqual(defaultPointStyle.fillColor);
+                expect($feature.get("strokeColor")).toEqual(defaultPointStyle.strokeColor);
+                expect($feature.get("strokeWidth")).toEqual(defaultPointStyle.strokeWidth);
+                expect($feature.get("opacity")).toEqual(defaultPointStyle.opacity);
             });
+
+            it("should calculate circle-radius based on zoom level", () => {
+                const zoomLevels = [3, 6, 9, 12, 15, 18],
+                    expectedRadii = [6, 10, 20, 35, 60, 110];
+
+                // eslint-disable-next-line no-use-before-define, max-nested-callbacks
+                zoomLevels.forEach((zoom, index) => testZoomLevel(zoom, index, expectedRadii));
+            });
+
+            function interpolateCircleRadius (zoom, zoomArray) {
+                for (let i = 0; i < zoomArray.length; i += 2) {
+                    const z = zoomArray[i],
+                        r = zoomArray[i + 1];
+
+                    if (zoom <= z) {
+                        if (i === 0) {
+                            return r;
+                        }
+                        const zPrev = zoomArray[i - 2],
+                            rPrev = zoomArray[i - 1],
+                            t = (zoom - zPrev) / (z - zPrev);
+
+                        return rPrev + (t * (r - rPrev));
+                    }
+                }
+                return zoomArray[zoomArray.length - 1];
+            }
+
+            function testZoomLevel (zoom, index, expectedRadii) {
+                const expectedRadius = expectedRadii[index],
+                    actualRadius = interpolateCircleRadius(zoom, defaultPointStyle.zoom);
+
+                expect(actualRadius).toEqual(expectedRadius);
+            }
+
         });
     });
 });
