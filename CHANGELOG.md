@@ -16,7 +16,7 @@
 ### Removed
 
 ### Fixed
-- Fixed WMTS Layers without Capabilities
+- WMTS-Layer: Fixed layers without capabilities.
 
 ---
 
