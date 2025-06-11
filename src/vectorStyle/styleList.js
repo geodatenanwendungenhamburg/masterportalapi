@@ -275,6 +275,30 @@ function addToStyleList (jsonStyles) {
 }
 
 /**
+ * Fetches the style.json file and adds the style for the styleId to the style list, if contained in style.json.
+ * @param {object} [Config] - the Config.js object
+ * @param {string} [styleId] - the styleId to add
+ * @returns  {object} the style object for the styleId
+ */
+async function initStyleAndAddToList (Config, styleId) {
+    let style;
+
+    await fetch(Config.styleConf)
+        .then(response => response.json())
+        .then(data => {
+            style = data.find(aStyle => aStyle.styleId === styleId);
+
+            if (style) {
+                styleList.push(style);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    return style;
+}
+
+/**
  * Returns style object by styleId or by layerId
  * @param {string} layerId layerId
  * @returns {object} style object
@@ -285,6 +309,7 @@ function returnStyleObject (layerId) {
 
 export default {
     initializeStyleList,
+    initStyleAndAddToList,
     addToStyleList,
     returnStyleObject
 };

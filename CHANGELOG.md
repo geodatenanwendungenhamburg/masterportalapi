@@ -8,6 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
+- vectorStyle: added function `initStyleAndAddToList` to styleList. Adds a style contained in style.json to list of styles.
 
 ### Changed
 
