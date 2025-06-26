@@ -52,6 +52,16 @@ describe("oaf.js", function () {
             expect(layer.get("id")).toEqual("id");
             expect(layer.getSource()).toBeInstanceOf(VectorSource);
         });
+        it("creates empty layer if doNotLoadInitially is true", function () {
+            const options = {
+                    doNotLoadInitially: true
+                },
+                layer = oaf.createLayer({id: "id"}, {options});
+
+            expect(layer).toBeInstanceOf(VectorLayer);
+            expect(layer.getSource()).toBeInstanceOf(VectorSource);
+            expect(layer.getSource().getFeatures().length).toEqual(0);
+        });
         it("creates a VectorLayer with style in rawLayer", function () {
             function styleFunction () {
                 const icon = new Style({

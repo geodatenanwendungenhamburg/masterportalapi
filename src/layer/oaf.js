@@ -23,6 +23,7 @@ import * as webgl from "../renderer/webgl";
  * @property {function} beforeLoading - function called before loading
  * @property {function} afterLoading - function called after loading, gets parameter features
  * @property {function} featuresFilter - function called after loading to filter features, gets parameter features
+ * @property {function} doNotLoadInitially - default false, if set to true the layer will be initialized without network call, an empty array of features is promoted - this is useful to add features later on (e.g. by filtering) to a full functional but initially empty layer
  * @property {function} clusterGeometryFunction -  used in cluster source. Returns the geometry of the cluster, gets parameter feature
  * @property {function} style - style function to style the layer
  * @property {object} loadingParams - added as params to url
@@ -173,6 +174,10 @@ function getLayerSource (rawLayer, options) {
     let source = null;
 
     function loader (extent, _, __, success, failure) {
+        if (options.doNotLoadInitially) {
+            onLoad(source, [], onError, success, failure, options);
+            return;
+        }
         const bboxParam = options.loadingStrategy === bbox ? extent : options.loadingParams.bbox,
             url = createUrl(rawLayer, {
                 ...options.loadingParams,

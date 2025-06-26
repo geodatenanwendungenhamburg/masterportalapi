@@ -9,6 +9,7 @@
 
 ### Added
 - vectorStyle: added function `initStyleAndAddToList` to styleList. Adds a style contained in style.json to list of styles.
+- A new parameter "doNotLoadInitially" for OAF layer so that the layer can be loaded without features, which is necessary for external filtering.
 
 ### Changed
 
