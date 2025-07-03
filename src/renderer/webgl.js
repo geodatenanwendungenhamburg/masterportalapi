@@ -1,5 +1,5 @@
 import WebGLVectorLayerRenderer from "ol/renderer/webgl/VectorLayer";
-import WebGLVectorTileLayerRenderer from "ol/renderer/webgl/VectorTileLayer.js";
+// import WebGLVectorTileLayerRenderer from "ol/renderer/webgl/VectorTileLayer.js";
 import VectorTile from "ol/layer/VectorTile.js";
 import VectorLayer from "ol/layer/Layer";
 import WebGLVectorLayer from "ol/layer/WebGLVector.js";
