@@ -12,6 +12,9 @@
 - A new parameter "doNotLoadInitially" for OAF layer so that the layer can be loaded without features, which is necessary for external filtering.
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.4.1 to 10.6.0
 
 ### Deprecated
 

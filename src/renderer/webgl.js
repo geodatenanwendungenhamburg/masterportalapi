@@ -6,8 +6,6 @@ import WebGLVectorLayer from "ol/layer/WebGLVector.js";
 import styleList from "../vectorStyle/styleList";
 import {getRulesForFeature} from "../vectorStyle/lib/getRuleForIndex";
 import {returnColor} from "../vectorStyle/lib/colorConvertions";
-import {asArray} from "ol/color.js";
-import {packColor, parseLiteralStyle} from "ol/webgl/styleparser.js";
 
 /**
  * The default style for OpenLayers WebGLPoints class
@@ -97,9 +95,10 @@ export function createVectorLayerRenderer () {
  * @augments VectorTile
  * @private
  * @implements {WebGLVectorTileLayerRenderer}
+ * @param {Object} attrs - the attributes of the layer
  * @returns {module:ol/layer/VectorTile} the LocalWebGLLayer with a custom renderer for WebGL styling of vectorTile layers.
  */
-export function createVectorTileLayerRenderer () {
+export function createVectorTileLayerRenderer (attrs) {
     /**
      * @class LocalWebGLLayer
      * @see https://openlayers.org/en/latest/examples/webgl-vector-tiles.html
@@ -113,70 +112,8 @@ export function createVectorTileLayerRenderer () {
          * @experimental
          */
         createRenderer () {
-            const result = parseLiteralStyle(style),
-                invisible = [255, 255, 255, 0],
-                grey = [119, 119, 119, 1];
-
-
             return new WebGLVectorTileLayerRenderer(this, {
-                style: {
-                    fill: {
-                        fragment: result.builder.getFillFragmentShader(),
-                        vertex: result.builder.getFillVertexShader()
-                    },
-                    stroke: {
-                        fragment: result.builder.getStrokeFragmentShader(),
-                        vertex: result.builder.getStrokeVertexShader()
-                    },
-                    symbol: {
-                        fragment: result.builder.getSymbolFragmentShader(),
-                        vertex: result.builder.getSymbolVertexShader()
-                    },
-                    builder: result.builder,
-                    attributes: {
-                        fillColor: {
-                            size: 2,
-                            callback: (feature) => {
-                                const featureStyle = this.getStyle()(feature, 1);
-
-                                if (featureStyle && featureStyle[0]) {
-                                    const color = featureStyle[0]?.getFill()?.getColor();
-
-                                    return packColor(color && typeof color === "string" ? asArray(color) : invisible);
-                                }
-                                return packColor(grey);
-                            }
-                        },
-                        strokeColor: {
-                            size: 2,
-                            callback: (feature) => {
-                                const featureStyle = this.getStyle()(feature, 1);
-
-                                if (featureStyle && featureStyle[0]) {
-                                    const color = featureStyle[0]?.getStroke()?.getColor();
-
-                                    return packColor(color ? asArray(color) : invisible);
-                                }
-                                return packColor(grey);
-                            }
-                        },
-                        strokeWidth: {
-                            size: 1,
-                            callback: (feature) => {
-                                const featureStyle = this.getStyle()(feature, 1);
-
-                                if (featureStyle && featureStyle[0]) {
-                                    const width = featureStyle[0]?.getStroke()?.getWidth();
-
-                                    if (width !== undefined) {
-                                        return width > 10 ? width / 10 : 1;/** @todo needs refactoring in later versions  */
-                                    }
-                                }
-                                return 1;
-                            }
-                        }
-                    }
-                }
+                style: attrs.style ? attrs.style : style
             });
         }
     }
