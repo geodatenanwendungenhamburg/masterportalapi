@@ -317,7 +317,8 @@ export function createLayer (attrs) {
         renderer: "webgl",
         styleId: attrs.styleId,
         excludeTypesFromParsing: attrs.excludeTypesFromParsing,
-        extent: attrs.extent
+        extent: attrs.extent,
+        zIndex: attrs.zIndex
     };
 
     /**

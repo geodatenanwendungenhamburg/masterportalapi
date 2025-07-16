@@ -19,6 +19,7 @@
 
 ### Fixed
 - WMTS-Layer: Fixed layers without capabilities.
+- WFTS-Layer: Ensured zIndex is applied correctly to layers using webgl renderer.
 
 ---
 
