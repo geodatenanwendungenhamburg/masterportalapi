@@ -1,4 +1,4 @@
-image: node:20.12.2
+image: node:22.19.0
 
 clone:
     depth: 5000       # include the last five hundred commits

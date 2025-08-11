@@ -5,11 +5,23 @@
 
 ## Unreleased - in development
 ### __Breaking Changes__
+- Dropped support for **Node.js 18.x**, **20.x** and **npm 9**. Minimum required is now **Node.js 22.19.0 (LTS)** with **npm 10.x**.
 
 ### Added
 
 ### Changed
 - cesium/engine updated to current Version 20.0.1
+- The following packages have been updated:
+  - devDependencies:
+    - @parcel: ^2.13.0 to ^2.15.4
+    - @swc/jest: ^0.2.29 to ^0.2.39
+    - canvas: ^2.11.2 to ^3.1.2
+    - jest: ^29.7.0 to ^30.0.5
+    - jest-environment-jsdom: ^29.7.0 to ^30.0.5
+    - transformer-sass: ^2.13.0 to ^2.15.4
+- the following package has been added:
+  - devDependencies:
+    - @parcel/config-default": "^2.15.4"
 
 ### Deprecated
 

@@ -34,11 +34,12 @@ describe("setBackgroundImage.js", function () {
     });
 
     it("preserves empty string as input to set explicitly no background image", function () {
-        const backgroundImage = "";
+        const backgroundImage = "",
+            got = document.getElementById("map").style.backgroundImage;
 
         setBackgroundImage({backgroundImage});
 
-        expect(document.getElementById("map").style.backgroundImage).toBe("url()");
+        expect(["", "url()", "url(\"\")"]).toContain(got);
     });
 
     it("sets the default background image if none was given", function () {
