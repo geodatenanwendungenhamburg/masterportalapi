@@ -3,9 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-
-### __Breaking Changes__
+## 2.50.0 - 2025-08-214
 
 ### Added
 - vectorStyle: added function `initStyleAndAddToList` to styleList. Adds a style contained in style.json to list of styles.
@@ -16,17 +14,13 @@
     - dependencies:
         - ol: 10.4.1 to 10.6.0
 
-### Deprecated
-
-### Removed
-
 ### Fixed
 - WMTS-Layer: Fixed layers without capabilities.
 - WFTS-Layer: Ensured zIndex is applied correctly to layers using webgl renderer.
 
 ---
 
-## 2.49.0 - 2025-04-294
+## 2.49.0 - 2025-04-29
 
 ### Added
 - Add new parameters polygonStrokeDash, polygonStrokeDashOffset in styleObject of drawInteraction.
