@@ -56,7 +56,7 @@
     "util": "^0.12.5"
   },
   "peerDependencies": {
-    "@cesium/engine": "^15.0.0"
+    "@cesium/engine": "^19.0.0"
   },
   "engines": {
     "node": "^16.13.2 || ^18.12.0 || ^20.12.2",
