@@ -40,7 +40,14 @@ const defaultPointStyle = [
         opacity: 1
     },
 
-    /** @type {import('ol/style/literal.js').LiteralStyle} */
+    /**
+     * @typedef {Object} LiteralStyle
+     * @property {string} [stroke-color]
+     * @property {number} [stroke-width]
+     * @property {string} [fill-color]
+     * @property {number} [opacity]
+     * @property {number} [size]
+     */
     style = Object.assign({
         "stroke-color": ["get", "strokeColor"],
         "stroke-width": ["get", "strokeWidth", "number"],
