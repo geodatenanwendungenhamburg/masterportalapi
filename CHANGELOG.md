@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- wfs: Fixed handling of the fetch option `credentials` for `loadWFSFilter`, `loadWFS`, and `getGeometryTypeFromWFS`.
 
 ---
 

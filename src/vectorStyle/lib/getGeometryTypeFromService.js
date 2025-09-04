@@ -130,11 +130,9 @@ function getGeometryTypeFromWFS (rules, wfsURL, version, featureType, styleGeome
     });
     url = url.slice(0, -1);
 
-
     return fetch(url, {
         method: "get",
-        withCredentials: isSecured,
-        responseType: "text"
+        credentials: isSecured ? "include" : "omit"
     }).then(response => response.text())
         .then(responseAsString => new window.DOMParser().parseFromString(responseAsString, "text/xml"))
         .then(responseXML => {

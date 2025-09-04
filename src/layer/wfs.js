@@ -81,7 +81,13 @@ function getFilterRequestParams (payload) {
  * @returns {void}
  */
 function loadWFS (url, params, source, {onErrorFn, success, failure}, options) {
-    fetch(url, params)
+    const xhrParameters = options?.loadingParams?.xhrParameters ?? {},
+        mergedParams = {
+            ...params,
+            ...xhrParameters
+        };
+
+    fetch(url, mergedParams)
         .then((response) => handleErrors(response, onErrorFn, options, failure))
         .then((response) => response.text())
         .then(responseString => source.getFormat().readFeatures(responseString))
@@ -175,13 +181,11 @@ function createLayerSource (rawLayer, options = {}) {
         }
         else {
             const bboxParam = options.loadingStrategy === bbox ? `&bbox=${extent.join(",")},${projection.getCode()}` : "";
-            let url = createUrl(rawLayer, version, projection, bboxParam),
-                params = {};
+            let url = createUrl(rawLayer, version, projection, bboxParam);
 
             if (options.loadingParams) {
                 for (const key in options.loadingParams) {
                     if (key === "xhrParameters") {
-                        params = options.loadingParams.xhrParameters;
                         continue;
                     }
                     const option = Array.isArray(options.loadingParams[key]) ? options.loadingParams[key].join(",") : options.loadingParams[key];
@@ -194,7 +198,7 @@ function createLayerSource (rawLayer, options = {}) {
                     }
                 }
             }
-            loadWFS(url, params, source, {onErrorFn: onError, success, failure}, options);
+            loadWFS(url, {}, source, {onErrorFn: onError, success, failure}, options);
         }
     }
     format.featureType = rawLayer.featureType;
