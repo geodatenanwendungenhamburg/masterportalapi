@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- wfs: Normalize WFS-T transaction XML to ensure WFS 2.0.0 compatibility.
 
 ### Changed
 

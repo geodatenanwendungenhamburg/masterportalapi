@@ -267,16 +267,59 @@ function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
 }
 
 /**
+ * Ensures that the WFS-T transaction is compatible with a specific WFS version.
+ *
+ * Updates for WFS 2.0.0:
+ * - Filter needs fes namespace (Filter Encoding Standard)
+ * - Filter FeatureId (fid) must be replaced by ResourceId (rid)
+ *
+ * @param {string} version - WFS-T version
+ * @param {string} xml - Original WFS-T transaction xml
+ * @returns {string} Normalized WFS-T transaction xml
+ */
+function normalizeWfsTransaction (version, xml) {
+    if (version === "2.0.0") {
+        const domParser = new DOMParser(),
+            xmlDocument = domParser.parseFromString(xml, "application/xml");
+
+        xmlDocument.querySelectorAll("Filter").forEach(filterNode => {
+            const newFilter = xmlDocument.createElementNS("http://www.opengis.net/fes/2.0", "fes:Filter");
+
+            while (filterNode.firstChild) {
+                const child = filterNode.firstChild;
+
+                if (child.nodeType === 1 && child.localName === "FeatureId") {
+                    const fidAttribute = child.getAttribute("fid"),
+                        resourceIdNode = xmlDocument.createElementNS("http://www.opengis.net/fes/2.0", "fes:ResourceId");
+
+                    resourceIdNode.setAttribute("rid", fidAttribute);
+                    newFilter.appendChild(resourceIdNode);
+                    filterNode.removeChild(child);
+                }
+                else {
+                    newFilter.appendChild(child);
+                }
+            }
+
+            filterNode.parentNode.replaceChild(newFilter, filterNode);
+        });
+
+        return new XMLSerializer().serializeToString(xmlDocument);
+    }
+
+    return xml;
+}
+
+/**
  * Writes a wfs transaction including the given feature for given layer
  * inserting, updated or deleting the feature depending on the given selectedInteraction.
  *
  * @param {ol/Feature} feature Feature to be inserted, updated or deleted.
  * @param {Object} transactionOptions Information about the layer to be manipulated.
  * @param {string} transactionMethod Which transaction to perform. Possible values are: "insert"|"delete"|"selectedUpdate"
- * @param {string} srsName EPSG code currently used by the map.
+ * @param {string} version WFS-T version
  * @returns {string} WFS Transaction as an XML Node as String.
  */
-
 function writeTransactionBody (feature, transactionOptions, transactionMethod, version = "1.1.0") {
     const transactionPosition = {
             insert: 0,
@@ -290,9 +333,10 @@ function writeTransactionBody (feature, transactionOptions, transactionMethod, v
     }
 
     transaction[transactionPosition[transactionMethod]].push(feature);
-    return new XMLSerializer()
+
+    return normalizeWfsTransaction(version, new XMLSerializer()
         .serializeToString(new WFS({version})
-            .writeTransaction(...transaction, transactionOptions));
+            .writeTransaction(...transaction, transactionOptions)));
 }
 
 /**

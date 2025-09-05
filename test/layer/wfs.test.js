@@ -676,6 +676,20 @@ describe("wfs.js", function () {
             expect(() => wfs.writeTransactionBody(feature, transactionOptions, "remove")).toThrow(Error);
             expect(() => wfs.writeTransactionBody(feature, transactionOptions, "remove")).toThrow("transactionMethod has to be \"insert\", \"selectedUpdate\" or \"delete\".");
         });
+
+        it("should change WFS-T 2.0.0 filter namespace to fes and filter featureId (fid) to resourceId (rid) for selectedUpdate", async () => {
+            const transactionBody = wfs.writeTransactionBody(feature, transactionOptions, "selectedUpdate", "2.0.0"),
+                expectedBody = "<Transaction xmlns=\"http://www.opengis.net/wfs/2.0\" service=\"WFS\" version=\"2.0.0\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\" ns1:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd\"><Update typeName=\"myPrefix:Polygon\" xmlns:myPrefix=\"myNS\"><Property><ValueReference>geometry</ValueReference><Value><Polygon xmlns=\"http://www.opengis.net/gml/3.2\" srsName=\"EPSG:4326\"><exterior><LinearRing srsName=\"EPSG:4326\"><posList srsDimension=\"2\">50.20836600730087 9.17782024967994 50.20836600730087 9.200676227149245 50.20873353776312 9.200676227149245 50.20873353776312 9.17782024967994 50.20836600730087 9.17782024967994</posList></LinearRing></exterior></Polygon></Value></Property><Property><ValueReference>name</ValueReference><Value>My Polygon</Value></Property><fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\"><fes:ResourceId rid=\"1\"/></fes:Filter></Update></Transaction>";
+
+            expect(transactionBody).toEqual(expectedBody);
+        });
+
+        it("should change WFS-T 2.0.0 filter namespace to fes and filter featureId (fid) to resourceId (rid) for delete", async () => {
+            const transactionBody = wfs.writeTransactionBody(feature, transactionOptions, "delete", "2.0.0"),
+                expectedBody = "<Transaction xmlns=\"http://www.opengis.net/wfs/2.0\" service=\"WFS\" version=\"2.0.0\" xmlns:ns1=\"http://www.w3.org/2001/XMLSchema-instance\" ns1:schemaLocation=\"http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd\"><Delete typeName=\"myPrefix:Polygon\" xmlns:myPrefix=\"myNS\"><fes:Filter xmlns:fes=\"http://www.opengis.net/fes/2.0\"><fes:ResourceId rid=\"1\"/></fes:Filter></Delete></Transaction>";
+
+            expect(transactionBody).toEqual(expectedBody);
+        });
     });
 
     describe("receivePossibleProperties", () => {
