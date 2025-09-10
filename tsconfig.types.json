@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "noEmitOnError": false,
+        "skipLibCheck": true,
+        "outDir": "types",
+        "target": "ES2020",
+        "moduleResolution": "Bundler"
+    },
+    "include": [
+        "src/**/*.js"
+    ]
+}
