@@ -4,6 +4,7 @@
         "browser": true,
         "node": true,
         "es6": true,
+        "es2020": true,
         "jest": true
     },
     "globals": {

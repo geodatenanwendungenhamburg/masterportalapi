@@ -212,7 +212,7 @@ function captureLegendFromFeature (styleId, legendInformation) {
 
         event.id = legend.id;
         if (this) {
-            this.dispatchEvent(event);
+            (this || globalThis).dispatchEvent(event);
         }
     }
 }
@@ -277,7 +277,7 @@ async function returnLegendByStyleId (styleId) {
             resolve(legend);
         }
 
-        this.addEventListener("legendCaptured", event => {
+        (this || globalThis).addEventListener("legendCaptured", event => {
             if (event.id === styleId && event.id !== "default") {
                 resolve(legendsOfAllStyles.find(element => element.id === event.id));
             }
