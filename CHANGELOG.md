@@ -9,6 +9,7 @@
 ### Added
 
 ### Changed
+- cesium/engine updated to current Version 20.0.1
 
 ### Deprecated
 
