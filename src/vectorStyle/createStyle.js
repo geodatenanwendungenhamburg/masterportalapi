@@ -201,7 +201,7 @@ function captureLegendFromFeature (styleId, legendInformation) {
         legend = {id: styleId, legendInformation: []};
         legendsOfAllStyles.push(legend);
     }
-    else if (styleId === "default" && legend.legendInformation !== legendInformation) {
+    if (styleId === "default" && legend.legendInformation !== legendInformation) {
         legend.legendInformation = legendInformation;
         legendInformationLength = legendInformation.length;
     }
