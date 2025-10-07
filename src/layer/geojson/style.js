@@ -1,5 +1,5 @@
 import {Style, Icon, Stroke, Fill} from "ol/style.js";
-import markerSvg from "../../../public/marker.svg";
+
 
 let customStyles = {};
 
@@ -15,7 +15,7 @@ export function setCustomStyles (styles) {
 // // // STYLE PARTS
 const marker = new Icon({
         crossOrigin: "anonymous",
-        src: markerSvg,
+        src: "../../../public/marker.svg",
         // center bottom of marker 📍 is intended to show the spot
         anchor: [0.5, 1]
     }),
