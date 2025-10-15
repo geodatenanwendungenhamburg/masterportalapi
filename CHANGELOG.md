@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1450: WMS-Layer: if fetch on load fails, the default tileLoadFunction from openlayers is used.
 
 ---
 

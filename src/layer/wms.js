@@ -78,15 +78,22 @@ export function makeParams (rawLayer) {
 
 /**
  * Return a ol tile or image load function for the rawLayer.
+ * If fetch fails the default tile load function of openlayers is used.
  * @param {object} rawLayer - layer specification as in services.json
  * @returns {function} tile/image load function
  */
 export function defaultLoadFunction ({isSecured}) {
     return async (image, src) => {
-        const response = await fetch(src, {credentials: isSecured ? "include" : "omit"}),
-            data = await response.blob();
+        try {
+            const response = await fetch(src, {credentials: isSecured ? "include" : "omit"}),
+                data = await response.blob();
 
-        image.getImage().src = URL.createObjectURL(data);
+            image.getImage().src = URL.createObjectURL(data);
+        }
+        catch (e) {
+            console.error(e.message);
+            image.getImage().src = src;
+        }
     };
 }
 
