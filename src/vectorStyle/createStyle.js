@@ -211,7 +211,7 @@ function captureLegendFromFeature (styleId, legendInformation) {
         const event = new CustomEvent("legendCaptured");
 
         event.id = legend.id;
-        if (this) {
+        if (this || globalThis) {
             (this || globalThis).dispatchEvent(event);
         }
     }
