@@ -305,7 +305,8 @@ document.getElementById("enable").addEventListener("click", function () {
         document.getElementById("layer-visibility").style.display = "block";
 
         load3DScriptModule.load3DScript(lib, function Loaded3DCallback () {
-            let tilesetLayer = null;
+            let tilesetLayer = null,
+                terrainLayer = null;
 
             const settings3D = {
                     map2D: window.mpapi.map2D,
@@ -335,8 +336,8 @@ document.getElementById("enable").addEventListener("click", function () {
             mpapi.entities.createLayer(rawLayerEntities, window.mpapi.map);
             mpapi.entities.setVisible(true, rawLayerEntities, window.mpapi.map);
 
-            mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
-            mpapi.terrain.setVisible(true, rawLayerTerrain, window.mpapi.map);
+            terrainLayer = mpapi.terrain.createLayer(rawLayerTerrain, window.mpapi.map);
+            terrainLayer.setVisible(true, rawLayerTerrain, window.mpapi.map);
 
             window.mpapi.map.setEnabled(true);
         });

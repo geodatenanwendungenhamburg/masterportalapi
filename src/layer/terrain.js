@@ -3,7 +3,7 @@
  * @param {Object} rawLayer  attributes of the layer
  * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
  * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
- * @returns {void}
+ * @returns {Promise<Cesium.CesiumTerrainProvider>} the terrain provider
  */
 async function createTerrainProvider (rawLayer) {
     const options = {};
@@ -17,25 +17,6 @@ async function createTerrainProvider (rawLayer) {
     return terrainProvider;
 }
 
-/**
- * Sets the layers visibility by setting the terrain provider at Cesium scene.
- * @param {boolean} value  if true, terrainProvider is set to map and terrain will be visible
- * @param {Object} rawLayer  attributes of the layer
- * @param {string} [rawLayer.url] - the URL of the Cesium terrain server
- * @param {string} [rawLayer.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
- * @param {OLCesium} map ol cesium map
- * @returns {void}
- */
-export async function setVisible (value, rawLayer, map) {
-    if (map && typeof map.getCesiumScene === "function") {
-        if (value) {
-            map.getCesiumScene().terrainProvider = await createTerrainProvider(rawLayer);
-        }
-        else {
-            map.getCesiumScene().terrainProvider = new Cesium.EllipsoidTerrainProvider({});
-        }
-    }
-}
 
 /**
  * Creates an terrain layer to use in ol-Cesium map.
@@ -46,21 +27,41 @@ export async function setVisible (value, rawLayer, map) {
  * @returns {Object} layer
  */
 export function createLayer (rawLayer) {
-    this.values = {
-        name: rawLayer.name,
-        id: rawLayer.id,
-        typ: rawLayer.typ
+    const layer = {
+        values: {
+            name: rawLayer.name,
+            id: rawLayer.id,
+            typ: rawLayer.typ
+        },
+        /**
+         * Returns the value for the given key of the rawlayer.
+         * @param {String} key to get the value for
+         * @returns {*} the value to the key
+         */
+        get (key) {
+            return this.values?.[key];
+        },
+        /**
+         * Sets the layers visibility by setting the terrain provider at Cesium scene.
+         * @param {boolean} value  if true, terrainProvider is set to map and terrain will be visible
+         * @param {Object} layerAttributes  attributes of the layer - the raw layer
+         * @param {string} [layerAttributes.url] - the URL of the Cesium terrain server
+         * @param {Object} [layerAttributes.cesiumTerrainProviderOptions] - see https://cesiumjs.org/Cesium/Build/Documentation/CesiumTerrainProvider.html
+         * @param {OLCesium} map ol cesium map
+         * @returns {void}
+         */
+        async setVisible (value, layerAttributes, map) {
+            if (map && typeof map.getCesiumScene === "function") {
+                if (value) {
+                    map.getCesiumScene().terrainProvider = await createTerrainProvider(layerAttributes);
+                }
+                else {
+                    map.getCesiumScene().terrainProvider = new Cesium.EllipsoidTerrainProvider({});
+                }
+            }
+        }
     };
-    return this;
+
+    return layer;
 }
-/**
- * Returns the value for the given key of the rawlayer.
- * @param {String} key to get the value for
- * @returns {*} the value to the key
- */
-export function get (key) {
-    if (!this.values) {
-        return undefined;
-    }
-    return this.values[key];
-}
+
