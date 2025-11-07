@@ -194,6 +194,39 @@ async function jobResults (processUrl, jobId, format = "json") {
     return responseJson;
 }
 
+/**
+ * Polls status for a job until it is successful and then returns its results.
+ * @param {string} processUrl – URL of the OGC API process
+ * @param {string} jobId – ID of the job to poll results to
+ * @param {object} pollParameters – how to poll
+ * @param {number?} [pollParameters.timeout=5000] – how long to try polling in ms
+ * @param {number?} [pollParameters.stallFor=100] – how long to wait between retries
+ * @returns {object} job results as json
+ * @throws
+ */
+async function pollJobResults (processUrl, jobId, {timeout = 5000, stallFor = 100} = {}) {
+    const start = Date.now();
+
+    // exit through throw/return/timeout
+    for (;;) {
+        const jobStatusResponse = await jobStatus(processUrl, jobId);
+
+        if (jobStatusResponse?.status === "successful") {
+            return jobResults(processUrl, jobId);
+        }
+
+        if (["failed", "dismissed"].includes(jobStatusResponse?.status)) {
+            throw new Error(`Polling job ${jobId} at ${processUrl} resulted in status "${jobStatusResponse?.status}".`);
+        }
+
+        if (Date.now() - start >= timeout) {
+            throw new Error(`Polling job ${jobId} at ${processUrl} timed out after ${timeout} ms with last status "${jobStatusResponse?.status}".`);
+        }
+
+        await new Promise(res => setTimeout(res, stallFor));
+    }
+}
+
 export default {
     processList,
     processDescription,
@@ -201,5 +234,6 @@ export default {
     jobList,
     cancelJob,
     jobStatus,
-    jobResults
+    jobResults,
+    pollJobResults
 };

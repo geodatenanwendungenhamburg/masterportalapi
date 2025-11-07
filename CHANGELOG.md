@@ -8,6 +8,7 @@
 
 ### Added
 - wfs: Normalize WFS-T transaction XML to ensure WFS 2.0.0 compatibility.
+- OGC API: Added a polling function that polls until either result is ready or process failed.
 
 ### Changed
 

@@ -253,8 +253,14 @@ async function testOgcApiProcesses (processUrl) {
     console.log("Execute Process:", await window.mpapi.ogcApiProcesses.executeProcess(processUrl, processList[0].id, data)); // eslint-disable-line
 
     console.log("Job List:", jobList); // eslint-disable-line
+
+    // option one: check status and results separately
     console.log("Job Status of last job:", await window.mpapi.ogcApiProcesses.jobStatus(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
     console.log("Job Results of last job:", await window.mpapi.ogcApiProcesses.jobResults(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
+
+    // option two: poll until failure (throws) or success (returns results)
+    console.log("Job Results of last job:", await window.mpapi.ogcApiProcesses.pollJobResults(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
+
     console.log("Cancle the last Job:", await window.mpapi.ogcApiProcesses.cancelJob(processUrl, jobList.at(-1).jobID)); // eslint-disable-line
     console.log("Job list:", await window.mpapi.ogcApiProcesses.jobList(processUrl)); // eslint-disable-line
 }

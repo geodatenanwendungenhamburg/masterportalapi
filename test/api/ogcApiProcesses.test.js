@@ -5,22 +5,26 @@ describe("ogcApiProcesses.js", () => {
         processId = "process-id",
         jobId = "job-id";
 
-    beforeEach(() => {
-        if (global.fetch) {
-            fetch.mockClear();
-        }
-
-        global.fetch = jest.fn().mockImplementationOnce(() => {
+    function mockFetch (returnValue = {}) {
+        global.fetch = jest.fn().mockImplementation(() => {
             return new Promise((resolve) => {
                 resolve({
                     ok: true,
                     status: 200,
                     json: () => {
-                        return {};
+                        return returnValue;
                     }
                 });
             });
         });
+    }
+
+    beforeEach(() => {
+        if (global.fetch) {
+            fetch.mockClear();
+        }
+
+        mockFetch();
     });
 
     describe("processList", () => {
@@ -108,6 +112,36 @@ describe("ogcApiProcesses.js", () => {
             await ogcApiProcesses.jobResults(processUrl, jobId, "html");
 
             expect(fetch).toHaveBeenCalledWith(`${processUrl}/jobs/${jobId}/results?f=html`, {method: "GET"});
+        });
+    });
+
+    describe("pollJobResults", () => {
+        it("returns job results when status is successful", async () => {
+            mockFetch({status: "successful", result: "It worked!"});
+
+            const result = await ogcApiProcesses.pollJobResults(processUrl, jobId);
+
+            expect(result).toEqual({result: "It worked!", status: "successful"});
+            expect(fetch).toHaveBeenCalledWith(`${processUrl}/jobs/${jobId}`, {method: "GET"});
+            expect(fetch).toHaveBeenCalledWith(`${processUrl}/jobs/${jobId}/results?f=json`, {method: "GET"});
+        });
+
+        it("throws error when status is failed", async () => {
+            mockFetch({status: "failed"});
+
+            await expect(ogcApiProcesses.pollJobResults(processUrl, jobId)).rejects.toThrow("Polling job job-id at https://example.de resulted in status \"failed\".");
+        });
+
+        it("throws error when status is dismissed", async () => {
+            mockFetch({status: "dismissed"});
+
+            await expect(ogcApiProcesses.pollJobResults(processUrl, jobId)).rejects.toThrow("Polling job job-id at https://example.de resulted in status \"dismissed\".");
+        });
+
+        it("throws error when polling times out", async () => {
+            mockFetch({status: "running"});
+
+            await expect(ogcApiProcesses.pollJobResults(processUrl, jobId, {timeout: 10, stallFor: 1})).rejects.toThrow(/timed out/);
         });
     });
 });
