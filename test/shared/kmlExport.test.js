@@ -196,6 +196,20 @@ describe("src/shared/kmlExport.js", () => {
             expect(feature.get("geoCircleRadius")).toBe(50);
         });
 
+        it("serializes drawState when promoting masterportal_attributes", () => {
+            const drawState = {
+                    drawType: {id: "drawPolygon", geometry: "Polygon"},
+                    strokeWidth: 4,
+                    color: [12, 34, 56, 0.7]
+                },
+                feature = new Feature({geometry: new Point([565874, 5934140])});
+
+            feature.set("masterportal_attributes", {drawState});
+            kmlExport.setKmlAttributes([feature]);
+
+            expect(feature.get("drawState")).toBe(JSON.stringify(drawState));
+        });
+
         it("returns the features array on success", () => {
             const features = [new Feature({geometry: new Point([565874, 5934140])})],
                 result = kmlExport.setKmlAttributes(features);

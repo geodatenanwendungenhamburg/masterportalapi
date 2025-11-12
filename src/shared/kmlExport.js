@@ -55,57 +55,45 @@ function getKmlHotSpotOfIconStyle (anchor) {
 }
 
 /**
- * Transforms the given line or polygon coordinates from EPSG:25832 to EPSG:4326.
+ * Transforms the given coordinates from EPSG:25832 to EPSG:4326, regardless of their nesting depth.
+ * Handles single coordinates as well as the nested arrays of (multi) lines and (multi) polygons.
  *
  * @param {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} coords Coordinates.
- * @param {Boolean} isPolygon Determines whether the given coordinates are a polygon or a line.
  * @param {String} projectionCode Source projection code (e.g. "EPSG:25832").
  * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} Transformed coordinates.
  */
-function transform (coords, isPolygon, projectionCode) {
-    const transCoords = [];
-
-    // NOTE(roehlipa): The polygon parts look like they would not work as intended. Simply copied from the old version.
-    for (const value of coords) {
-        if (isPolygon) {
-            value.forEach(point => {
-                transCoords.push(transformPoint(projectionCode, point));
-            });
-            continue;
-        }
-        transCoords.push(transformPoint(projectionCode, value));
+function transform (coords, projectionCode) {
+    if (!Array.isArray(coords) || coords.length === 0) {
+        return [];
     }
-
-    return isPolygon ? [transCoords] : transCoords;
+    if (Array.isArray(coords[0])) {
+        return coords.map(nested => transform(nested, projectionCode));
+    }
+    return transformPoint(projectionCode, coords);
 }
 
 
 /**
  * Transforms the given geometry from EPSG:25832 to EPSG:4326.
- * If the geometry is not an instance of ol/LineString, ol/Point, ol/Polygon or ol/MultiPolygon, an empty array is returned.
+ * If the geometry type is not supported, an empty array is returned.
  *
  * @param {module:ol/geom/Geometry} geometry Geometry to be transformed.
  * @param {String} projectionCode Source projection code (e.g. "EPSG:25832").
  * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed coordinates or an empty array.
  */
 function transformCoordinates (geometry, projectionCode) {
-    const coords = geometry.getCoordinates(),
-        type = geometry.getType();
+    const type = geometry.getType();
 
-    switch (type) {
-        case "LineString":
-            return transform(coords, false, projectionCode);
-        case "Point":
-            return transformPoint(projectionCode, coords);
-        case "Polygon":
-            return transform(coords, true, projectionCode);
-        case "MultiPolygon":
-            return coords;
-
-        default:
-            console.warn(`Geometry type "${type}" is not supported for transformation.`);
-            return [];
+    if (!["Point", "MultiPoint", "LineString", "MultiLineString", "Polygon", "MultiPolygon"].includes(type)) {
+        console.warn(`Geometry type "${type}" is not supported for transformation.`);
+        return [];
     }
+
+    if (!projectionCode) {
+        return geometry.getCoordinates();
+    }
+
+    return transform(geometry.getCoordinates(), projectionCode);
 }
 
 /**
@@ -134,15 +122,21 @@ function getKMLWithCustomAttributes (features, format) {
         }
         attributeKeys.forEach(attrKey => {
             if (placemarks[idx]) {
-                const extendedData = placemarks[idx].querySelector("ExtendedData"),
-                    data = typeof extendedData.querySelector === "function" ? extendedData.querySelector(`Data[name='${attrKey}']`) : undefined,
-                    existingDataNode = typeof extendedData.querySelector === "function" ? extendedData.querySelector(`Data[name='custom-attribute____${attrKey}']`) : undefined;
+                const extendedData = placemarks[idx].querySelector("ExtendedData");
+
+                if (!(extendedData instanceof Element)) {
+                    return;
+                }
+
+                // KML native tags like name or description are not written into ExtendedData, so no Data node exists for them.
+                const data = extendedData.querySelector(`Data[name='${attrKey}']`),
+                    existingDataNode = extendedData.querySelector(`Data[name='custom-attribute____${attrKey}']`);
 
                 if (existingDataNode instanceof Element) {
                     existingDataNode.remove();
                 }
 
-                if (typeof data.setAttribute === "function") {
+                if (data instanceof Element) {
                     data.setAttribute("name", `custom-attribute____${attrKey}`);
                 }
             }
@@ -300,7 +294,9 @@ function setKmlAttributes (features) {
 
             if (Object.prototype.hasOwnProperty.call(feature.getProperties(), "masterportal_attributes")) {
                 Object.keys(feature.get("masterportal_attributes")).forEach(key => {
-                    feature.set(key, feature.get("masterportal_attributes")[key]);
+                    const value = feature.get("masterportal_attributes")[key];
+
+                    feature.set(key, key === "drawState" && isObject(value) ? JSON.stringify(value) : value);
                 });
             }
         }
