@@ -26,7 +26,7 @@ export function setCesiumSceneParams (scene, params) {
     }
 
     Object.entries(params).forEach(([key, value]) => {
-        if (["0", "1", "2", "heading", "tilt", "altitude"].includes(key)) {
+        if (["0", "1", "2", "heading", "tilt", "altitude", "pitch"].includes(key)) {
             return;
         }
 
