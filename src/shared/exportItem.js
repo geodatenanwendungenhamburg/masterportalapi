@@ -69,6 +69,37 @@ function transformCoordinates (geometry, projection) {
 }
 
 /**
+ * Adds draw state extensions to GPX feature nodes.
+ * @param {String} gpxData The generated GPX document.
+ * @param {ol/Feature[]} features The features written to the document.
+ * @returns {String} The GPX document with draw state extensions.
+ */
+function addGpxDrawStateExtensions (gpxData, features) {
+    const document = new DOMParser().parseFromString(gpxData, "text/xml"),
+        featureNodes = Array.from(document.getElementsByTagName("*"))
+            .filter(node => ["wpt", "rte", "trk"].includes(node.localName)),
+        drawStateNamespace = "https://masterportal.org/gpx";
+
+    featureNodes.forEach((featureNode, index) => {
+        const drawState = features[index].get("masterportal_attributes")?.drawState;
+
+        if (!isObject(drawState)) {
+            return;
+        }
+
+        const extensions = document.createElementNS(document.documentElement.namespaceURI, "extensions"),
+            drawStateNode = document.createElementNS(drawStateNamespace, "masterportal:drawState");
+
+        drawStateNode.textContent = JSON.stringify(drawState);
+        extensions.appendChild(drawStateNode);
+        featureNode.appendChild(extensions);
+        document.documentElement.setAttribute("xmlns:masterportal", drawStateNamespace);
+    });
+
+    return new XMLSerializer().serializeToString(document);
+}
+
+/**
  * Converts the features from OpenLayers Features to features in the chosen format,
  * transforming coordinates from the given projection to EPSG:4326.
  *
@@ -101,7 +132,9 @@ function convertFeatures (features, format, projection) {
         console.warn("Some features could not be exported because their geometry type is not supported by the chosen format.");
     }
 
-    return format.writeFeatures(convertedFeatures);
+    const dataString = format.writeFeatures(convertedFeatures);
+
+    return format instanceof GPX ? addGpxDrawStateExtensions(dataString, features) : dataString;
 }
 
 /**

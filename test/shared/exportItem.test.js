@@ -1,6 +1,6 @@
 import Feature from "ol/Feature.js";
 import {Point, LineString, Polygon, Circle} from "ol/geom.js";
-import {GeoJSON} from "ol/format.js";
+import {GeoJSON, GPX} from "ol/format.js";
 import proj4 from "proj4";
 import {register} from "ol/proj/proj4.js";
 import exportItem, {setCsvAttributes} from "../../src/shared/exportItem";
@@ -141,6 +141,22 @@ describe("src/shared/exportItem.js", () => {
                 parsed = JSON.parse(result);
 
             expect(parsed.features).toHaveLength(0);
+        });
+
+        it("preserves drawState in GPX extensions", async () => {
+            const drawState = {
+                    drawType: {id: "drawLine", geometry: "LineString"},
+                    strokeWidth: 4,
+                    colorContour: [12, 34, 56, 1]
+                },
+                feature = new Feature({
+                    geometry: new LineString([[565874, 5934140], [566000, 5934200]]),
+                    masterportal_attributes: {drawState}
+                }),
+                result = await exportItem.convertFeatures([feature], new GPX(), "EPSG:25832");
+
+            expect(result).toContain("masterportal:drawState");
+            expect(result).toContain(JSON.stringify(drawState));
         });
     });
 
