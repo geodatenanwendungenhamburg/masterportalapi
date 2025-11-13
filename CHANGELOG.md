@@ -3,18 +3,11 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.52.0 - 2025-11-13
 
 ### Added
 - wfs: Normalize WFS-T transaction XML to ensure WFS 2.0.0 compatibility.
 - OGC API: Added a polling function that polls until either result is ready or process failed.
-
-### Changed
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - wfs: Fixed handling of the fetch option `credentials` for `loadWFSFilter`, `loadWFS`, and `getGeometryTypeFromWFS`.
