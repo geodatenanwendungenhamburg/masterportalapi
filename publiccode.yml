@@ -81,8 +81,8 @@ maintenance:
 name: Masterportal
 platforms:
   - web
-releaseDate: '2025-04-29'
+releaseDate: '2025-11-13'
 roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/'
 softwareType: api
-softwareVersion: 2.49.0
+softwareVersion: 2.52.0
 url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git'
