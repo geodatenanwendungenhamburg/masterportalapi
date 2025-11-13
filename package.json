@@ -80,5 +80,6 @@
   },
   "bugs": {
     "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/issues"
-  }
+  },
+  "main": "jest.config.js"
 }
