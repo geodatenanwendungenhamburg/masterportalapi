@@ -3,19 +3,27 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
  
- ## Unreleased - in development
+## Unreleased - in development
 ### __Breaking Changes__
 
 ### Added
 
 ### Changed
-- The following packages have been updated:
-    - dependencies:
-        - ol: 10.6.0 to 10.7.0
 
 ### Deprecated
 
 ### Removed
+
+### Fixed
+
+---
+
+## 2.53.0 - 2025-11-18
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.6.0 to 10.7.0
 
 ### Fixed
 - Issue #1450: WMS-Layer: if fetch on load fails, the default tileLoadFunction from openlayers is used.
