@@ -1,4 +1,5 @@
-import {Style, Icon} from "ol/style.js";
+import {Style, Icon, Fill} from "ol/style.js";
+import Text from "ol/style/Text";
 import PointStyle from "./styles/point/stylePoint";
 import TextStyle from "./styles/styleText";
 import PolygonStyle from "./styles/polygon/stylePolygon";
@@ -234,6 +235,25 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
         legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos;
     let styleObjectGeometry = null;
+
+    if (feature?.get("drawType") === "writeText") {
+        const textStyle = new Text({
+                text: style.text ?? "",
+                font: `${style.textFontSize}px ${style.textFont}`,
+                fill: new Fill({
+                    color: style.polygonFillColor || "black"
+                }),
+                offsetX: style.textOffsetX || 0,
+                offsetY: style.textOffsetY || 0,
+                textAlign: style.textAlign || "center"
+            }),
+            textStyleObject = new Style({
+                text: textStyle
+            });
+
+        feature.setStyle(textStyleObject);
+        return styleObject;
+    }
 
     if (Array.isArray(geometryStyle)) {
         styleObjectGeometry = [];
