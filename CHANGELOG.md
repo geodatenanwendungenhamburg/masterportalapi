@@ -3,21 +3,6 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
  
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
----
-
 ## 2.53.0 - 2025-11-18
 
 ### Changed
