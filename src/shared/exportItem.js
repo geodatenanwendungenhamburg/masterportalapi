@@ -1,5 +1,8 @@
+/* eslint-disable no-underscore-dangle */
 import proj4 from "proj4";
 import {GPX} from "ol/format.js";
+import {Circle} from "ol/geom.js";
+import {fromCircle} from "ol/geom/Polygon.js";
 
 /**
  * Transforms the given point coordinates from a given source projection to EPSG:4326.
@@ -70,21 +73,47 @@ function transformMultiPoint (sourceProjectionCode, coords) {
     return multiPoint;
 }
 
+/**
+ * Transforms the given geometry from EPSG:25832 to EPSG:4326.
+ * If the geometry is not an instance of ol/LineString, ol/Point or ol/Polygon an Alert is send to the user.
+ * @param {module:ol/geom/Geometry} geometry Geometry to be transformed.
+ * @param {String} projection The EPSG projection that is used.
+ * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed Geometry or an empty array.
+ */
+function transformCoordinates (geometry, projection) {
+    const coords = geometry.getCoordinates(),
+        type = geometry.getType();
+
+    console.warn("in transformCoordinates", projection);
+    switch (type) {
+        case "LineString":
+            return transform(projection, coords, false);
+        case "Point":
+            return transformPoint(projection, coords);
+        case "Polygon":
+            return transform(projection, coords, true);
+        default:
+            console.warn("Error, here used to be an alert");
+            return [];
+    }
+}
 
 /**
  * Converts the features from OpenLayers Features to features in the chosen format.
- *
+ * @param {Object} features the features to be converted
  * @param {module:ol/format} format Format in which the features should be saved.
+ * @param {String} projection The EPSG projection that is used.
  * @returns {String} The features written in the chosen format as a String.
  */
-async function convertFeatures ({state, commit}, format) {
+async function convertFeatures (features, format, projection) {
+
     const convertedFeatures = [];
     let notSupportedGeometryType = false,
         supportedGeometryType = false;
 
-    for (const feature of state.download.features) {
+    for (const feature of features) {
         const cloned = feature.clone(),
-            transCoords = await transform.transformCoordinates(cloned.getGeometry());
+            transCoords = await transformCoordinates(cloned.getGeometry(), projection);
 
         if (transCoords.length === 3 && transCoords[2] === 0) {
             transCoords.pop();
@@ -102,18 +131,57 @@ async function convertFeatures ({state, commit}, format) {
     }
 
     if (notSupportedGeometryType && supportedGeometryType) {
-        commit("setDownloadFeaturesNotSupported", false);
+        console.warn("notSupportedGeometryType && supportedGeometryType");
+        // commit("setDownloadFeaturesNotSupported", false);
         // dispatch("Alerting/addSingleAlert", notSupportedAlert, {root: true});
     }
     else if (notSupportedGeometryType) {
-        commit("setDownloadFeaturesNotSupported", true);
+        console.warn("notSupportedGeometryType");
+        // commit("setDownloadFeaturesNotSupported", true);
         // dispatch("Alerting/addSingleAlert", allGeometryTypesNotSupported, {root: true});
     }
     else {
-        commit("setDownloadFeaturesNotSupported", false);
+        console.warn("No error");
+        // commit("setDownloadFeaturesNotSupported", false);
     }
 
     return format.writeFeatures(convertedFeatures);
+}
+
+function prepareFeatures (features) {
+    const downloadFeatures = [];
+
+    features.forEach((drawnFeature) => {
+        const feature = drawnFeature.clone(),
+            geometry = feature.getGeometry();
+
+        // Jas: following lines have been moved to ExportItem.vue in MP
+        // If the feature is invisible from filter, the style will be reset by printing.
+        /* if (!feature.get("masterportal_attributes").isVisible && feature.get("masterportal_attributes").invisibleStyle) {
+            feature.setStyle(feature.get("masterportal_attributes").invisibleStyle);
+        } */
+
+        // Following is part of the preparation in actionsDownload, needs to be revised.
+        /*         if (state.oldStyle && typeof state.selectedFeature?.get === "function"
+            && drawnFeature.get("masterportal_attributes").styleId === state.selectedFeature.get("masterportal_attributes").styleId
+            && (typeof drawnFeature.get("masterportal_attributes").styleId === "number" || typeof drawnFeature.get("masterportal_attributes").styleId === "string")
+        ) {
+            feature.setStyle(state.oldStyle);
+        } */
+
+        if (geometry instanceof Circle) {
+            feature.setGeometry(fromCircle(geometry));
+            // transform after setting geometry, transformed coordinates are only for center and radius
+            transformGeometry("EPSG:25832", geometry);
+            feature.set("masterportal_attributes", Object.assign(feature.get("masterportal_attributes") ?? {}, {
+                "isGeoCircle": true,
+                "geoCircleCenter": geometry.getCenter().join(","),
+                "geoCircleRadius": geometry.getRadius()
+            }));
+        }
+        downloadFeatures.push(feature);
+    });
+    return downloadFeatures;
 }
 
 
@@ -122,5 +190,7 @@ export default {
     transform,
     transformMultiPoint,
     transformPoint,
-    transformGeometry
+    transformGeometry,
+    transformCoordinates,
+    prepareFeatures
 };
