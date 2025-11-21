@@ -216,7 +216,6 @@ function setStyleToDrawText (drawInteraction) {
         event.feature.set("drawType", "writeText");
         const style = createStyle.createStyle(styleObject, event.feature, false);
 
-        style.setZIndex(zIndex++);
         drawInteraction.getOverlay().setStyle(style);
         event.feature.setStyle(style);
     });
