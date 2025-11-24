@@ -252,7 +252,7 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
             });
 
         feature.setStyle(textStyleObject);
-        return styleObject;
+        return textStyleObject;
     }
 
     if (Array.isArray(geometryStyle)) {
