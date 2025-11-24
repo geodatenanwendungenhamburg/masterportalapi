@@ -175,9 +175,9 @@ function setStyleObject (currentLayout, outerCircle = false) {
                         polygonStrokeDash: currentLayout.polygonDash,
                         polygonStrokeDashOffset: currentLayout.polygonStrokeDashOffset,
                         polygonStrokeWidth: currentLayout.strokeWidth,
-                        text: currentLayout.text,
-                        textFont: currentLayout.font,
-                        textFontSize: currentLayout.fontSize
+                        text: currentLayout.text || "Text",
+                        textFont: currentLayout.font || "Arial",
+                        textFontSize: currentLayout.fontSize || 10
                     }
                 }
             ]
@@ -214,6 +214,12 @@ function setStyleToDrawInteraction (drawInteraction) {
 function setStyleToDrawText (drawInteraction) {
     drawInteraction.on("drawstart", event => {
         event.feature.set("drawType", "writeText");
+
+        if (!styleObject || !styleObject.rules || !styleObject.rules[0].style.text) {
+            console.error("Style object for text is not properly initialized.");
+            return;
+        }
+
         const style = createStyle.createStyle(styleObject, event.feature, false);
 
         drawInteraction.getOverlay().setStyle(style);
