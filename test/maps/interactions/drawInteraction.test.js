@@ -130,7 +130,10 @@ describe("src/maps/interactions/drawInteraction.js", () => {
                             ],
                             polygonStrokeDash: [4],
                             polygonStrokeDashOffset: undefined,
-                            polygonStrokeWidth: 1
+                            polygonStrokeWidth: 1,
+                            text: "Text",
+                            textFont: "Arial",
+                            textFontSize: 10
                         }
                     }
                 ]
