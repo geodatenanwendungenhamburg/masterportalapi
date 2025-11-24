@@ -14,7 +14,7 @@
 ### Removed
 
 ### Fixed
-
+- Restored compatibility for deep imports under @masterportal/masterportalapi/src/* by adding a scoped subpath export in package.json.
 ---
 
 ## 2.53.0 - 2025-11-18
