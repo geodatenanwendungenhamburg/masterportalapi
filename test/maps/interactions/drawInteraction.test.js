@@ -87,7 +87,10 @@ describe("src/maps/interactions/drawInteraction.js", () => {
                 fillTransparency: 0,
                 strokeColor: [0, 0, 0],
                 strokeWidth: 1,
-                polygonDash: [4]
+                polygonDash: [4],
+                text: "Text",
+                textFont: "Arial",
+                textFontSize: 10
             };
 
             drawInteractions.setStyleObject(currentLayout);
