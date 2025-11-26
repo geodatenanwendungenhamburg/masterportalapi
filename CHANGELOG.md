@@ -2,16 +2,8 @@
  All important changes in this project are stored in this file.
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+ 
+## 2.54.0 - 2025-11-26
 
 ### Fixed
 - Restored compatibility for deep imports under @masterportal/masterportalapi/src/* by adding a scoped subpath export in package.json.
