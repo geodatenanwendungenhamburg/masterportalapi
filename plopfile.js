@@ -177,7 +177,7 @@ module.exports = function (plop) {
         );
 
         // 7) Run npm ci so package-lock.json gets updated
-        run("npm ci");
+        run("npm i"); // TODO: revert to npm ci later
 
         // 8) Commit: update changelog and version to x.x.x
         run(`git commit -a -m "update changelog and version to ${newVersion}"`);
