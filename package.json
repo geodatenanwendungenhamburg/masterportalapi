@@ -28,7 +28,8 @@
     "example": "parcel example/index.html",
     "generate-jsdoc": "jsdoc ./src -r -d ./docs/ -R ./README.md -c jsdoc.json",
     "prePushHook": "eslint --max-warnings 0 \"./**/*.js\" && npm run test",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "plop release"
   },
   "dependencies": {
     "core-js": "^3.33.1",
@@ -59,8 +60,10 @@
     "jest-fetch-mock": "^3.0.3",
     "jsdoc": "4.0.2",
     "parcel": "^2.15.4",
+    "plop": "^4.0.4",
     "process": "^0.11.10",
     "sass": "1.69.4",
+    "semver": "^7.7.3",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "timers-browserify": "^2.0.12",
