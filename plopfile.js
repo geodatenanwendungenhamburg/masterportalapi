@@ -186,7 +186,24 @@ module.exports = function (plop) {
         run(`git tag v${newVersion} -m "Release v${newVersion}"`);
 
         // 10) List tags for control
-        run("git tag -l");
+        //run("git tag -l"); // TODO: not good 
+         // 10) Confirm tag exists
+        const tagsAfter = execSync("git tag -l", {cwd: root})
+       .toString()
+       .split("\n")
+       .map((t) => t.trim())
+       .filter(Boolean);
+
+       if (tagsAfter.includes(`v${newVersion}`)) {
+        console.log(`\n✔️ Tag v${newVersion} created successfully.`);
+        }
+     else {
+    throw new Error(
+     `❌ Tag v${newVersion} was NOT created. Please check Git manually.`
+     );
+     }
+
+        
 
         // 11) Push tag to origin
        // run(`git push origin v${newVersion}`);
