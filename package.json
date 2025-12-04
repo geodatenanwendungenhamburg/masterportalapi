@@ -19,7 +19,8 @@
       "source": "src/index.js",
       "distDir": "dist",
       "outputFormat": "commonjs"
-    }
+    },
+    "main": false
   },
   "scripts": {
     "test": "jest .test.js --config ./jest.config.js --collectCoverage",
@@ -72,7 +73,7 @@
     "@cesium/engine": "^20.0.1"
   },
   "engines": {
-    "node": "^22.19.0",
+    "node": ">=22.19.0 <23",
     "npm": "^10.5.0"
   },
   "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",

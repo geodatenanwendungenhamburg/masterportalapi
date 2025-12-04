@@ -8,6 +8,7 @@
 ### Added
 
 ### Changed
+- Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **22.21.0** (LTS) are now supported
 
 ### Deprecated
 
