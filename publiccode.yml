@@ -84,5 +84,5 @@ platforms:
 releaseDate: '2025-11-18'
 roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/'
 softwareType: api
-softwareVersion: 2.53.0
+softwareVersion: 2.54.0
 url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git'

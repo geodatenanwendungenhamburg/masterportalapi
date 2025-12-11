@@ -14,8 +14,14 @@
 ### Removed
 
 ### Fixed
-- Restored compatibility for deep imports under @masterportal/masterportalapi/src/* by adding a scoped subpath export in package.json.
 - Legend: Shows all information, even for objects that are not yet visible on the map.
+
+---
+
+## 2.54.0 - 2025-11-26
+
+### Fixed
+- Restored compatibility for deep imports under @masterportal/masterportalapi/src/* by adding a scoped subpath export in package.json.
 
 ---
 
