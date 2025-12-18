@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle*/
 import {Map, Attribution} from "ol";
 import TileLayer from "ol/layer/Tile";
 import ImageLayer from "ol/layer/Image";
@@ -135,95 +136,112 @@ describe("wms.js", function () {
             expect(input.src).toEqual("blob:BLOB");
         });
     });
-
     describe("createLayerSource", function () {
-        it("creates a TileWMS for multi tile requests", function () {
-            const source = wms.createLayerSource({singleTile: false});
 
-            expect(source).toBeInstanceOf(TileWMS);
-        });
+        describe("createLayerSource", function () {
+            it("creates a TileWMS for multi tile requests uses defaultTileLoadFunction from", function () {
+                const source = wms.createLayerSource({singleTile: false});
 
-        it("creates an ImageWMS for single tile requests", function () {
-            const source = wms.createLayerSource({singleTile: true});
+                expect(source).toBeInstanceOf(TileWMS);
+                expect(source.tileLoadFunction.toString().indexOf("defaultTileLoadFunction") > -1).toEqual(true);
+            });
+            it("creates a TileWMS for multi tile requests - uses defaultLoadFunction", function () {
+                const layerParams = {useFetchForWMS: true},
+                    source = wms.createLayerSource({singleTile: false}, {}, layerParams);
 
-            expect(source).toBeInstanceOf(ImageWMS);
-        });
-        it("creates a LayerSource with crossOrigin set to 'anonymous'", function () {
+                expect(source).toBeInstanceOf(TileWMS);
+                expect(source.tileLoadFunction.toString().indexOf("await fetch") > -1).toEqual(true);
+                expect(source.tileLoadFunction.toString().indexOf("defaultTileLoadFunction") === -1).toEqual(true);
+            });
+
+            it("creates an ImageWMS for single tile requests uses defaultImageLoadFunction from openlayers", function () {
+                const source = wms.createLayerSource({singleTile: true});
+
+                expect(source).toBeInstanceOf(ImageWMS);
+                expect(source.imageLoadFunction_.toString().indexOf("defaultImageLoadFunction") > -1).toEqual(true);
+            });
+            it("creates an ImageWMS for single tile requests - uses defaultLoadFunction", function () {
+                const layerParams = {useFetchForWMS: true},
+                    source = wms.createLayerSource({singleTile: true}, {}, layerParams);
+
+                expect(source).toBeInstanceOf(ImageWMS);
+                expect(source.imageLoadFunction_.toString().indexOf("await fetch") > -1).toEqual(true);
+                expect(source.imageLoadFunction_.toString().indexOf("defaultImageLoadFunction") === -1).toEqual(true);
+            });
+            it("creates a LayerSource with crossOrigin set to 'anonymous'", function () {
             // only relevant for TileWMS and ImageWMS instances
-            const
-                tileWMS = wms.createLayerSource({singleTile: false, crossOrigin: "anonymous"}),
-                imageWMS = wms.createLayerSource({singleTile: true, crossOrigin: "anonymous"});
+                const
+                    tileWMS = wms.createLayerSource({singleTile: false, crossOrigin: "anonymous"}),
+                    imageWMS = wms.createLayerSource({singleTile: true, crossOrigin: "anonymous"});
 
-            // eslint-disable-next-line no-underscore-dangle
-            expect(imageWMS.crossOrigin_).toEqual("anonymous");
-            expect(tileWMS.crossOrigin).toEqual("anonymous");
+                expect(imageWMS.crossOrigin_).toEqual("anonymous");
+                expect(tileWMS.crossOrigin).toEqual("anonymous");
+            });
         });
-    });
-    describe("createLayerSource with a tileGrid", function () {
-        function attrFunction () {
-            return [new Attribution({
-                html: "&copy; " +
+        describe("createLayerSource with a tileGrid", function () {
+            function attrFunction () {
+                return [new Attribution({
+                    html: "&copy; " +
                 "<a href=\"http://www.geo.admin.ch/internet/geoportal/" +
                 "en/home.html\">" +
                 "Pixelmap 1:1000000 / geo.admin.ch</a>"
-            })];
-        }
-        it("creates a TileWMS without tileGrid, options are undefined", function () {
-            const options = undefined,
-                source = wms.createLayerSource({singleTile: false, tilesize: "10"}, options);
+                })];
+            }
+            it("creates a TileWMS without tileGrid, options are undefined", function () {
+                const options = undefined,
+                    source = wms.createLayerSource({singleTile: false, tilesize: "10"}, options);
 
-            expect(source).toBeInstanceOf(TileWMS);
-            expect(source.getTileGrid()).toEqual(null);
-        });
-        it("creates a TileWMS without tileGrid, options without resolutions", function () {
-            const options = {
-                    origin: [442800, 5809000]
-                },
-                source = wms.createLayerSource({singleTile: false, tilesize: "10"}, options);
+                expect(source).toBeInstanceOf(TileWMS);
+                expect(source.getTileGrid()).toEqual(null);
+            });
+            it("creates a TileWMS without tileGrid, options without resolutions", function () {
+                const options = {
+                        origin: [442800, 5809000]
+                    },
+                    source = wms.createLayerSource({singleTile: false, tilesize: "10"}, options);
 
-            expect(source).toBeInstanceOf(TileWMS);
-            expect(source.getTileGrid()).toEqual(null);
-        });
-        it("creates a TileWMS containing a tileGrid", function () {
-            const options = {
-                    resolutions: [2000, 1000],
-                    origin: [442800, 5809000]
-                },
-                rawLayer = {
-                    singleTile: false,
-                    tilesize: "10",
-                    gutter: "1",
-                    serverType: "geoserver",
-                    url: "https://url.de",
-                    olAttribution: attrFunction
-                },
-                source = wms.createLayerSource(rawLayer, options);
+                expect(source).toBeInstanceOf(TileWMS);
+                expect(source.getTileGrid()).toEqual(null);
+            });
+            it("creates a TileWMS containing a tileGrid", function () {
+                const options = {
+                        resolutions: [2000, 1000],
+                        origin: [442800, 5809000]
+                    },
+                    rawLayer = {
+                        singleTile: false,
+                        tilesize: "10",
+                        gutter: "1",
+                        serverType: "geoserver",
+                        url: "https://url.de",
+                        olAttribution: attrFunction
+                    },
+                    source = wms.createLayerSource(rawLayer, options);
 
-            expect(source).toBeInstanceOf(TileWMS);
-            expect(source.getTileGrid()).toBeInstanceOf(TileGrid);
-            expect(source.getTileGrid().getOrigin()).toEqual(options.origin);
-            expect(source.getTileGrid().getResolutions()).toEqual(options.resolutions);
-            expect(source.getTileGrid().getTileSize()).toEqual(parseInt(rawLayer.tilesize, 10));
-            expect(source.getAttributions()).toBe(attrFunction);
-            expect(source.getUrls()).toEqual([rawLayer.url]);
-            /* eslint-disable no-underscore-dangle */
-            expect(source.gutter_).toEqual(rawLayer.gutter);
-        });
+                expect(source).toBeInstanceOf(TileWMS);
+                expect(source.getTileGrid()).toBeInstanceOf(TileGrid);
+                expect(source.getTileGrid().getOrigin()).toEqual(options.origin);
+                expect(source.getTileGrid().getResolutions()).toEqual(options.resolutions);
+                expect(source.getTileGrid().getTileSize()).toEqual(parseInt(rawLayer.tilesize, 10));
+                expect(source.getAttributions()).toBe(attrFunction);
+                expect(source.getUrls()).toEqual([rawLayer.url]);
+                expect(source.gutter_).toEqual(rawLayer.gutter);
+            });
 
-        it("creates an ImageWMS for single tile requests, contains no tileGrid", function () {
-            const rawLayer = {
-                    singleTile: true,
-                    serverType: "geoserver",
-                    url: "https://url.de",
-                    olAttribution: attrFunction
-                },
-                source = wms.createLayerSource(rawLayer);
+            it("creates an ImageWMS for single tile requests, contains no tileGrid", function () {
+                const rawLayer = {
+                        singleTile: true,
+                        serverType: "geoserver",
+                        url: "https://url.de",
+                        olAttribution: attrFunction
+                    },
+                    source = wms.createLayerSource(rawLayer);
 
-            expect(source).toBeInstanceOf(ImageWMS);
-            expect(source.getAttributions()).toBe(attrFunction);
-            expect(source.getUrl()).toEqual(rawLayer.url);
-            /* eslint-disable no-underscore-dangle */
-            expect(source.serverType_).toEqual(rawLayer.serverType);
+                expect(source).toBeInstanceOf(ImageWMS);
+                expect(source.getAttributions()).toBe(attrFunction);
+                expect(source.getUrl()).toEqual(rawLayer.url);
+                expect(source.serverType_).toEqual(rawLayer.serverType);
+            });
         });
     });
 

@@ -112,13 +112,15 @@ export function defaultLoadFunction ({isSecured}) {
  * @param {Array} [options.resolutions] - optional resolutions to create the TileGrid, must be in descending order
  * @param {Array} [options.origin] - optional origin to create the TileGrid
  * @param {string} [options.crs] - optional projection code, if not available, projection of map is used
+ * @param {object} layerParams - optional layer params
+ * @param {Array} [layerParams.useFetchForWMS] - if true, fetch is used to load the tiles, else openlayers default load function is used
  * @returns {(ol.source.TileWMS|ol.source.ImageWMS)} TileWMS or ImageWMS, depending on whether singleTile is true.
  */
-export function createLayerSource (rawLayer, options) {
+export function createLayerSource (rawLayer, options, layerParams = {}) {
     const params = makeParams(rawLayer),
         projection = rawLayer.crs ? getProjection(rawLayer.crs) : undefined;
-    let tileGrid = null;
-
+    let tileGrid = null,
+        wmsParams = {};
 
     // Fix for daily updated WMS-Time Layer, which use 'current' as the default value of the time-Extent in their getCapabilities
     // The promise isn't resolved quickly enough for the continued work with the layer.
@@ -128,15 +130,19 @@ export function createLayerSource (rawLayer, options) {
     }
 
     if (rawLayer.singleTile) {
-        return new ImageWMS({
+        wmsParams = {
             url: rawLayer.url,
             params,
             serverType: rawLayer.serverType,
             projection: projection,
             attributions: rawLayer.olAttribution,
-            crossOrigin: rawLayer.crossOrigin,
-            imageLoadFunction: defaultLoadFunction(rawLayer)
-        });
+            crossOrigin: rawLayer.crossOrigin
+        };
+
+        if (rawLayer.isSecured || layerParams.useFetchForWMS) {
+            wmsParams = Object.assign(wmsParams, {imageLoadFunction: defaultLoadFunction(rawLayer)});
+        }
+        return new ImageWMS(wmsParams);
     }
     if (options && options.resolutions) {
         tileGrid = new TileGrid({
@@ -145,16 +151,19 @@ export function createLayerSource (rawLayer, options) {
             tileSize: parseInt(rawLayer.tilesize, 10)
         });
     }
-    return new TileWMS({
+    wmsParams = {
         url: rawLayer.url,
         params,
         gutter: rawLayer.gutter || 0,
         tileGrid: tileGrid,
         projection: projection,
         attributions: rawLayer.olAttribution,
-        crossOrigin: rawLayer.crossOrigin,
-        tileLoadFunction: defaultLoadFunction(rawLayer)
-    });
+        crossOrigin: rawLayer.crossOrigin
+    };
+    if (rawLayer.isSecured || layerParams.useFetchForWMS) {
+        wmsParams = Object.assign(wmsParams, {tileLoadFunction: defaultLoadFunction(rawLayer)});
+    }
+    return new TileWMS(wmsParams);
 }
 
 /**
@@ -178,7 +187,7 @@ export function createLayerSource (rawLayer, options) {
  * @returns {ol.Layer} Layer that can be added to map.
  */
 export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {}) {
-    const source = createLayerSource(rawLayer, options),
+    const source = createLayerSource(rawLayer, options, layerParams),
         Layer = rawLayer.singleTile ? ImageLayer : TileLayer;
 
     source.set("olcs_projection", getProjection(OLCS_DEFAULT_OLCS_PROJECTION_CRS));
