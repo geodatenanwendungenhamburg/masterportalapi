@@ -17,6 +17,8 @@
 ### Fixed
 - Legend: Shows all information, even for objects that are not yet visible on the map.
 - WMS-Layer: the default tileLoadFunction or imageLoadfunction from openlayers is used, if layer not has the atrribute `isSecured` or `isSecured=false`. If on call of createLayer `layerParams.useFetchForWMS = true`, the overwritten load-function of wms is used.
+- 3D WMS: Remove invalid `cql_filter` values.
+
 ---
 
 ## 2.54.0 - 2025-11-26

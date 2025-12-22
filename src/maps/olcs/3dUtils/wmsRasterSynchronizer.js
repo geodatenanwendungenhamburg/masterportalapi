@@ -159,6 +159,10 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
             },
             tileGrid = source.getTileGrid();
 
+        if (typeof params.CQL_FILTER === "undefined") {
+            delete params.CQL_FILTER;
+        }
+
         if (tileGrid) {
             const ext = olLayer.getExtent();
 
