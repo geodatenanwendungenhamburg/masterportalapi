@@ -2,17 +2,12 @@
  All important changes in this project are stored in this file.
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
-## Unreleased - in development
-### __Breaking Changes__
 
-### Added
+
+## 2.55.0 - 2026-01-09
 
 ### Changed
 - Changed Node.js support: Versions from Node.js **22.19.0** up to Node.js **24.12.0** (LTS) are now supported
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Legend: Shows all information, even for objects that are not yet visible on the map.
