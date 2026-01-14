@@ -16,6 +16,7 @@
 ### Removed
 
 ### Fixed
+- vectorStyle: Creating legend and capture event ensures working on EventTarget.
 
 ---
 
