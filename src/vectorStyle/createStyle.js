@@ -211,8 +211,8 @@ function captureLegendFromFeature (styleId, legendInformation) {
         const event = new CustomEvent("legendCaptured");
 
         event.id = legend.id;
-        if (this || globalThis) {
-            (this || globalThis).dispatchEvent(event);
+        if (this) {
+            this.dispatchEvent(event);
         }
     }
 }
@@ -277,7 +277,7 @@ async function returnLegendByStyleId (styleId) {
             resolve(legend);
         }
 
-        (this || globalThis).addEventListener("legendCaptured", event => {
+        this.addEventListener("legendCaptured", event => {
             if (event.id === styleId && event.id !== "default") {
                 resolve(legendsOfAllStyles.find(element => element.id === event.id));
             }
