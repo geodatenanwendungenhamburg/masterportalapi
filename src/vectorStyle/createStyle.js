@@ -277,14 +277,16 @@ async function returnLegendByStyleId (styleId) {
             resolve(legend);
         }
 
-        this.addEventListener("legendCaptured", event => {
-            if (event.id === styleId && event.id !== "default") {
-                resolve(legendsOfAllStyles.find(element => element.id === event.id));
-            }
-            else if (legend && legend.legendInformation.length === legendInformationLength) {
-                resolve(legendsOfAllStyles.find(element => element.id === event.id));
-            }
-        }, false);
+        if (this) {
+            this.addEventListener("legendCaptured", event => {
+                if (event.id === styleId && event.id !== "default") {
+                    resolve(legendsOfAllStyles.find(element => element.id === event.id));
+                }
+                else if (legend && legend.legendInformation.length === legendInformationLength) {
+                    resolve(legendsOfAllStyles.find(element => element.id === event.id));
+                }
+            }, false);
+        }
     });
 }
 
