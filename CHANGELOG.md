@@ -16,7 +16,9 @@
 ### Removed
 
 ### Fixed
-- vectorStyle: Creating legend and capture event ensures working on EventTarget.
+- VectorStyle: 
+    - Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
+    - Creating legend and capture event ensures working on EventTarget.
 
 ---
 
