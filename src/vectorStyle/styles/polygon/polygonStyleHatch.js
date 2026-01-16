@@ -127,7 +127,7 @@ function rotateContextCenter (context, size, degrees = 90) {
     const halfSize = 0.5 * size;
 
     context.translate(halfSize, halfSize);
-    context.rotate(degrees * (Math.PI / 180));
+    context.rotate(degrees * Math.PI / 180);
     context.translate(-halfSize, -halfSize);
 }
 
@@ -146,12 +146,11 @@ export function drawHatch (context, size, pattern) {
     if (hatchDefinition) {
         const {draw, rotate} = hatchDefinition;
 
-        if (draw) {
-            draw.forEach(segment => drawSegment(context, size, segment));
-        }
-
         if (rotate) {
             rotateContextCenter(context, size, rotate);
+        }
+        if (draw) {
+            draw.forEach(segment => drawSegment(context, size, segment));
         }
     }
     else {
