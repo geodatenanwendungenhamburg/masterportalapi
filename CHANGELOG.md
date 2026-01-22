@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Issue #1537: The Cesium.WebMapServiceImageryProvider now uses Cesium.WebMercatorTilingScheme for rasterLayers of the type TileWMS. This prevents a bug when using singleTile = false.
 
 ---
 
@@ -24,7 +25,7 @@
 - Terrain-Layer: Removed `this`, uses closures instead.
 
 ### Fixed
-- VectorStyle: 
+- VectorStyle:
     - Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
     - Creating legend and capture event ensures working on EventTarget.
 

@@ -155,7 +155,8 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
                 "url": source.getUrls()[0],
                 "parameters": params,
                 "layers": params.LAYERS,
-                "show": false
+                "show": false,
+                "tilingScheme": new Cesium.WebMercatorTilingScheme()
             },
             tileGrid = source.getTileGrid();
 
