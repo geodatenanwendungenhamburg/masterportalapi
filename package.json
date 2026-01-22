@@ -78,6 +78,7 @@
   },
   "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
   "directories": {
+    "doc": "docs",
     "example": "example",
     "test": "test"
   },
