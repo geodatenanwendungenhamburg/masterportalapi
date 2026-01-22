@@ -3,17 +3,10 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.56.0 - 2026-01-22
 
 ### Changed
 - Terrain-Layer: Removed `this`, uses closures instead.
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - VectorStyle: 
