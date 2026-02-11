@@ -160,7 +160,9 @@ function drawCircle (drawInteraction, drawType, mapProjection, source, options =
  */
 function setStyleObject (currentLayout, outerCircle = false) {
     const fillOpacity = 1 - (currentLayout.fillTransparency / 100),
+        strokeOpacity = fillOpacity,
         fillColorRgba = [...currentLayout.fillColor, fillOpacity],
+        strokeColorRgba = [...currentLayout.strokeColor, strokeOpacity],
         style = {
             rules: [
                 {
@@ -168,7 +170,7 @@ function setStyleObject (currentLayout, outerCircle = false) {
                         circleFillColor: fillColorRgba,
                         circleStrokeColor: currentLayout.strokeColor,
                         circleStrokeWidth: currentLayout.strokeWidth,
-                        lineStrokeColor: currentLayout.strokeColor,
+                        lineStrokeColor: strokeColorRgba,
                         lineStrokeWidth: currentLayout.strokeWidth,
                         polygonFillColor: fillColorRgba,
                         polygonStrokeColor: currentLayout.strokeColor,
