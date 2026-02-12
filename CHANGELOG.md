@@ -3,16 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
-
-### Changed
-
-### Deprecated
-
-### Removed
+## 2.57.0 - 2026-02-12
 
 ### Fixed
 - Issue #1537: The Cesium.WebMapServiceImageryProvider now uses Cesium.WebMercatorTilingScheme for rasterLayers of the type TileWMS. This prevents a bug when using singleTile = false.
