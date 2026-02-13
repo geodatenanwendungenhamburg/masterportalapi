@@ -9,6 +9,9 @@
 ### Added
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.7.0 to 10.8.0
 
 ### Deprecated
 
