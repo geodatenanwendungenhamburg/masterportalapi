@@ -62,16 +62,6 @@
           "circle-rotate-with-view": true,
           "circle-opacity": 0.8
       }
-    },
-    {
-      "id": "4002",
-      "name": "Gebäude LoD2",
-      "url": "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
-      "typ": "TileSet3D",
-      "styleId": "3DTileSetStyle",
-      "cesium3DTilesetOptions": {
-        "maximumScreenSpaceError": 6
-      }
     }
   ],
   "cesiumLib":"https://geoportal-hamburg.de/mastercode/cesium/latest/Cesium.js",

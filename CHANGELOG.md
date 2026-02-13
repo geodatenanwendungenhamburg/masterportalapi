@@ -9,6 +9,7 @@
 ### Added
 
 ### Changed
+- Updated examples to prevent console errors caused by certain layers/services.
 
 ### Deprecated
 
