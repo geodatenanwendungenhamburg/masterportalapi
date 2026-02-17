@@ -195,6 +195,19 @@ fetch(vtStyleUrl)
     });
 */
 
+/* VECTOR TILE EXAMPLE 2, using layers attribute */
+/*
+document.getElementById("enable").style.display = "none";
+window.mpapi.map = mapsAPI.map.createMap(config, "2D", {errorCallback});
+
+window.mpapi.map.getLayers().forEach(layer => {
+    window.mpapi.map.removeLayer(layer);
+});
+
+const vtLayer = window.mpapi.map.addLayer("6002");
+
+*/
+
 /* WMTS example */
 /*
 window.mpapi.map = mapsAPI.map.createMap(config, "2D", {errorCallback});
