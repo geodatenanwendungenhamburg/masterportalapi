@@ -4,7 +4,7 @@ import VectorTileSource from "ol/source/VectorTile";
 import OpenLayersTileGrid from "ol/tilegrid/TileGrid";
 import {extentFromProjection} from "ol/tilegrid";
 import * as webgl from "../renderer/webgl";
-import {apply, stylefunction} from "ol-mapbox-style";
+import {apply, applyStyle, stylefunction} from "ol-mapbox-style";
 
 import defaults from "../defaults";
 
@@ -176,7 +176,18 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     if (options.style && rawLayer.renderer !== "webgl") {
         layer.setStyle(options.style);
     }
+    if (rawLayer.vtStyles) {
+        const vtStyle = rawLayer.vtStyles.filter((style) => style.id === rawLayer.selectedVTStyle)[0] || rawLayer.vtStyles.filter((style) => style.defaultStyle)[0];
 
+        fetch(vtStyle.url)
+            .then(response => response.json())
+            .then(style => {
+                const styles = rawLayer.layers ? style.layers.filter((styleLayer) => rawLayer.layers.includes(styleLayer.id)) : style.layers;
+
+                style.layers = styles;
+                applyStyle(layer, style);
+            });
+    }
     return layer;
 }
 
