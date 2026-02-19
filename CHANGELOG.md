@@ -3,22 +3,12 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.58.0 - 2026-02-19
 
 ### Changed
 - The following packages have been updated:
     - dependencies:
         - ol: 10.7.0 to 10.8.0
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
 ---
 
 ## 2.57.0 - 2026-02-12
