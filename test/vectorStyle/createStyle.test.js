@@ -3,7 +3,7 @@ import PointStyle from "../../src/vectorStyle/styles/point/stylePoint";
 import LineStringStyle from "../../src/vectorStyle/styles/styleLine";
 import CesiumStyle from "../../src/vectorStyle/styles/styleCesium";
 import PolygonStyle from "../../src/vectorStyle/styles/polygon/stylePolygon";
-import {Style, Stroke, Fill} from "ol/style.js";
+import {Style, Stroke, Fill, Icon} from "ol/style.js";
 import {GeoJSON} from "ol/format.js";
 
 let rules,
@@ -278,6 +278,41 @@ describe("createStyle", () => {
         style.forEach(aStyle => {
             expect(aStyle).toBeInstanceOf(Style);
         });
+    });
+
+    it("should return the correct style for a feature with geometry of type Polygon ", () => {
+        const stylingRules = [{
+                "conditions": {
+                    "sequence": [0, 0]
+                },
+                "style": {
+                    "polygonStrokeColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ],
+                    "polygonStrokeWidth": 0.2,
+                    "polygonFillColor": [
+                        161,
+                        113,
+                        14,
+                        1
+                    ],
+                    "polygonImage": "image.svg"
+                }
+            }],
+            styleObject = {styleId: "styleId", rules: stylingRules},
+            polygonFeature = jsonObjects[2],
+            style = createStyle.createStyle(styleObject, polygonFeature, isClustered, wfsImgPathFromConfig);
+
+        expect(style === null).toBe(false);
+        expect(style).toBeInstanceOf(Array);
+        style.forEach(aStyle => {
+            expect(aStyle).toBeInstanceOf(Style);
+        });
+        expect(style[1].getImage()).toBeInstanceOf(Icon);
+        expect(style[1].getImage().getSrc()).toEqual(wfsImgPathFromConfig + stylingRules[0].style.polygonImage);
     });
 
     it("should return the correct style for a feature with geometry of type MultiPolygon ", () => {

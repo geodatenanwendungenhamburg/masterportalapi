@@ -13,6 +13,7 @@ describe("stylePolygon", () => {
             imageName: "krankenhaus.png"
         },
         isClustered = false,
+        wfsImgPathFromConfig = "/path/to/wfs/images/",
         stylePolygonClass = new PolygonStyle(feature, style, isClustered);
 
     describe("createStyle", function () {
@@ -58,6 +59,13 @@ describe("stylePolygon", () => {
                 dataUrl = stylePolygonClass.getPolygonFillHatchLegendDataUrl(HatchStyle);
 
             expect(dataUrl).toMatch(/^data:image\/png;base64,/);
+        });
+    });
+
+    describe("setImagePath", () => {
+        it("defines setImagePath() needed for polygon with Icon", () => {
+            stylePolygonClass.setImagePath(wfsImgPathFromConfig);
+            expect(stylePolygonClass.attributes.imagePath).toEqual(wfsImgPathFromConfig);
         });
     });
 

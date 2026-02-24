@@ -1,4 +1,4 @@
-import {Style} from "ol/style.js";
+import {Style, Icon} from "ol/style.js";
 import PointStyle from "./styles/point/stylePoint";
 import TextStyle from "./styles/styleText";
 import PolygonStyle from "./styles/polygon/stylePolygon";
@@ -265,6 +265,30 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
     }
     if (feature?.getGeometry().getType() === "Point" || feature?.getGeometry().getType() === "MultiPoint") {
         feature.setStyle(styleObjectGeometry);
+    }
+    // polygon with icon in the center is optional for given polygonImage in style config file
+    if (style?.polygonImage && (feature?.getGeometry().getType() === 'Polygon' || feature?.getGeometry().getType() === 'MultiPolygon')) {
+        if (!Array.isArray(styleObjectGeometry)) {
+            styleObjectGeometry = [styleObjectGeometry];
+        }
+        styleObjectGeometry.push(new Style({
+            geometry: function(feature) {
+                let geometry = feature.getGeometry();
+                let geometryType = geometry.getType();
+                return (
+                    geometryType == 'Polygon' ? geometry.getInteriorPoint() :
+                    geometryType == 'MultiPolygon' ? geometry.getInteriorPoints() :
+                    geometry
+                );
+            },
+            image: new Icon({
+                anchor: [0.5, 0.5],
+                anchorXUnits: "fraction",
+                anchorYUnits: "fraction",
+                crossOrigin: "anonymous",
+                src: wfsImgPathFromConfig + style?.polygonImage
+            })
+        }));
     }
     return styleObjectGeometry;
 }

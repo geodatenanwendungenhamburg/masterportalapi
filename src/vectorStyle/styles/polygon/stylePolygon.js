@@ -22,13 +22,17 @@ class PolygonStyle extends StyleClass {
      * @param {ol/feature} feature Feature to be styled.
      * @param {object} styles styling properties to overwrite defaults
      * @param {Boolean} isClustered Flag to show if feature is clustered.
+     * @param {Boolean} wfsImgPathFromConfig image Path of the wfs.
      * @returns {void}
      */
-    initialize (feature, styles, isClustered) {
+    initialize (feature, styles, isClustered, wfsImgPathFromConfig) {
         this.setFeature(feature);
         this.setIsClustered(isClustered);
         this.overwriteStyling(styles);
         this.setStyle(this.createStyle());
+        if (wfsImgPathFromConfig !== undefined) {
+            this.setImagePath(wfsImgPathFromConfig);
+        }
     }
 
     /**
@@ -123,6 +127,15 @@ class PolygonStyle extends StyleClass {
             legendCanvas.height - strokeWidth);
 
         return legendCanvas.toDataURL();
+    }
+
+    /**
+     * Setter for imagePath.
+     * @param {String} value Image path.
+     * @returns {void}
+     */
+    setImagePath (value) {
+        this.attributes.imagePath = value;
     }
 }
 
