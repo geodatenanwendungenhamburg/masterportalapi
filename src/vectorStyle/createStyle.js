@@ -267,19 +267,24 @@ function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
         feature.setStyle(styleObjectGeometry);
     }
     // polygon with icon in the center is optional for given polygonImage in style config file
-    if (style?.polygonImage && (feature?.getGeometry().getType() === 'Polygon' || feature?.getGeometry().getType() === 'MultiPolygon')) {
+    if (style?.polygonImage && (feature?.getGeometry().getType() === "Polygon" || feature?.getGeometry().getType() === "MultiPolygon")) {
         if (!Array.isArray(styleObjectGeometry)) {
             styleObjectGeometry = [styleObjectGeometry];
         }
         styleObjectGeometry.push(new Style({
-            geometry: function(feature) {
-                let geometry = feature.getGeometry();
-                let geometryType = geometry.getType();
-                return (
-                    geometryType == 'Polygon' ? geometry.getInteriorPoint() :
-                    geometryType == 'MultiPolygon' ? geometry.getInteriorPoints() :
-                    geometry
-                );
+            geometry: function (geometryFeature) {
+                const geometry = geometryFeature.getGeometry(),
+                    geometryType = geometry.getType();
+
+
+                if (geometryType === "Polygon") {
+                    return geometry.getInteriorPoint();
+                }
+                if (geometryType === "MultiPolygon") {
+                    return geometry.getInteriorPoints();
+                }
+                return geometry;
+
             },
             image: new Icon({
                 anchor: [0.5, 0.5],
