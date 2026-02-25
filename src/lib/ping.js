@@ -21,7 +21,8 @@ export default function ({url, typ, capabilitiesUrl, ...rest}) {
             .forEach(entity => entity.url ? statusCheckUrls.push(entity.url) : null);
     }
     else if (typ === "TileSet3D" || typ === "Terrain3D") {
-        statusCheckUrls.push(url);
+        // 3D tile layers: skip HEAD ping; Cesium GET requests will load tiles
+        return Promise.resolve(200);
     }
     else if (typ === "GeoJSON") {
         if (!url && rest.features) {

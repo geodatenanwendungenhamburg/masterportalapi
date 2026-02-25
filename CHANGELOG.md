@@ -3,20 +3,44 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
+ ## Unreleased - in development
 ### __Breaking Changes__
 
 ### Added
 
 ### Changed
-- Terrain-Layer: Removed `this`, uses closures instead.
+- Updated examples to prevent console errors caused by certain layers/services.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-- VectorStyle: 
+
+---
+
+## 2.58.0 - 2026-02-19
+
+### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol: 10.7.0 to 10.8.0
+---
+
+## 2.57.0 - 2026-02-12
+
+### Fixed
+- Issue #1537: The Cesium.WebMapServiceImageryProvider now uses Cesium.WebMercatorTilingScheme for rasterLayers of the type TileWMS. This prevents a bug when using singleTile = false.
+
+---
+
+## 2.56.0 - 2026-01-22
+
+### Changed
+- Terrain-Layer: Removed `this`, uses closures instead.
+
+### Fixed
+- VectorStyle:
     - Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
     - Creating legend and capture event ensures working on EventTarget.
 

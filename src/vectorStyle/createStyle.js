@@ -208,11 +208,12 @@ function captureLegendFromFeature (styleId, legendInformation) {
     else if (!legend.legendInformation.find(element => element.label === legendInformation[0].label)) {
         legend.legendInformation.push(legendInformation[0]);
 
-        const event = new CustomEvent("legendCaptured");
+        const event = new CustomEvent("legendCaptured"),
+            globalObject = this || globalThis;
 
         event.id = legend.id;
-        if (this instanceof EventTarget && typeof this.dispatchEvent === "function") {
-            this.dispatchEvent(event);
+        if (globalObject instanceof EventTarget && typeof globalObject.dispatchEvent === "function") {
+            globalObject.dispatchEvent(event);
         }
     }
 }
@@ -306,8 +307,8 @@ async function returnLegendByStyleId (styleId) {
             resolve(legend);
         }
 
-        if (this) {
-            this.addEventListener("legendCaptured", event => {
+        if (this || globalThis) {
+            (this || globalThis).addEventListener("legendCaptured", event => {
                 if (event.id === styleId && event.id !== "default") {
                     resolve(legendsOfAllStyles.find(element => element.id === event.id));
                 }

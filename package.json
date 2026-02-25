@@ -1,7 +1,7 @@
 {
   "name": "@masterportal/masterportalapi",
   "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
-  "version": "2.55.0",
+  "version": "2.58.0",
   "license": "MIT",
   "description": "Basic functions of the Masterportal as api",
   "repository": {
@@ -34,7 +34,7 @@
   "dependencies": {
     "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
-    "ol": "^10.7.0",
+    "ol": "10.8.0",
     "ol-mapbox-style": "12.5.0",
     "olcs": "^2.22.1",
     "proj4": "^2.10.0",
@@ -78,6 +78,7 @@
   },
   "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
   "directories": {
+    "doc": "docs",
     "example": "example",
     "test": "test"
   },
