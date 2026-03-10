@@ -1,4 +1,4 @@
-import {createBox} from "ol/interaction/Draw.js";
+import {createBox, createRegularPolygon} from "ol/interaction/Draw.js";
 import {Draw} from "ol/interaction.js";
 
 import createStyle from "../../vectorStyle/createStyle";
@@ -35,6 +35,12 @@ const earthRadius = 6378137,
         },
         writeText: {
             type: "Point"
+        },
+        square: {
+            type: "Circle",
+            options: {
+                geometryFunction: createRegularPolygon(4)
+            }
         }
     };
 let styleObject = null,
