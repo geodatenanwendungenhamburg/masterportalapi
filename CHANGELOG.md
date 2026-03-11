@@ -10,6 +10,11 @@
 
 ### Changed
 - Updated examples to prevent console errors caused by certain layers/services.
+- The following packages have been updated:
+    - dependencies:
+        - @cesium/engine: 20.0.1 to 23.0.0
+- The following packages have been overwritten:
+        - geotiff in ol: to 2.1.3
 
 ### Deprecated
 
