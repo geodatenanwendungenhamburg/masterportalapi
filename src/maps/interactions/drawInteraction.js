@@ -1,4 +1,5 @@
 import {createBox, createRegularPolygon} from "ol/interaction/Draw.js";
+import {Icon, Style} from "ol/style.js";
 import {Draw} from "ol/interaction.js";
 
 import createStyle from "../../vectorStyle/createStyle";
@@ -239,10 +240,34 @@ function setStyleToDrawText (drawInteraction) {
  * Create the draw interaction.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
+ * @param {Object} symbolList The list of symbols for the draw type symbols.
  * @returns {ol/interaction/Draw|null} The draw interaction.
  */
-function createDrawInteraction (drawType, source) {
+function createDrawInteraction (drawType, source, symbolList) {
     let drawInteraction = null;
+
+    if (symbolList && symbolList.length > 0) {
+        const symbol = symbolList.find(val => val.id === drawType);
+
+        if (symbol) {
+            const iconSrc = symbol.value.startsWith("/")
+                    ? symbol.value
+                    : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
+                svgStyle = new Style({
+                    image: new Icon({
+                        src: iconSrc,
+                        scale: symbol.scale || 1,
+                        anchor: [0.5, 1]
+                    })
+                });
+
+            drawInteraction = new Draw({
+                source: source,
+                type: "Point",
+                style: svgStyle
+            });
+        }
+    }
 
     if (typeof mappingDrawTypes[drawType] === "object") {
         const options = mappingDrawTypes[drawType].options || {};
