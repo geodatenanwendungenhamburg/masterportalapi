@@ -3,10 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
- ## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+ ## 2.59.0 - 2026-03-13
 
 ### Changed
 - Updated examples to prevent console errors caused by certain layers/services.
@@ -15,12 +12,6 @@
         - @cesium/engine: 20.0.1 to 23.0.0
 - The following packages have been overwritten:
         - geotiff in ol: to 2.1.3
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
