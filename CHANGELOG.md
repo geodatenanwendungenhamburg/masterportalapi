@@ -9,6 +9,9 @@
 ### Added
 
 ### Changed
+- The following packages have been updated:
+    - dependencies:
+        - ol-mapbox-style: 12.5.0 to 13.3.0
 
 ### Deprecated
 

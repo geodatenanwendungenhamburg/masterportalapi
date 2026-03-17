@@ -29,7 +29,11 @@ jest.mock("../../src/renderer/webgl.js", () => {
 
 describe("vectorTile.js", function () {
 
-    beforeAll(() => crs.registerProjections());
+    beforeAll(() => {
+        crs.registerProjections();
+        global.Request = global.Request || jest.fn();
+        global.Response = global.Response || jest.fn();
+    });
 
     const rawLayer = {
             name: "VT Test",
