@@ -18,7 +18,7 @@
 ### Removed
 
 ### Fixed
-
+- Issue #1774: Add save/restore around drawHatch to fix pattern rotation
 ---
 
 ## 2.59.0 - 2026-03-13
