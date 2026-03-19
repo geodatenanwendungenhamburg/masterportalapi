@@ -91,8 +91,9 @@ class PolygonStyle extends StyleClass {
         context.lineWidth = lineWidth;
         context.strokeStyle = `rgba(${patternColor.join(",")})`;
 
+        context.save();
         drawHatch(context, size, pattern);
-
+        context.restore();
         context.fillStyle = context.createPattern(canvas, "repeat");
 
         return canvas;
