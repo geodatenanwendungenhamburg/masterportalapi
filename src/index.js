@@ -17,7 +17,7 @@ import setBackgroundImage from "./lib/setBackgroundImage";
 import ping from "./lib/ping";
 import ogcApiProcesses from "./api/ogcApiProcesses";
 import * as exportItem from "./shared/exportItem";
-import * as exportToKML from "./shared/convertFeaturesToKml";
+import * as kmlExport from "./shared/kmlExport";
 
 export {
     createMapView,
@@ -40,5 +40,5 @@ export {
     webgl,
     ogcApiProcesses,
     exportItem,
-    exportToKML
+    kmlExport
 };
