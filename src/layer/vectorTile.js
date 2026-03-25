@@ -133,8 +133,53 @@ export function createLayerSource (url, options = {}) {
 }
 
 /**
+ * Set a mapbox style
+ * @param {ol.layer.VectorTile} layer - layer to style
+ * @param {object} glStyle - MapBox style definition
+ * @param {options} [styleParams={}] - Additional options for style specification
+ * @param {string} url - MapBox style url
+ * @returns {void}
+ */
+export function setStyle (layer, glStyle, {options = {}} = {}, url) {
+    if (url) {
+        fetch(url)
+            .then(response => response.json())
+            .then(style => {
+                const styles = options.layers ? style.layers.filter((styleLayer) => options.layers.includes(styleLayer.id)) : style.layers;
+
+                style.layers = styles;
+                applyStyle(layer, style);
+            });
+    }
+    if (glStyle.sources && Object.keys(glStyle.sources.length)) {
+
+        Object.keys(glStyle.sources).forEach((key) => {
+            const glStyleSourceId = key;
+
+            if (glStyle.sources[key].type !== "vector" && glStyle.sources[key].type !== "geojson") {
+                const olMap = layer.get("map");
+
+                apply(olMap, url);
+            }
+            else {
+                stylefunction(layer, glStyle,
+                    options.sourceId ? options.sourceId : glStyleSourceId,
+                    options.resolutions,
+                    options.spriteData,
+                    options.spriteImageUrl,
+                    options.getFonts);
+            }
+        });
+    }
+}
+
+
+/**
  * Creates a Vector Tiles layer.
  *
+ * Note: Within the vtStyles of a layer we introduced a boolean flag called defaultStyle.
+ *       This option allows to mark a vtStyle as default. When not present, the first entry will be taken
+ *       as style.
  * @param {rawLayer} rawLayer - rawLayer as specified in services.json
  * @param {object} [layerParams={}] - extra params of the layer. Can overwrite or extend all ol layer parameters.
  * @param {object} [options={}] - parameter object. Not used atm.
@@ -176,45 +221,11 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     if (options.style && rawLayer.renderer !== "webgl") {
         layer.setStyle(options.style);
     }
-    if (rawLayer.vtStyles) {
-        const vtStyle = rawLayer.vtStyles.filter((style) => style.id === rawLayer.selectedVTStyle)[0] || rawLayer.vtStyles.filter((style) => style.defaultStyle)[0];
+    if (rawLayer.vtStyles.length) {
+        const vtStyle = rawLayer.vtStyles.filter((style) => style.defaultStyle)[0] || rawLayer.vtStyles[0];
 
-        fetch(vtStyle.url)
-            .then(response => response.json())
-            .then(style => {
-                const styles = rawLayer.layers ? style.layers.filter((styleLayer) => rawLayer.layers.includes(styleLayer.id)) : style.layers;
+        setStyle(layer, {}, {options: {layers: rawLayer.layers}}, vtStyle.url);
 
-                style.layers = styles;
-                applyStyle(layer, style);
-            });
     }
     return layer;
-}
-
-/**
- * Set a mapbox style
- * @param {ol.layer.VectorTile} layer - layer to style
- * @param {object} glStyle - MapBox style definition
- * @param {options} [styleParams={}] - Additional options for style specification
- * @param {string} url - MapBox style url
- * @returns {void}
- */
-export function setStyle (layer, glStyle, {options = {}} = {}, url) {
-    Object.keys(glStyle.sources).forEach((key) => {
-        const glStyleSourceId = key;
-
-        if (glStyle.sources[key].type !== "vector" && glStyle.sources[key].type !== "geojson") {
-            const olMap = layer.get("map");
-
-            apply(olMap, url);
-        }
-        else {
-            stylefunction(layer, glStyle,
-                options.sourceId ? options.sourceId : glStyleSourceId,
-                options.resolutions,
-                options.spriteData,
-                options.spriteImageUrl,
-                options.getFonts);
-        }
-    });
 }
