@@ -249,7 +249,7 @@ function createDrawInteraction (drawType, source, symbolList) {
     if (symbolList && symbolList.length > 0) {
         const symbol = symbolList.find(val => val.id === drawType);
 
-        if (symbol && symbol.type === "image") {
+        if (symbol) {
             const iconSrc = symbol.value.startsWith("/")
                     ? symbol.value
                     : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
