@@ -151,7 +151,7 @@ export function setStyle (layer, glStyle, {options = {}} = {}, url) {
                 applyStyle(layer, style);
             });
     }
-    if (glStyle.sources && Object.keys(glStyle.sources.length)) {
+    if (glStyle && glStyle.sources) {
 
         Object.keys(glStyle.sources).forEach((key) => {
             const glStyleSourceId = key;
@@ -221,7 +221,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     if (options.style && rawLayer.renderer !== "webgl") {
         layer.setStyle(options.style);
     }
-    if (rawLayer.vtStyles.length) {
+    if (rawLayer.vtStyles) {
         const vtStyle = rawLayer.vtStyles.filter((style) => style.defaultStyle)[0] || rawLayer.vtStyles[0];
 
         setStyle(layer, {}, {options: {layers: rawLayer.layers}}, vtStyle.url);
