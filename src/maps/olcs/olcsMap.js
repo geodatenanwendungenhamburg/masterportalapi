@@ -1,6 +1,6 @@
 import OLCesium from "olcs";
 import {transform, get} from "ol/proj.js";
-import VectorSynchronizer from "olcs/lib/olcs/VectorSynchronizer.js";
+import VectorSynchronizer from "olcs/VectorSynchronizer.js";
 
 import FixedOverlaySynchronizer from "./3dUtils/fixedOverlaySynchronizer.js";
 import WMSRasterSynchronizer from "./3dUtils/wmsRasterSynchronizer.js";

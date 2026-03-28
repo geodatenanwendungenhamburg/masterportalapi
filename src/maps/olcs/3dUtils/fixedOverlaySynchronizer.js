@@ -1,4 +1,4 @@
-import OverlaySynchronizer from "olcs/lib/olcs/OverlaySynchronizer.js";
+import OverlaySynchronizer from "olcs/OverlaySynchronizer.js";
 
 /**
  * Represents a FixedOverlaySynchronizer.
