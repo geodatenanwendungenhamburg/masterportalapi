@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Public Issue #15: VectorTiles: Add layer selection to similar to wms layers
 
 ### Changed
 
