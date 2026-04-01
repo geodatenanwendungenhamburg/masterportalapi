@@ -229,10 +229,18 @@ function setStyleToDrawText (drawInteraction) {
             return;
         }
 
-        const style = createStyle.createStyle(styleObject, event.feature, false);
+        const style = styleObject.rules[0].style;
 
-        drawInteraction.getOverlay().setStyle(style);
-        event.feature.setStyle(style);
+        event.feature.set("textContent", style.text);
+        event.feature.set("textFontSize", style.textFontSize);
+        event.feature.set("textFont", style.textFont);
+        event.feature.set("textFillColor", style.polygonFillColor);
+
+        // eslint-disable-next-line one-var
+        const olStyle = createStyle.createStyle(styleObject, event.feature, false);
+
+        drawInteraction.getOverlay().setStyle(olStyle);
+        event.feature.setStyle(olStyle);
     });
 }
 
@@ -249,7 +257,7 @@ function createDrawInteraction (drawType, source, symbolList) {
     if (symbolList && symbolList.length > 0) {
         const symbol = symbolList.find(val => val.id === drawType);
 
-        if (symbol) {
+        if (symbol && symbol.type === "image") {
             const iconSrc = symbol.value.startsWith("/")
                     ? symbol.value
                     : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
