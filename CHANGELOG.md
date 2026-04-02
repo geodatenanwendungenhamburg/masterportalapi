@@ -7,7 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
-- Public Issue #15: VectorTiles: Add layer selection to similar to wms layers
+- Issue #15: At VectorTile layer the ‘vtStyles’ attribute is evaluated, and the style is applied using the ‘layers’ attribute or to the styles attribute ‘defaultStyle’.
 
 ### Changed
 - The following packages have been updated:
