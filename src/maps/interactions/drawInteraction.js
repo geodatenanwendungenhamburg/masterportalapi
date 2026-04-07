@@ -248,32 +248,43 @@ function setStyleToDrawText (drawInteraction) {
  * Create the draw interaction.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
- * @param {Object} symbolList The list of symbols for the draw type symbols.
+ * @param {Object} iconList The list of symbols for the draw type symbols.
  * @returns {ol/interaction/Draw|null} The draw interaction.
  */
-function createDrawInteraction (drawType, source, symbolList) {
+function createDrawInteraction (drawType, source, iconList) {
     let drawInteraction = null;
 
-    if (symbolList && symbolList.length > 0) {
-        const symbol = symbolList.find(val => val.id === drawType);
+    if (iconList && iconList.length > 0) {
+        const symbol = iconList.find(val => val.id === drawType);
 
-        if (symbol && symbol.type === "image") {
-            const iconSrc = symbol.value.startsWith("/")
-                    ? symbol.value
-                    : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
-                svgStyle = new Style({
-                    image: new Icon({
-                        src: iconSrc,
-                        scale: symbol.scale || 1,
-                        anchor: [0.5, 1]
-                    })
+        if (symbol) {
+            if (symbol.type === "image") {
+                const iconSrc = symbol.value.startsWith("/")
+                        ? symbol.value
+                        : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
+                    svgStyle = new Style({
+                        image: new Icon({
+                            src: iconSrc,
+                            scale: symbol.scale || 1,
+                            anchor: [0.5, 1]
+                        })
+                    });
+
+                drawInteraction = new Draw({
+                    source: source,
+                    type: "Point",
+                    style: svgStyle
                 });
-
-            drawInteraction = new Draw({
-                source: source,
-                type: "Point",
-                style: svgStyle
-            });
+            }
+            else {
+                drawInteraction = new Draw({
+                    source: source,
+                    type: "Point"
+                });
+                if (styleObject !== null) {
+                    setStyleToDrawInteraction(drawInteraction);
+                }
+            }
         }
     }
 
