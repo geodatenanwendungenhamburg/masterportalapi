@@ -3,22 +3,15 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.60.0 - 2026-04-10
 
 ### Added
-- Issue #15: At VectorTile layer the ‘vtStyles’ attribute is evaluated, and the style is applied using the ‘layers’ attribute or to the styles attribute ‘defaultStyle’.
+- Issue #15: At VectorTile layer the `vtStyles` attribute is evaluated, and the style is applied using the `layers` attribute or to the styles attribute `defaultStyle`.
 
 ### Changed
 - The following packages have been updated:
     - dependencies:
         - ol-mapbox-style: 12.5.0 to 13.3.0
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
 
