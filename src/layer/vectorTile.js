@@ -141,7 +141,9 @@ export function createLayerSource (url, options = {}) {
  * @returns {void}
  */
 export function setStyle (layer, glStyle, {options = {}} = {}, url) {
-    if (url) {
+    const readStyleFromUrl = typeof options.readStyleFromUrl === "boolean" ? options.readStyleFromUrl : true;
+
+    if (url && readStyleFromUrl) {
         fetch(url)
             .then(response => response.json())
             .then(style => {
@@ -224,7 +226,7 @@ export function createLayer (rawLayer = {}, {layerParams = {}, options = {}} = {
     if (rawLayer.vtStyles) {
         const vtStyle = rawLayer.vtStyles.filter((style) => style.defaultStyle)[0] || rawLayer.vtStyles[0];
 
-        setStyle(layer, {}, {options: {layers: rawLayer.layers}}, vtStyle.url);
+        setStyle(layer, {}, {options: {layers: rawLayer.layers, readStyleFromUrl: options.readStyleFromUrl}}, vtStyle.url);
 
     }
     return layer;

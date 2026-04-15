@@ -9,6 +9,7 @@
 ### Added
 
 ### Changed
+- VectorTile with `vtStyles`: `setStyle` is not reading from url, if  `options.readStyleFromUrl = false`. Is also passed by `options` in `createLayer`.
 
 ### Deprecated
 
