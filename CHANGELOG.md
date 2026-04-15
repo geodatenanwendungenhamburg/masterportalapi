@@ -10,10 +10,17 @@
 
 ### Changed
 - VectorTile with `vtStyles`: `setStyle` is not reading from url, if  `options.readStyleFromUrl = false`. Is also passed by `options` in `createLayer`.
+- The following packages have been updated:
+    - dependencies:
+        - ol-mapbox-style: 12.5.0 to 13.3.0
+        - olcs: 2.22.1 to 2.23.0
 
 ### Deprecated
 
 ### Removed
+
+- The following overwrites have been removed:
+        - geotiff in ol
 
 ### Fixed
 
