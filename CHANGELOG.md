@@ -21,6 +21,7 @@
 
 - The following overwrites have been removed:
         - geotiff in ol
+- The unused babel dev dependencies were removed
 
 ### Fixed
 
