@@ -202,7 +202,7 @@ async function jobResults (processUrl, jobId, format = "json") {
  * @param {number?} [pollParameters.timeout=5000] – how long to try polling in ms
  * @param {number?} [pollParameters.stallFor=100] – how long to wait between retries
  * @returns {object} job results as json
- * @throws
+ * @throws {Error}
  */
 async function pollJobResults (processUrl, jobId, {timeout = 5000, stallFor = 100} = {}) {
     const start = Date.now();
