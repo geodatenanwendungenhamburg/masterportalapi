@@ -100,10 +100,8 @@ function transformMapUnitRadius (radius, mapProjection) {
  */
 function drawOuterCircle (feature, mapProjection, source, options = {}) {
     const innerCircleFeature = feature.clone(),
-        rawInner = convertUnits(options.innerRadius, options.unit, "m"),
-        rawOuter = convertUnits(options.outerRadius, options.unit, "m"),
-        innerRadius = Math.min(rawInner, rawOuter),
-        outerRadius = Math.max(rawInner, rawOuter),
+        innerRadius = convertUnits(options.innerRadius, options.unit, "m"),
+        outerRadius = convertUnits(options.outerRadius, options.unit, "m"),
         mapUnitInnerRadius = transformMapUnitRadius(innerRadius, mapProjection),
         mapUnitOuterRadius = transformMapUnitRadius(outerRadius, mapProjection),
         innerStyle = createStyle.createStyle(styleObject, innerCircleFeature, false),
