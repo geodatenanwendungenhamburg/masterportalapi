@@ -114,7 +114,8 @@ describe("src/maps/interactions/drawInteraction.js", () => {
                             lineStrokeColor: [
                                 0,
                                 0,
-                                0
+                                0,
+                                1
                             ],
                             lineStrokeWidth: 1,
                             polygonFillColor: [
