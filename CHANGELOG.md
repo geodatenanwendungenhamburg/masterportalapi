@@ -14,6 +14,7 @@
     - dependencies:
         - ol-mapbox-style: 12.5.0 to 13.3.0
         - olcs: 2.22.1 to 2.23.0
+        - ol: 10.8.0 to 10.9.0
 
 ### Deprecated
 

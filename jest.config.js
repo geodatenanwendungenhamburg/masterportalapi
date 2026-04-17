@@ -14,6 +14,7 @@ module.exports = {
     /** mapping svg to string representation since jest can't handle svg and mapping olcs paths*/
     "moduleNameMapper": {
         "marker.svg": "<rootDir>/public/stringMarker.js",
+        "olcs/lib/olcs/util.js": "<rootDir>/node_modules/olcs/lib/olcs/util.js",
         "ol-mapbox-style$": "<rootDir>/node_modules/ol-mapbox-style/src/$1"
     },
     "testEnvironment": "jsdom",

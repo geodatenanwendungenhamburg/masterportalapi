@@ -2,7 +2,7 @@
  * @module olcs.WMSRasterSynchronizer
  */
 import olLayerGroup from "ol/layer/Group.js";
-import {getUid} from "olcs/util.js";
+import {getUid} from "olcs/lib/olcs/util.js";
 import TileWMS from "ol/source/TileWMS.js";
 import ImageWMS from "ol/source/ImageWMS.js";
 import WMTS from "ol/source/WMTS.js";

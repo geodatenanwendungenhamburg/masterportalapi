@@ -34,7 +34,7 @@
   "dependencies": {
     "core-js": "^3.33.1",
     "dayjs": "^1.11.10",
-    "ol": "10.8.0",
+    "ol": "10.9.0",
     "ol-mapbox-style": "13.3.0",
     "olcs": "^2.23.0",
     "proj4": "^2.10.0",
@@ -72,6 +72,9 @@
   },
   "@parcel/resolver-default": {
     "packageExports": true
+  },
+  "alias": {
+    "olcs/lib/olcs/util.js": "./node_modules/olcs/lib/olcs/util.js"
   },
   "engines": {
     "node": "^22.19.0 || ^24.11.1",
