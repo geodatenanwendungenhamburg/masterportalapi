@@ -1,26 +1,27 @@
 {
   "name": "@masterportal/masterportalapi",
-  "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
   "version": "2.61.0",
-  "license": "MIT",
   "description": "Basic functions of the Masterportal as api",
+  "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
+  "bugs": {
+    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git"
   },
-  "source": "src/index.js",
-  "main": "src/index.js",
+  "license": "MIT",
+  "author": "Implementierungspartnerschaft Masterportal <info@masterportal.org> (https://www.masterportal.org)",
+  "type": "commonjs",
   "exports": {
     ".": "./src/index.js",
     "./src/*": "./src/*"
   },
-  "targets": {
-    "library": {
-      "source": "src/index.js",
-      "distDir": "dist",
-      "outputFormat": "commonjs"
-    },
-    "main": false
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "example": "example",
+    "test": "test"
   },
   "scripts": {
     "test": "jest .test.js --config ./jest.config.js --collectCoverage",
@@ -70,23 +71,23 @@
   "peerDependencies": {
     "@cesium/engine": "^23.0.0"
   },
+  "engines": {
+    "node": "^22.19.0 || ^24.11.1",
+    "npm": "^10.5.0 || ^11.6.2"
+  },
+  "source": "src/index.js",
+  "targets": {
+    "library": {
+      "source": "src/index.js",
+      "distDir": "dist",
+      "outputFormat": "commonjs"
+    },
+    "main": false
+  },
   "@parcel/resolver-default": {
     "packageExports": true
   },
   "alias": {
     "olcs/lib/olcs/util.js": "./node_modules/olcs/lib/olcs/util.js"
-  },
-  "engines": {
-    "node": "^22.19.0 || ^24.11.1",
-    "npm": "^10.5.0 || ^11.6.2"
-  },
-  "homepage": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi#readme",
-  "directories": {
-    "doc": "docs",
-    "example": "example",
-    "test": "test"
-  },
-  "bugs": {
-    "url": "https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/issues"
   }
 }
