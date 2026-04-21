@@ -3,10 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.61.0 - 2026-04-21
 
 ### Changed
 - VectorTile with `vtStyles`: `setStyle` is not reading from url, if  `options.readStyleFromUrl = false`. Is also passed by `options` in `createLayer`.
@@ -16,15 +13,10 @@
         - olcs: 2.22.1 to 2.23.0
         - ol: 10.8.0 to 10.9.0
 
-### Deprecated
-
 ### Removed
-
 - The following overwrites have been removed:
         - geotiff in ol
 - The unused babel dev dependencies were removed
-
-### Fixed
 
 ---
 
