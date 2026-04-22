@@ -32,9 +32,6 @@ const earthRadius = 6378137,
         },
         polygon: {
             type: "Polygon"
-        },
-        writeText: {
-            type: "Point"
         }
     };
 let styleObject = null,
@@ -174,10 +171,7 @@ function setStyleObject (currentLayout, outerCircle = false) {
                         polygonStrokeColor: currentLayout.strokeColor,
                         polygonStrokeDash: currentLayout.polygonDash,
                         polygonStrokeDashOffset: currentLayout.polygonStrokeDashOffset,
-                        polygonStrokeWidth: currentLayout.strokeWidth,
-                        text: currentLayout.text,
-                        textFont: currentLayout.font,
-                        textFontSize: currentLayout.fontSize
+                        polygonStrokeWidth: currentLayout.strokeWidth
                     }
                 }
             ]
@@ -207,22 +201,6 @@ function setStyleToDrawInteraction (drawInteraction) {
 }
 
 /**
- * Sets the style to the text.
- * @param {ol/interaction/Draw} drawInteraction The draw interaction.
- * @returns {void}
- */
-function setStyleToDrawText (drawInteraction) {
-    drawInteraction.on("drawstart", event => {
-        event.feature.set("drawType", "writeText");
-        const style = createStyle.createStyle(styleObject, event.feature, false);
-
-        style.setZIndex(zIndex++);
-        drawInteraction.getOverlay().setStyle(style);
-        event.feature.setStyle(style);
-    });
-}
-
-/**
  * Create the draw interaction.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
@@ -241,12 +219,8 @@ function createDrawInteraction (drawType, source) {
             type: mappingDrawTypes[drawType].type
         });
 
-        if (styleObject !== null && drawType !== "doubleCircle" && drawType !== "writeText") {
+        if (styleObject !== null && drawType !== "doubleCircle") {
             setStyleToDrawInteraction(drawInteraction);
-        }
-
-        if (drawType === "writeText") {
-            setStyleToDrawText(drawInteraction);
         }
     }
 
