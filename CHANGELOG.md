@@ -9,6 +9,7 @@
 ### Added
 
 ### Changed
+- Linting: Removed one-var and vars-on-top rules.
 
 ### Deprecated
 
