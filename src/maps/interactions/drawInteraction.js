@@ -202,15 +202,26 @@ function setStyleObject (currentLayout, outerCircle = false) {
 
 /**
  * Sets the style to overlay and feature.
+ * The overlay receives a style function so it always reflects the current styleObject,
+ * even when the layout is changed mid-drawing.
  * @param {ol/interaction/Draw} drawInteraction The draw interaction.
  * @returns {void}
  */
 function setStyleToDrawInteraction (drawInteraction) {
+    drawInteraction.getOverlay().setStyle((feature) => {
+        if (styleObject === null) {
+            return null;
+        }
+        const style = createStyle.createStyle(styleObject, feature, false);
+
+        style.setZIndex(zIndex);
+        return style;
+    });
+
     drawInteraction.on("drawstart", event => {
         const style = createStyle.createStyle(styleObject, event.feature, false);
 
         style.setZIndex(zIndex++);
-        drawInteraction.getOverlay().setStyle(style);
         event.feature.setStyle(style);
     });
 }
