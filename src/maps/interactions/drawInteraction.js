@@ -204,12 +204,32 @@ function setStyleObject (currentLayout, outerCircle = false) {
  * Sets the style to overlay and feature.
  * The overlay receives a style function so it always reflects the current styleObject,
  * even when the layout is changed mid-drawing.
+ * Only renders the overlay style while a drawing is in progress to avoid
+ * showing a styled cursor marker before the first click.
  * @param {ol/interaction/Draw} drawInteraction The draw interaction.
  * @returns {void}
  */
 function setStyleToDrawInteraction (drawInteraction) {
+    let isDrawing = false;
+
+    drawInteraction.on("drawstart", event => {
+        isDrawing = true;
+        const style = createStyle.createStyle(styleObject, event.feature, false);
+
+        style.setZIndex(zIndex++);
+        event.feature.setStyle(style);
+    });
+
+    drawInteraction.on("drawend", () => {
+        isDrawing = false;
+    });
+
+    drawInteraction.on("drawabort", () => {
+        isDrawing = false;
+    });
+
     drawInteraction.getOverlay().setStyle((feature) => {
-        if (styleObject === null) {
+        if (styleObject === null || !isDrawing) {
             return null;
         }
         const style = createStyle.createStyle(styleObject, feature, false);
@@ -217,21 +237,23 @@ function setStyleToDrawInteraction (drawInteraction) {
         style.setZIndex(zIndex);
         return style;
     });
-
-    drawInteraction.on("drawstart", event => {
-        const style = createStyle.createStyle(styleObject, event.feature, false);
-
-        style.setZIndex(zIndex++);
-        event.feature.setStyle(style);
-    });
 }
 
 /**
  * Sets the style to the text.
+ * The overlay receives a style function so font/size/color changes are reflected
+ * immediately in the cursor preview without needing to click first.
  * @param {ol/interaction/Draw} drawInteraction The draw interaction.
  * @returns {void}
  */
 function setStyleToDrawText (drawInteraction) {
+    drawInteraction.getOverlay().setStyle((feature) => {
+        if (!styleObject?.rules?.[0]?.style?.text) {
+            return null;
+        }
+        return createStyle.createStyle(styleObject, feature, false);
+    });
+
     drawInteraction.on("drawstart", event => {
         event.feature.set("drawType", "writeText");
 
@@ -247,10 +269,8 @@ function setStyleToDrawText (drawInteraction) {
         event.feature.set("textFont", style.textFont);
         event.feature.set("textFillColor", style.polygonFillColor);
 
-        // eslint-disable-next-line one-var
         const olStyle = createStyle.createStyle(styleObject, event.feature, false);
 
-        drawInteraction.getOverlay().setStyle(olStyle);
         event.feature.setStyle(olStyle);
     });
 }
