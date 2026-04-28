@@ -2,16 +2,10 @@
 import {KML} from "ol/format.js";
 import Feature from "ol/Feature.js";
 import proj4 from "proj4";
+import {fromCircle} from "ol/geom/Polygon.js";
+import {Circle} from "ol/geom.js";
+import {isObject, projections, colorOptions, allCompareEqual, transformGeometry} from "./utils.js";
 
-/**
- * Checks if the passed parameter is an object.
- *
- * @param {*} value parameter to check.
- * @returns {Boolean} true if the value is an object; false otherwise.
- */
-function isObject (value) {
-    return Object.prototype.toString.call(value) === "[object Object]";
-}
 
 /**
  * Gets the projections in proj4 format.
@@ -21,42 +15,7 @@ function isObject (value) {
  * @param {String} zone Zone of source projection.
  * @returns {Object} An object with the definitions of the given projection names.
  */
-function getProjections (sourceProj, destProj, zone) {
-    proj4.defs(sourceProj, "+proj=utm +zone=" + zone + "ellps=WGS84 +towgs84=0,0,0,0,0,0,1 +units=m +no_defs");
 
-    return {
-        sourceProj: proj4(sourceProj),
-        destProj: proj4(destProj)
-    };
-}
-
-const projections = getProjections("EPSG:25832", "EPSG:4326", "32"),
-    colorOptions = [
-        {color: "blue", value: [55, 126, 184]},
-        {color: "black", value: [0, 0, 0]},
-        {color: "green", value: [77, 175, 74]},
-        {color: "grey", value: [153, 153, 153]},
-        {color: "orange", value: [255, 127, 0]},
-        {color: "red", value: [228, 26, 28]},
-        {color: "white", value: [255, 255, 255]},
-        {color: "yellow", value: [255, 255, 51]}
-    ];
-
-/**
- * Checks whether bots arrays are of length 3 and whether their values are equal at the same positions.
- * Used to check if two colors are the same.
- *
- * @param {Number[]} arrOne First array.
- * @param {Number[]} arrTwo Second array.
- * @returns {Boolean} true, if both are arrays of length 3 consisting of the same values; false, else.
- */
-function allCompareEqual (arrOne, arrTwo) {
-    return Array.isArray(arrOne)
-        && arrOne.length === 3
-        && Array.isArray(arrTwo)
-        && arrTwo.length === 3
-        && arrOne.every((val, index) => val === arrTwo[index]);
-}
 
 /**
  * Creates the IconStyle-Part of a Point-KML. Contains the link to a SVG.
@@ -361,10 +320,65 @@ function setKmlAttributes (features) {
     return features;
 }
 
+/**
+ * Only used in the cas
+ * @param {*} features the features with geometries to be transformed
+ * @returns {*} evt with transformed geometries
+ */
+function transformGeometries (features) {
+    console.warn("the features before transformation: ", features);
+    console.warn("typeof features: ", typeof features);
+    const resultFeatures = [];
+    // console.warn("transformGeometries, epsg: ", defaults.map.getView().getProjection().getCode());
+
+    features.forEach(drawnFeature => {
+        const feature = drawnFeature.clone(),
+            geometry = feature.getGeometry();
+
+        if (geometry instanceof Circle) {
+            feature.setGeometry(fromCircle(geometry));
+            // transform after setting geometry, transformed coordinates are only for center and radius
+            transformGeometry("EPSG:25832", geometry);
+            feature.set("masterportal_attributes", Object.assign(feature.get("masterportal_attributes") ?? {}, {
+                "isGeoCircle": true,
+                "geoCircleCenter": geometry.getCenter().join(","),
+                "geoCircleRadius": geometry.getRadius()
+            }));
+        }
+        resultFeatures.push(feature);
+    });
+
+    console.warn("the features after transformation: ", resultFeatures);
+
+    return resultFeatures;
+
+/*     const feature = evt.feature,
+        geometry = feature.getGeometry();
+
+    const featureClone = feature.clone(),
+        geometryClone = geometry.clone();
+
+    if (geometryClone instanceof Circle) {
+        featureClone.setGeometry(fromCircle(geometryClone));
+        // transform after setting geometry, transformed coordinates are only for center and radius
+        console.warn("transformGeometries, store.getters: ", store.getters["Maps/projection"].getCode());
+        transformGeometry(store.getters["Maps/projection"].getCode(), geometryClone);
+        featureClone.set("masterportal_attributes", Object.assign(featureClone.get("masterportal_attributes") ?? {}, {
+            "isGeoCircle": true,
+            "geoCircleCenter": geometryClone.getCenter().join(","),
+            "geoCircleRadius": geometryClone.getRadius()
+        }));
+    }
+    evt.feature = featureClone;
+    console.warn("transformGeometries, featureClone: ", featureClone);
+    return evt; */
+}
+
 export default {
     convertFeatures,
     convertFeaturesToKml,
     transformCoordinates,
     getKMLWithCustomAttributes,
-    setKmlAttributes
+    setKmlAttributes,
+    transformGeometries
 };

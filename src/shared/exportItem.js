@@ -1,27 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import proj4 from "proj4";
 import {GPX} from "ol/format.js";
 import {Circle} from "ol/geom.js";
 import {fromCircle} from "ol/geom/Polygon.js";
+import {WKT} from "ol/format.js";
+import Feature from "ol/Feature.js";
+import {isObject, transformPoint, transformGeometry} from "./utils.js";
 
-/**
- * Transforms the given point coordinates from a given source projection to EPSG:4326.
- * @param {String} sourceProjectionCode source projection.
- * @param {Number[]} coords Coordinates.
- * @returns {Number[]} Transformed coordinates.
- */
-function transformPoint (sourceProjectionCode, coords) {
-    return proj4(proj4(sourceProjectionCode), proj4("EPSG:4326"), coords);
-}
-/**
- * Transforms the given geometry from a given source projection to EPSG:4326.
- * @param {String} sourceProjectionCode source projection.
- * @param {Geometry} geometry Geometry.
- * @returns {Geometry} The given geometry.
- */
-function transformGeometry (sourceProjectionCode, geometry) {
-    return geometry.transform(sourceProjectionCode, "EPSG:4326");
-}
 /**
  * Transforms the given line or polygon coordinates from a given source projection to EPSG:4326.
  * @param {String} sourceProjectionCode source projection.
@@ -182,6 +166,39 @@ function prepareFeatures (features) {
         downloadFeatures.push(feature);
     });
     return downloadFeatures;
+}
+
+/**
+ * Sets the geometry of each feature as WKT and epsg to its attributes.
+ * @param {ol/Feature[]} features - An array of features.
+ * @param {String} code The EPSG-Code in which the features are coded.
+ * @returns {ol/Feature[]|Boolean} The features incl. the wkt geometries. False if the given parameter is not an array.
+ */
+export function setCsvAttributes (features, code) {
+    if (!Array.isArray(features)) {
+        return false;
+    }
+    const wktParser = new WKT();
+
+    features.forEach(feature => {
+        if (feature instanceof Feature) {
+            const wktGeometry = wktParser.writeGeometry(feature.getGeometry());
+
+            if (!isObject(feature.get("csv_attributes"))) {
+                feature.set("csv_attributes", {});
+            }
+            feature.get("csv_attributes").geometry = wktGeometry;
+            feature.get("csv_attributes").epsg = code;
+
+            Object.keys(feature.getProperties()).forEach(key => {
+                if (!["masterportal_attributes", "geometry", "csv_attributes"].includes(key)) {
+                    feature.get("csv_attributes")[key] = feature.get(key);
+                }
+            });
+        }
+    });
+
+    return features;
 }
 
 
