@@ -146,16 +146,16 @@ Map.prototype.addLayer = addLayer;
  * @param {object} [settings.mapParams] - additional parameter object that is spread into the ol.Map constructor object
  * @param {function} [settings.callback] - optional callback for layer list loading
  * @param {function} [settings.errorCallback] – method called on error events
- * @param {String} [mapMode = "2D"] The map mode. '2D' to craete a 2D-map and '3D' to create a 3D-map.
+ * @param {class} [OlMap] - The OpenLayers map class
  * @returns {object} map object from ol
  */
-export function createMap (config = defaults, {mapParams, callback, errorCallback} = {}) {
+export function createMap (config = defaults, {mapParams, callback, errorCallback} = {}, OlMap = Map) {
     crs.registerProjections(config.namedProjections);
     setBackgroundImage(config);
     setGazetteerUrl(config.gazetteerUrl);
 
     const selectedInteractions = Object.assign({}, {dragPan: false, altShiftDragRotate: false, pinchRotate: false}, config.mapInteractions?.interactionModes),
-        map = new Map(Object.assign({
+        map = new OlMap(Object.assign({
             target: config.target || defaults.target,
             interactions: olDefaultInteractions(selectedInteractions).extend([
                 new DragPan({

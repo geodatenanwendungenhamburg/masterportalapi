@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Allow to override the OpenLayers Map class for 2D maps.
 
 ### Changed
 - Linting: Removed one-var and vars-on-top rules.
