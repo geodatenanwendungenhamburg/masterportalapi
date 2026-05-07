@@ -11,12 +11,14 @@
 
 ### Changed
 - Linting: Removed one-var and vars-on-top rules.
+- Changed end_of_line to lf in editorconfig file.
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
 
 ---
 
