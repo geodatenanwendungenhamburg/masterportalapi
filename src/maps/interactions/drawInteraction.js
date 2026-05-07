@@ -1,5 +1,6 @@
 import {createBox, createRegularPolygon} from "ol/interaction/Draw.js";
-import {Icon, Style} from "ol/style.js";
+import {Icon, Style, Fill} from "ol/style.js";
+import Text from "ol/style/Text.js";
 import {Draw} from "ol/interaction.js";
 
 import createStyle from "../../vectorStyle/createStyle";
@@ -229,15 +230,21 @@ function setStyleToDrawText (drawInteraction) {
             return;
         }
 
-        const style = styleObject.rules[0].style;
+        const style = styleObject.rules[0].style,
+            textStyle = new Text({
+                text: style.text ?? "",
+                font: `${style.textFontSize}px ${style.textFont}`,
+                fill: new Fill({color: style.polygonFillColor || "black"}),
+                offsetX: style.textOffsetX || 0,
+                offsetY: style.textOffsetY || 0,
+                textAlign: style.textAlign || "center"
+            }),
+            olStyle = new Style({text: textStyle});
 
         event.feature.set("textContent", style.text);
         event.feature.set("textFontSize", style.textFontSize);
         event.feature.set("textFont", style.textFont);
         event.feature.set("textFillColor", style.polygonFillColor);
-
-        const olStyle = createStyle.createStyle(styleObject, event.feature, false);
-
         event.feature.setStyle(olStyle);
     });
 }
@@ -247,46 +254,43 @@ function setStyleToDrawText (drawInteraction) {
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
  * @param {Object} iconList The list of symbols for the draw type symbols.
+ * @param {String} [wfsImgPath=""] Path to the image folder, used as prefix when symbol value is not an absolute path.
  * @returns {ol/interaction/Draw|null} The draw interaction.
  */
-function createDrawInteraction (drawType, source, iconList) {
+function createDrawInteraction (drawType, source, iconList, wfsImgPath = "") {
     let drawInteraction = null;
+    const symbol = iconList?.length > 0 ? iconList.find(val => val.id === drawType) : null;
 
-    if (iconList && iconList.length > 0) {
-        const symbol = iconList.find(val => val.id === drawType);
-
-        if (symbol) {
-            if (symbol.type === "image") {
-                const iconSrc = symbol.value.startsWith("/")
-                        ? symbol.value
-                        : `https://geodienste.hamburg.de/lgv-config/img/${symbol.value}`,
-                    svgStyle = new Style({
-                        image: new Icon({
-                            src: iconSrc,
-                            scale: symbol.scale || 1,
-                            anchor: [0.5, 1]
-                        })
-                    });
-
-                drawInteraction = new Draw({
-                    source: source,
-                    type: "Point",
-                    style: svgStyle
+    if (symbol) {
+        if (symbol.type === "image") {
+            const iconSrc = symbol.value.startsWith("/") || symbol.value.startsWith("http") || symbol.value.startsWith(".")
+                    ? symbol.value
+                    : `${wfsImgPath}${symbol.value}`,
+                svgStyle = new Style({
+                    image: new Icon({
+                        src: iconSrc,
+                        scale: symbol.scale || 1,
+                        anchor: [0.5, 1]
+                    })
                 });
-            }
-            else {
-                drawInteraction = new Draw({
-                    source: source,
-                    type: "Point"
-                });
-                if (styleObject !== null) {
-                    setStyleToDrawInteraction(drawInteraction);
-                }
+
+            drawInteraction = new Draw({
+                source: source,
+                type: "Point",
+                style: svgStyle
+            });
+        }
+        else {
+            drawInteraction = new Draw({
+                source: source,
+                type: "Point"
+            });
+            if (styleObject !== null) {
+                setStyleToDrawInteraction(drawInteraction);
             }
         }
     }
-
-    if (typeof mappingDrawTypes[drawType] === "object") {
+    else if (typeof mappingDrawTypes[drawType] === "object") {
         const options = mappingDrawTypes[drawType].options || {};
 
         drawInteraction = new Draw({
