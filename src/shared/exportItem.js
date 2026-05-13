@@ -4,6 +4,7 @@ import {Circle} from "ol/geom.js";
 import {fromCircle} from "ol/geom/Polygon.js";
 import {WKT} from "ol/format.js";
 import Feature from "ol/Feature.js";
+import crs from "../crs.js";
 import {isObject, transformPoint, transformGeometry} from "./utils.js";
 
 /**
@@ -132,12 +133,13 @@ async function convertFeatures (features, format, projection) {
     return format.writeFeatures(convertedFeatures);
 }
 
-function prepareFeatures (features) {
+function prepareFeatures (features, map) {
     const downloadFeatures = [];
 
     features.forEach((drawnFeature) => {
         const feature = drawnFeature.clone(),
             geometry = feature.getGeometry();
+        const projectionCode = map?.getView().getProjection().getCode();
 
         // Jas: following lines have been moved to ExportItem.vue in MP
         // If the feature is invisible from filter, the style will be reset by printing.
@@ -156,7 +158,8 @@ function prepareFeatures (features) {
         if (geometry instanceof Circle) {
             feature.setGeometry(fromCircle(geometry));
             // transform after setting geometry, transformed coordinates are only for center and radius
-            transformGeometry("EPSG:25832", geometry);
+            console.warn("in prepareFeatures", projectionCode);
+            transformGeometry(projectionCode, geometry);
             feature.set("masterportal_attributes", Object.assign(feature.get("masterportal_attributes") ?? {}, {
                 "isGeoCircle": true,
                 "geoCircleCenter": geometry.getCenter().join(","),
