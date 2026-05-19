@@ -28,7 +28,7 @@ function initializeLayerList (layerConf = defaults.layerConf, callback) {
     // case: parameter is URL
     fetch(layerConf, {method: "GET", cache: "no-cache", timeout: 10000})
         .then((response) => {
-            response.json()
+            return response.json()
                 .then((json) => {
                     layerList = json;
                     if (typeof callback === "function") {
@@ -43,7 +43,10 @@ function initializeLayerList (layerConf = defaults.layerConf, callback) {
         })
         .catch((error) => {
             console.error("An error occured when trying to fetch services from '" + layerConf + "':", error);
-            callback(false, error);
+            if (typeof callback === "function") {
+                return callback(false, error);
+            }
+            return false;
         });
 }
 
