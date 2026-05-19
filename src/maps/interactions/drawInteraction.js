@@ -241,6 +241,7 @@ function setStyleToDrawText (drawInteraction) {
             }),
             olStyle = new Style({text: textStyle});
 
+        olStyle.setZIndex(zIndex++);
         event.feature.set("textContent", style.text);
         event.feature.set("textFontSize", style.textFontSize);
         event.feature.set("textFont", style.textFont);
