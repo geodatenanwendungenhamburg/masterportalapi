@@ -4,7 +4,6 @@ import {Circle} from "ol/geom.js";
 import {fromCircle} from "ol/geom/Polygon.js";
 import {WKT} from "ol/format.js";
 import Feature from "ol/Feature.js";
-import crs from "../crs.js";
 import {isObject, transformPoint, transformGeometry} from "./utils.js";
 
 /**
@@ -138,8 +137,8 @@ function prepareFeatures (features, map) {
 
     features.forEach((drawnFeature) => {
         const feature = drawnFeature.clone(),
-            geometry = feature.getGeometry();
-        const projectionCode = map?.getView().getProjection().getCode();
+            geometry = feature.getGeometry(),
+            projectionCode = map?.getView().getProjection().getCode();
 
         // Jas: following lines have been moved to ExportItem.vue in MP
         // If the feature is invisible from filter, the style will be reset by printing.
