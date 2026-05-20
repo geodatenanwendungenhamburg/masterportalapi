@@ -204,11 +204,12 @@ function setStyleObject (currentLayout, outerCircle = false) {
 /**
  * Sets the style to overlay and feature.
  * @param {ol/interaction/Draw} drawInteraction The draw interaction.
+ * @param {String} wfsImgPath Path to the image folder from Config.
  * @returns {void}
  */
-function setStyleToDrawInteraction (drawInteraction) {
+function setStyleToDrawInteraction (drawInteraction, wfsImgPath) {
     drawInteraction.on("drawstart", event => {
-        const style = createStyle.createStyle(styleObject, event.feature, false);
+        const style = createStyle.createStyle(styleObject, event.feature, false, wfsImgPath);
 
         style.setZIndex(zIndex++);
         drawInteraction.getOverlay().setStyle(style);
@@ -287,7 +288,7 @@ function createDrawInteraction (drawType, source, iconList, wfsImgPath = "") {
                 type: "Point"
             });
             if (styleObject !== null) {
-                setStyleToDrawInteraction(drawInteraction);
+                setStyleToDrawInteraction(drawInteraction, wfsImgPath);
             }
         }
     }
@@ -302,7 +303,7 @@ function createDrawInteraction (drawType, source, iconList, wfsImgPath = "") {
         });
 
         if (styleObject !== null && drawType !== "doubleCircle" && drawType !== "writeText") {
-            setStyleToDrawInteraction(drawInteraction);
+            setStyleToDrawInteraction(drawInteraction, wfsImgPath);
         }
 
         if (drawType === "writeText") {

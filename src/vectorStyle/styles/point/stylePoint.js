@@ -32,7 +32,7 @@ class PointStyle extends StyleClass {
         if (wfsImgPathFromConfig !== undefined) {
             this.setImagePath(wfsImgPathFromConfig);
         }
-        else if (styles?.type?.toLowerCase() === "icon") {
+        else {
             console.warn("wfsImgPath at Config.js is not defined");
         }
         this.setFeature(feature);
