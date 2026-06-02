@@ -132,13 +132,12 @@ async function convertFeatures (features, format, projection) {
     return format.writeFeatures(convertedFeatures);
 }
 
-function prepareFeatures (features, map) {
+function prepareFeatures (features, code) {
     const downloadFeatures = [];
 
     features.forEach((drawnFeature) => {
         const feature = drawnFeature.clone(),
-            geometry = feature.getGeometry(),
-            projectionCode = map?.getView().getProjection().getCode();
+            geometry = feature.getGeometry();
 
         // Jas: following lines have been moved to ExportItem.vue in MP
         // If the feature is invisible from filter, the style will be reset by printing.
@@ -157,8 +156,8 @@ function prepareFeatures (features, map) {
         if (geometry instanceof Circle) {
             feature.setGeometry(fromCircle(geometry));
             // transform after setting geometry, transformed coordinates are only for center and radius
-            console.warn("in prepareFeatures", projectionCode);
-            transformGeometry(projectionCode, geometry);
+            console.warn("in prepareFeatures", code);
+            transformGeometry(code, geometry);
             feature.set("masterportal_attributes", Object.assign(feature.get("masterportal_attributes") ?? {}, {
                 "isGeoCircle": true,
                 "geoCircleCenter": geometry.getCenter().join(","),
@@ -211,5 +210,6 @@ export default {
     transformPoint,
     transformGeometry,
     transformCoordinates,
-    prepareFeatures
+    prepareFeatures,
+    setCsvAttributes
 };
