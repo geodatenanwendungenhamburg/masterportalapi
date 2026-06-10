@@ -12,13 +12,16 @@
 ### Changed
 - Linting: Removed one-var and vars-on-top rules.
 - Changed end_of_line to lf in editorconfig file.
+- Issue #17: Replaced package xml2js with native DomParser for parsing xml of search result.
 
 ### Deprecated
 
 ### Removed
+- The following packages have been removed:
+    - dependencies:
+        - xml2js
 
 ### Fixed
-
 
 ---
 

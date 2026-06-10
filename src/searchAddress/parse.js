@@ -1,11 +1,9 @@
-import xml2js from "xml2js";
-
 import {searchTypes} from "./types";
 import {getShowGeographicIdentifier} from "./showGeographicIdentifier";
 
 /**
- * Flattens xml2js result a little to avoid unnecessary one-element arrays.
- * NOTE currently keeping special properties ($, _) of xml2js to keep attributes.
+ * Flattens result a little to avoid unnecessary one-element arrays.
+ * NOTE currently keeping special properties ($, _) to keep attributes.
  * @param {*} a anything
  * @returns {*} a's first element if one-element array, else a
  * @ignore
@@ -40,7 +38,7 @@ function findKey (o, key) {
 
 /**
  * Simply copies over all properties it can find.
- * @param {object} entry xml2js-parsed result entry
+ * @param {object} entry parsed result entry
  * @returns {object} copied and flattened properties
  * @ignore
  */
@@ -73,7 +71,7 @@ function parseCoordinatesFromWkt (wkt) {
 
 /**
  * Parses result entries; uses type-specific rules to determine name/geometry.
- * @param {object} entry xml2js-parsed result entry
+ * @param {object} entry parsed result entry
  * @param {string} type type string
  * @returns {SearchResult} parsed search result for districts
  * @ignore
@@ -163,6 +161,72 @@ function parseEntry (entry, type) {
 }
 
 /**
+ * Converts a DOM element to an object structure.
+ * Strips namespace prefixes from tag names.
+ * @param {Element} node DOM element to convert
+ * @returns {object|string} converted object or text content
+ * @ignore
+ */
+function domNodeToObject (node) {
+    const elementChildren = Array.from(node.children),
+        obj = {};
+
+    // handle attributes
+    if (node.attributes.length > 0) {
+        obj.$ = {};
+        for (const attr of node.attributes) {
+            obj.$[attr.localName] = attr.value;
+        }
+    }
+
+    if (elementChildren.length === 0) {
+        const text = node.textContent?.trim() ?? "";
+
+        if (obj.$) {
+            obj._ = text;
+            return obj;
+        }
+        return text;
+    }
+
+    elementChildren.forEach(child => {
+        const key = child.localName,
+            value = domNodeToObject(child);
+
+        if (obj[key]) {
+            obj[key].push(value);
+        }
+        else {
+            obj[key] = [value];
+        }
+    });
+
+    return obj;
+}
+
+/**
+ * Parses an XML string using DOMParser.
+ * @param {string} xmlString xml to parse
+ * @returns {object} parsed object structure
+ * @ignore
+ */
+function parseXmlString (xmlString) {
+    const parser = new DOMParser(),
+        doc = parser.parseFromString(xmlString, "text/xml"),
+        parseError = doc.querySelector("parsererror");
+
+    if (parseError) {
+        throw new Error(`XML parse error: ${parseError.textContent}`);
+    }
+
+    const root = doc.documentElement,
+        result = {};
+
+    result[root.localName] = domNodeToObject(root);
+    return result;
+}
+
+/**
  * Parses gazetteer xml to search objects.
  * @param {string} key internal name for query froms searchTypes
  * @param {string} xmlString gazetteer answer as xml string
@@ -171,26 +235,20 @@ function parseEntry (entry, type) {
  */
 export function parse (key, xmlString) {
     return new Promise((resolve, reject) => {
-        // tag processor "stripPrefix" removes e.g. "dog:" prefix on properties
-        xml2js.parseString(xmlString, {tagNameProcessors: [xml2js.processors.stripPrefix]},
-            (err, source) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
+        try {
+            const source = parseXmlString(xmlString),
+                searchResults = source.FeatureCollection?.member
+                    ? source.FeatureCollection.member
+                        .map(entry => parseEntry(entry, key))
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                    : [];
 
-                try {
-                    const searchResults = source.FeatureCollection?.member
-                        ? source.FeatureCollection.member
-                            .map(entry => parseEntry(entry, key))
-                            .sort((a, b) => a.name.localeCompare(b.name))
-                        : [];
-
-                    resolve(searchResults);
-                }
-                catch (e) {
-                    reject(e);
-                }
-            });
+            resolve(searchResults);
+        }
+        catch (e) {
+            reject(e);
+        }
     });
 }
+
+
