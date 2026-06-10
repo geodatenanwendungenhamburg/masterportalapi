@@ -106,5 +106,42 @@ describe("searchAddress", function () {
                     done();
                 });
         });
+
+        describe("domNodeToObject - strips namespace prefixes from tag names", () => {
+            it("should not contain colon in any parsed key", async () => {
+                const x = await parse(searchTypes.DISTRICT, gazetteerSearchResults.districtResult);
+                // eslint-disable-next-line func-style
+                const allKeys = (obj) => {
+                    if (typeof obj !== "object" || obj === null) {
+                        return [];
+                    }
+                    // eslint-disable-next-line max-nested-callbacks
+                    return Object.keys(obj).flatMap(k => [k, ...allKeys(obj[k])]);
+                };
+
+                allKeys(x[0]).forEach(key => {
+                    expect(key).not.toContain(":");
+                });
+            });
+
+            it("should parse namespace-prefixed XML and return localName as key", () => {
+                const parser = new DOMParser();
+                const xml = `
+                    <wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs"
+                                           xmlns:gml="http://www.opengis.net/gml">
+                        <wfs:member>
+                            <gml:Point>
+                                <gml:pos>10.0 53.5</gml:pos>
+                            </gml:Point>
+                        </wfs:member>
+                    </wfs:FeatureCollection>`;
+                const doc = parser.parseFromString(xml, "text/xml");
+
+                expect(doc.documentElement.localName).toBe("FeatureCollection");
+                expect(doc.documentElement.children[0].localName).toBe("member");
+                expect(doc.documentElement.children[0].children[0].localName).toBe("Point");
+                expect(doc.documentElement.children[0].children[0].children[0].localName).toBe("pos");
+            });
+        });
     });
 });
