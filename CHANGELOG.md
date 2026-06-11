@@ -3,8 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-### __Breaking Changes__
+## 2.62.0 - 2026-06-11
 
 ### Added
 - Allow to override the OpenLayers Map class for 2D maps.
@@ -14,14 +13,10 @@
 - Changed end_of_line to lf in editorconfig file.
 - Issue #17: Replaced package xml2js with native DomParser for parsing xml of search result.
 
-### Deprecated
-
 ### Removed
 - The following packages have been removed:
     - dependencies:
         - xml2js
-
-### Fixed
 
 ---
 
