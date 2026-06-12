@@ -3,6 +3,11 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
+## 2.51.1 (LTS) - 2026-06-12
+
+### Fixed
+-  VectorStyle: Fixed styling of polygons: `"zig-line-horizontal"` and `"diagonal-right"` are rotated by 90°.
+
 ## 2.51.0 - 2025-09-18
 
 ### __Breaking Changes__
