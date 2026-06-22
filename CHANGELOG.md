@@ -15,6 +15,7 @@
 ### Removed
 
 ### Fixed
+- Issue \#1623: fix label for configuration of style properties as array of objects.
 
 ---
 

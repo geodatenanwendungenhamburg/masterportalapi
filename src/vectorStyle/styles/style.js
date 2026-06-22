@@ -106,8 +106,11 @@ class StyleClass {
         else if (rule?.conditions) {
             let label = "";
 
-            if (rule.conditions?.properties) {
+            if (rule.conditions?.properties && !Array.isArray(rule.conditions.properties)) {
                 label = Object.values(rule.conditions.properties).join(", ");
+            }
+            if (Array.isArray(rule.conditions?.properties)) {
+                label = rule.conditions.properties.map(prop => prop.value).join(", ");
             }
 
             if (rule.conditions?.sequence
@@ -117,7 +120,6 @@ class StyleClass {
                 && rule.conditions.sequence[1] >= rule.conditions.sequence[0]) {
                 label = label + " (" + rule.conditions.sequence.join("-") + ")";
             }
-
             return label;
         }
 
