@@ -8,8 +8,8 @@ import {Modify} from "ol/interaction.js";
  */
 function createModifyInteraction (source, options = {}) {
     const modifyInteraction = new Modify({
-        source: source
-    }),
+            source: source
+        }),
         watcherMap = {
             modifyend: options.onModifyEnd,
             modifystart: options.onModifyStart
