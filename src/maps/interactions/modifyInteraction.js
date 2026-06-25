@@ -9,14 +9,17 @@ import {Modify} from "ol/interaction.js";
 function createModifyInteraction (source, options = {}) {
     const modifyInteraction = new Modify({
         source: source
-    });
+    }),
+        watcherMap = {
+            modifyend: options.onModifyEnd,
+            modifystart: options.onModifyStart
+        };
 
-    if (typeof options.onModifyEnd === "function") {
-        modifyInteraction.on("modifyend", options.onModifyEnd);
-    }
-    if (typeof options.onModifyStart === "function") {
-        modifyInteraction.on("modifystart", options.onModifyStart);
-    }
+    Object.entries(watcherMap).forEach(([eventName, callback]) => {
+        if (typeof callback === "function") {
+            modifyInteraction.on(eventName, callback);
+        }
+    });
 
     return modifyInteraction;
 }

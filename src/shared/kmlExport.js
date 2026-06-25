@@ -6,17 +6,6 @@ import {fromCircle} from "ol/geom/Polygon.js";
 import {Circle} from "ol/geom.js";
 import {isObject, projections, colorOptions, allCompareEqual, transformGeometry} from "./utils.js";
 
-
-/**
- * Gets the projections in proj4 format.
- *
- * @param {String} sourceProj Source projection name.
- * @param {String} destProj Destination projection name.
- * @param {String} zone Zone of source projection.
- * @returns {Object} An object with the definitions of the given projection names.
- */
-
-
 /**
  * Creates the IconStyle-Part of a Point-KML. Contains the link to a SVG.
  *
@@ -149,15 +138,20 @@ function getKMLWithCustomAttributes (features, format) {
         }
         attributeKeys.forEach(attrKey => {
             if (placemarks[idx]) {
-                const extendedData = placemarks[idx].querySelector("ExtendedData"),
-                    data = typeof extendedData.querySelector === "function" ? extendedData.querySelector(`Data[name='${attrKey}']`) : undefined,
-                    existingDataNode = typeof extendedData.querySelector === "function" ? extendedData.querySelector(`Data[name='custom-attribute____${attrKey}']`) : undefined;
+                const extendedData = placemarks[idx].querySelector("ExtendedData");
+
+                if (!(extendedData instanceof Element)) {
+                    return;
+                }
+
+                const data = extendedData.querySelector(`Data[name='${attrKey}']`),
+                    existingDataNode = extendedData.querySelector(`Data[name='custom-attribute____${attrKey}']`);
 
                 if (existingDataNode instanceof Element) {
                     existingDataNode.remove();
                 }
 
-                if (typeof data.setAttribute === "function") {
+                if (data instanceof Element) {
                     data.setAttribute("name", `custom-attribute____${attrKey}`);
                 }
             }
@@ -208,21 +202,20 @@ async function convertFeaturesToKml (features) {
         pointColors = Array(featureCount).fill(undefined),
         pointScales = Array(featureCount).fill(undefined),
         skip = Array(featureCount).fill(false),
-        textFonts = Array(featureCount).fill(undefined),
         textFontSize = Array(featureCount).fill(undefined),
         convertedFeatures = new DOMParser().parseFromString(convertFeatures(features, format), "text/xml");
 
-    console.warn("converted features:", convertedFeatures);
     features.forEach((feature, i) => {
-        const type = feature.getGeometry().getType();
+        const type = feature.getGeometry().getType(),
+            drawState = feature.get("drawState");
         let color,
             style,
             styles;
 
-        if (type === "Point" && feature.values_.drawState && feature.values_.drawState.text !== undefined) {
+        if (type === "Point" && drawState && drawState.text !== undefined) {
             // Imported KML with text, can be used as it is
             skip[i] = true;
-            textFontSize[i] = feature.values_.drawState.fontSize;
+            textFontSize[i] = drawState.fontSize;
         }
         else {
             try {
@@ -234,7 +227,7 @@ async function convertFeaturesToKml (features) {
                 skip[i] = true;
             }
 
-            if (type === "Point") {
+            if (type === "Point" && skip[i] === false && style) {
                 if (style.getImage() !== null && style.getImage().iconImage_ !== undefined) {
                     // Imported KML with link to SVG icon, has iconUrl from previous import
                     hasIconUrl[i] = true;
@@ -245,7 +238,7 @@ async function convertFeaturesToKml (features) {
                     anchors[i] = {xUnit: anchorXUnits, yUnit: anchorYUnits, anchor: anchor};
                 }
                 else if (style.getText()) {
-                    textFonts[i] = style.getText().getFont();
+                    textFontSize[i] = parseInt(style.getText().getFont(), 10);
                 }
                 else {
                     color = style.getImage().getFill().getColor();
@@ -321,15 +314,12 @@ function setKmlAttributes (features) {
 }
 
 /**
- * Only used in the cas
+ * Transforms circle geometries so they can be exported.
  * @param {*} features the features with geometries to be transformed
- * @returns {*} evt with transformed geometries
+ * @returns {*} Features with transformed geometries.
  */
 function transformGeometries (features) {
-    console.warn("the features before transformation: ", features);
-    console.warn("typeof features: ", typeof features);
     const resultFeatures = [];
-    // console.warn("transformGeometries, epsg: ", defaults.map.getView().getProjection().getCode());
 
     features.forEach(drawnFeature => {
         const feature = drawnFeature.clone(),
@@ -348,30 +338,7 @@ function transformGeometries (features) {
         resultFeatures.push(feature);
     });
 
-    console.warn("the features after transformation: ", resultFeatures);
-
     return resultFeatures;
-
-/*     const feature = evt.feature,
-        geometry = feature.getGeometry();
-
-    const featureClone = feature.clone(),
-        geometryClone = geometry.clone();
-
-    if (geometryClone instanceof Circle) {
-        featureClone.setGeometry(fromCircle(geometryClone));
-        // transform after setting geometry, transformed coordinates are only for center and radius
-        console.warn("transformGeometries, store.getters: ", store.getters["Maps/projection"].getCode());
-        transformGeometry(store.getters["Maps/projection"].getCode(), geometryClone);
-        featureClone.set("masterportal_attributes", Object.assign(featureClone.get("masterportal_attributes") ?? {}, {
-            "isGeoCircle": true,
-            "geoCircleCenter": geometryClone.getCenter().join(","),
-            "geoCircleRadius": geometryClone.getRadius()
-        }));
-    }
-    evt.feature = featureClone;
-    console.warn("transformGeometries, featureClone: ", featureClone);
-    return evt; */
 }
 
 export default {

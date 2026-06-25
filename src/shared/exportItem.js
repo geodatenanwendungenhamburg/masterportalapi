@@ -51,7 +51,7 @@ function transform (sourceProjectionCode, coords, isPolygon) {
 function transformMultiPoint (sourceProjectionCode, coords) {
     const multiPoint = [];
 
-    coords.forEach(point =>{
+    coords.forEach(point => {
         multiPoint.push(transformPoint(sourceProjectionCode, point));
     });
     return multiPoint;
@@ -68,7 +68,6 @@ function transformCoordinates (geometry, projection) {
     const coords = geometry.getCoordinates(),
         type = geometry.getType();
 
-    console.warn("in transformCoordinates", projection);
     switch (type) {
         case "LineString":
             return transform(projection, coords, false);
@@ -77,7 +76,6 @@ function transformCoordinates (geometry, projection) {
         case "Polygon":
             return transform(projection, coords, true);
         default:
-            console.warn("Error, here used to be an alert");
             return [];
     }
 }
@@ -138,20 +136,6 @@ function prepareFeatures (features, code) {
     features.forEach((drawnFeature) => {
         const feature = drawnFeature.clone(),
             geometry = feature.getGeometry();
-
-        // Jas: following lines have been moved to ExportItem.vue in MP
-        // If the feature is invisible from filter, the style will be reset by printing.
-        /* if (!feature.get("masterportal_attributes").isVisible && feature.get("masterportal_attributes").invisibleStyle) {
-            feature.setStyle(feature.get("masterportal_attributes").invisibleStyle);
-        } */
-
-        // Following is part of the preparation in actionsDownload, needs to be revised.
-        /*         if (state.oldStyle && typeof state.selectedFeature?.get === "function"
-            && drawnFeature.get("masterportal_attributes").styleId === state.selectedFeature.get("masterportal_attributes").styleId
-            && (typeof drawnFeature.get("masterportal_attributes").styleId === "number" || typeof drawnFeature.get("masterportal_attributes").styleId === "string")
-        ) {
-            feature.setStyle(state.oldStyle);
-        } */
 
         if (geometry instanceof Circle) {
             feature.setGeometry(fromCircle(geometry));

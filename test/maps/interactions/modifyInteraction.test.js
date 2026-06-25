@@ -13,6 +13,22 @@ describe("src/maps/interactions/modifyInteraction.js", () => {
             expect(modifyInteraction).not.toBeNull();
             expect(modifyInteraction).toBeInstanceOf(Modify);
         });
+
+        it("should register optional modify callbacks", () => {
+            const source = new VectorSource(),
+                onModifyStart = jest.fn(),
+                onModifyEnd = jest.fn(),
+                modifyInteraction = modifyInteractions.createModifyInteraction(source, {
+                    onModifyStart,
+                    onModifyEnd
+                });
+
+            modifyInteraction.dispatchEvent("modifystart");
+            modifyInteraction.dispatchEvent("modifyend");
+
+            expect(onModifyStart).toHaveBeenCalledTimes(1);
+            expect(onModifyEnd).toHaveBeenCalledTimes(1);
+        });
     });
 
 });

@@ -60,6 +60,16 @@ describe("src/maps/interactions/drawInteraction.js", () => {
 
             expect(mapUnitRadius).toEqual(0.0008983152841195215);
         });
+
+        it("should return the radius unchanged for unknown map units", () => {
+            const radius = 100,
+                mapProjection = {
+                    getUnits: () => "ft"
+                },
+                mapUnitRadius = drawInteractions.transformMapUnitRadius(radius, mapProjection);
+
+            expect(mapUnitRadius).toEqual(100);
+        });
     });
 
     describe("drawInnerCircle", () => {

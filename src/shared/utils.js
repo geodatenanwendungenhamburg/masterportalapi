@@ -11,7 +11,7 @@ function isObject (value) {
 }
 
 function getProjections (sourceProj, destProj, zone) {
-    proj4.defs(sourceProj, "+proj=utm +zone=" + zone + "ellps=WGS84 +towgs84=0,0,0,0,0,0,1 +units=m +no_defs");
+    proj4.defs(sourceProj, `+proj=utm +zone=${zone} +ellps=WGS84 +towgs84=0,0,0,0,0,0,1 +units=m +no_defs`);
 
     return {
         sourceProj: proj4(sourceProj),
@@ -54,7 +54,7 @@ function allCompareEqual (arrOne, arrTwo) {
  * @returns {Number[]} Transformed coordinates.
  */
 function transformPoint (sourceProjectionCode, coords) {
-    return proj4(proj4(sourceProjectionCode), proj4("EPSG:4326"), coords);
+    return proj4(sourceProjectionCode, "EPSG:4326", coords);
 }
 
 /**

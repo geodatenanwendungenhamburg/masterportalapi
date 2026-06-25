@@ -77,12 +77,9 @@ function convertUnits (value, sourceUnit, targetUnit) {
  */
 function transformMapUnitRadius (radius, mapProjection) {
     const unit = mapProjection.getUnits();
-    let mapUnitRadius;
+    let mapUnitRadius = radius;
 
-    if (unit === "m") {
-        mapUnitRadius = radius;
-    }
-    else if (unit === "degrees") {
+    if (unit === "degrees") {
         mapUnitRadius = radius * roh / earthRadius;
     }
 
@@ -121,7 +118,7 @@ function drawOuterCircle (feature, mapProjection, source, options = {}) {
 
 /**
  * Create a feature for the (inner) circle of draw type: circle or double circle.
- * @param {ol/feature} feature The ol feature.vb
+ * @param {ol/feature} feature The ol feature.
  * @param {Object} mapProjection The map projection.
  * @param {Object} [options={}] The options for drawing features.
  * @param {Number} [options.innerRadius] The radius for the (inner) circle.
