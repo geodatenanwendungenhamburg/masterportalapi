@@ -2,6 +2,15 @@ import Feature from "ol/Feature.js";
 import Point from "ol/geom/Point.js";
 import Circle from "ol/geom/Circle.js";
 
+jest.mock("../../src/shared/utils", () => {
+    const actual = jest.requireActual("../../src/shared/utils");
+
+    return {
+        ...actual,
+        transformGeometry: jest.fn((sourceProjectionCode, geometry) => geometry)
+    };
+});
+
 import exportItem, {setCsvAttributes} from "../../src/shared/exportItem";
 
 describe("src/shared/exportItem.js", () => {
