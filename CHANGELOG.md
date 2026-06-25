@@ -9,6 +9,21 @@
 ### Added
 
 ### Changed
+- The following packages have been updated:
+  - dependencies:
+    - core-js: 3.33.1 to 3.49.0
+    - dayjs: 1.11.10 to 1.11.21
+    - proj4: 2.10.0 to 2.20.9
+  - devDependencies:
+    - @parcel/config-default: 2.15.4 to 2.16.4
+    - @parcel/transformer-sass: 2.15.4 to 2.16.4
+    - canvas: 3.2.0 to 3.2.3
+    - jest: 30.1.3 to 30.4.2
+    - jest-environment-jsdom: 30.1.2 to 30.4.1
+    - jsdoc: 4.0.2 to 4.0.5
+    - parcel: 2.15.4 to 2.16.4
+    - sass: 1.69.4 to 1.101.0
+    - url: 0.11.3 to 0.11.4
 
 ### Deprecated
 
