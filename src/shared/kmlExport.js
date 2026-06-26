@@ -88,10 +88,9 @@ function transform (coords, isPolygon) {
 
 /**
  * Transforms the given geometry from EPSG:25832 to EPSG:4326.
- * If the geometry is not an instance of ol/LineString, ol/Point or ol/Polygon an Alert is send to the user.
- *
+ * Returns an empty array for unsupported geometry types.
  * @param {module:ol/geom/Geometry} geometry Geometry to be transformed.
- * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed Geometry or an empty array.
+ * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed geometry or an empty array.
  */
 function transformCoordinates (geometry) {
     const coords = geometry.getCoordinates(),
@@ -108,7 +107,6 @@ function transformCoordinates (geometry) {
             return coords;
 
         default:
-            // dispatch("Alerting/addSingleAlert", i18next.t("common:modules.download.unknownGeometry", {geometry: type}), {root: true});
             return [];
     }
 }
@@ -117,7 +115,7 @@ function transformCoordinates (geometry) {
  * Gets a kml document which has custom attributes from given features added.
  * @param {ol.Feature[]} features The features.
  * @param {Object} format The format of the features.
- * @returns {Document|null} The KML Document
+ * @returns {Document|null} The KML document.
  */
 function getKMLWithCustomAttributes (features, format) {
     if (!Array.isArray(features) || !isObject(format) || !features.some(feature => typeof feature.get === "function" && feature.get("attributes"))) {
@@ -161,10 +159,10 @@ function getKMLWithCustomAttributes (features, format) {
 }
 
 /**
- * convert features to string
- * @param {ol.Feature[]} features - the used features
- * @param {Object} format of the features
- * @return {String} convertedFeatures - The features converted to KML.
+ * Converts features to a KML string.
+ * @param {ol.Feature[]} features The used features.
+ * @param {Object} format Format used to serialize the features.
+ * @returns {String} The features converted to KML.
  */
 function convertFeatures (features, format) {
     const convertedFeatures = [];
@@ -191,7 +189,7 @@ function convertFeatures (features, format) {
 
 /**
  * Converts the features to KML while also saving its style information.
- * @param {ol.Feature[]} features - the used features
+ * @param {ol.Feature[]} features The used features.
  * @returns {String} The features written in KML as a String.
  */
 async function convertFeaturesToKml (features) {
@@ -284,8 +282,8 @@ async function convertFeaturesToKml (features) {
 
 /**
  * Sets the attributes of each feature as requested by the converting function.
- * @param {ol/Feature[]} features - An array of features.
- * @returns {ol/Feature[]|Boolean} The features incl. the necessary attributes. False if the given parameter is not an array.
+ * @param {ol/Feature[]} features An array of features.
+ * @returns {ol/Feature[]|Boolean} The features including the necessary attributes. False if the given parameter is not an array.
  */
 function setKmlAttributes (features) {
     if (!Array.isArray(features)) {
@@ -315,8 +313,8 @@ function setKmlAttributes (features) {
 
 /**
  * Transforms circle geometries so they can be exported.
- * @param {*} features the features with geometries to be transformed
- * @returns {*} Features with transformed geometries.
+ * @param {ol/Feature[]} features The features with geometries to be transformed.
+ * @returns {ol/Feature[]} Features with transformed geometries.
  */
 function transformGeometries (features) {
     const resultFeatures = [];

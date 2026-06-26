@@ -42,8 +42,9 @@ function transform (sourceProjectionCode, coords, isPolygon) {
     }
     return isPolygon ? [transCoords] : transCoords;
 }
+
 /**
- * requests the transformPoint function for each individual point
+ * Requests the transformPoint function for each individual point.
  * @param {String} sourceProjectionCode source projection.
  * @param {Number[]} coords Coordinates.
  * @returns {Number[]} Transformed coordinates.
@@ -58,11 +59,11 @@ function transformMultiPoint (sourceProjectionCode, coords) {
 }
 
 /**
- * Transforms the given geometry from EPSG:25832 to EPSG:4326.
- * If the geometry is not an instance of ol/LineString, ol/Point or ol/Polygon an Alert is send to the user.
+ * Transforms the given geometry from the provided source projection to EPSG:4326.
+ * Returns an empty array for unsupported geometry types.
  * @param {module:ol/geom/Geometry} geometry Geometry to be transformed.
- * @param {String} projection The EPSG projection that is used.
- * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed Geometry or an empty array.
+ * @param {String} projection Source projection code.
+ * @returns {(Array<number>|Array<Array<number>>|Array<Array<Array<number>>>)} The transformed geometry or an empty array.
  */
 function transformCoordinates (geometry, projection) {
     const coords = geometry.getCoordinates(),
@@ -82,20 +83,19 @@ function transformCoordinates (geometry, projection) {
 
 /**
  * Converts the features from OpenLayers Features to features in the chosen format.
- * @param {Object} features the features to be converted
- * @param {module:ol/format} format Format in which the features should be saved.
- * @param {String} projection The EPSG projection that is used.
+ * @param {ol/Feature[]} features The features to be converted.
+ * @param {module:ol/format/Feature} format Format in which the features should be saved.
+ * @param {String} projection Source projection code.
  * @returns {String} The features written in the chosen format as a String.
  */
-async function convertFeatures (features, format, projection) {
-
+function convertFeatures (features, format, projection) {
     const convertedFeatures = [];
     let notSupportedGeometryType = false,
         supportedGeometryType = false;
 
     for (const feature of features) {
         const cloned = feature.clone(),
-            transCoords = await transformCoordinates(cloned.getGeometry(), projection);
+            transCoords = transformCoordinates(cloned.getGeometry(), projection);
 
         if (transCoords.length === 3 && transCoords[2] === 0) {
             transCoords.pop();
@@ -130,6 +130,12 @@ async function convertFeatures (features, format, projection) {
     return format.writeFeatures(convertedFeatures);
 }
 
+/**
+ * Prepares features for export.
+ * @param {ol/Feature[]} features Features to prepare.
+ * @param {String} code The EPSG-Code in which the features are coded.
+ * @returns {ol/Feature[]} Prepared features.
+ */
 function prepareFeatures (features, code) {
     const downloadFeatures = [];
 
@@ -157,7 +163,7 @@ function prepareFeatures (features, code) {
  * Sets the geometry of each feature as WKT and epsg to its attributes.
  * @param {ol/Feature[]} features - An array of features.
  * @param {String} code The EPSG-Code in which the features are coded.
- * @returns {ol/Feature[]|Boolean} The features incl. the wkt geometries. False if the given parameter is not an array.
+ * @returns {ol/Feature[]|Boolean} The features including WKT geometries. False if the given parameter is not an array.
  */
 export function setCsvAttributes (features, code) {
     if (!Array.isArray(features)) {
@@ -185,7 +191,6 @@ export function setCsvAttributes (features, code) {
 
     return features;
 }
-
 
 export default {
     convertFeatures,
