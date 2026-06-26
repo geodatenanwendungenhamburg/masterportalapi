@@ -26,7 +26,7 @@ function initializeLayerList (layerConf = defaults.layerConf, callback) {
     }
 
     // case: parameter is URL
-    fetch(layerConf, {method: "GET", cache: "no-cache", timeout: 10000})
+    fetch(layerConf, {method: "GET", cache: "no-store"})
         .then((response) => {
             return response.json()
                 .then((json) => {
