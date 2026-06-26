@@ -31,6 +31,7 @@ function initializeLayerList (layerConf = defaults.layerConf, callback) {
             return response.json()
                 .then((json) => {
                     layerList = json;
+                    console.log("Layer list initialized with " + layerList.length + " entries from '" + layerConf + "'");
                     if (typeof callback === "function") {
                         return callback(layerList);
                     }
