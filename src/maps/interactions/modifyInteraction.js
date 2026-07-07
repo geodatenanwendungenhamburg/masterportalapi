@@ -3,7 +3,9 @@ import {Modify} from "ol/interaction.js";
 /**
  * Create the modify interaction.
  * @param {ol/source} source The vector layer source containing the features to be modified.
- * @param {Object} options Optional object to register watchers for modification of features.
+ * @param {Object} [options={}] Optional object to register watchers for modification of features.
+ * @param {Function} [options.onModifyEnd] Callback function triggered when a modify operation ends.
+ * @param {Function} [options.onModifyStart] Callback function triggered when a modify operation starts.
  * @returns {ol/interaction/Modify} The modify interaction.
  */
 function createModifyInteraction (source, options = {}) {

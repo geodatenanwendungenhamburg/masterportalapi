@@ -29,6 +29,18 @@ describe("src/maps/interactions/modifyInteraction.js", () => {
             expect(onModifyStart).toHaveBeenCalledTimes(1);
             expect(onModifyEnd).toHaveBeenCalledTimes(1);
         });
+
+        it("should work with only onModifyEnd provided", () => {
+            const source = new VectorSource(),
+                onModifyEnd = jest.fn(),
+                modifyInteraction = modifyInteractions.createModifyInteraction(source, {
+                    onModifyEnd
+                });
+
+            modifyInteraction.dispatchEvent("modifyend");
+
+            expect(onModifyEnd).toHaveBeenCalledTimes(1);
+        });
     });
 
 });

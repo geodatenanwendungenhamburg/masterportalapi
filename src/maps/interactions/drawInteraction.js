@@ -94,6 +94,7 @@ function transformMapUnitRadius (radius, mapProjection) {
  * @param {Object} [options={}] The options for drawing features.
  * @param {Number} [options.innerRadius] The radius for the inner circle.
  * @param {Number} [options.outerRadius] The radius for the outer circle.
+ * @param {String} [options.unit] The unit for the radii (e.g. "m", "km").
  * @returns {void}
  */
 function drawOuterCircle (feature, mapProjection, source, options = {}) {
@@ -122,6 +123,7 @@ function drawOuterCircle (feature, mapProjection, source, options = {}) {
  * @param {Object} mapProjection The map projection.
  * @param {Object} [options={}] The options for drawing features.
  * @param {Number} [options.innerRadius] The radius for the (inner) circle.
+ * @param {String} [options.unit] The unit for the radius (e.g. "m", "km").
  * @returns {void}
  */
 function drawInnerCircle (feature, mapProjection, options = {}) {
@@ -141,6 +143,7 @@ function drawInnerCircle (feature, mapProjection, options = {}) {
  * @param {Number} [options.innerRadius] The radius for the inner circle.
  * @param {Boolean} [options.interactive] Circle is drawn interactively or not.
  * @param {Number} [options.outerRadius] The radius for the outer circle.
+ * @param {String} [options.unit] The unit for the radii (e.g. "m", "km").
  * @returns {void}
  */
 function drawCircle (drawInteraction, drawType, mapProjection, source, options = {}) {
@@ -252,7 +255,7 @@ function setStyleToDrawText (drawInteraction) {
  * Create the draw interaction.
  * @param {String} drawType The current draw type.
  * @param {ol/source} source The vector layer source for draw features.
- * @param {Object} iconList The list of symbols for the draw type symbols.
+ * @param {Object[]} [iconList=[]] The list of symbols for the draw type symbols.
  * @param {String} [wfsImgPath=""] Path to the image folder, used as prefix when symbol value is not an absolute path.
  * @returns {ol/interaction/Draw|null} The draw interaction.
  */
