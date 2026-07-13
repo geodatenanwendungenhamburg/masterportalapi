@@ -24,6 +24,7 @@
     - parcel: 2.15.4 to 2.16.4
     - sass: 1.69.4 to 1.101.0
     - url: 0.11.3 to 0.11.4
+    - @cesium/engine: 23.0.0 to 26.0.0
 
 ### Deprecated
 
