@@ -9,6 +9,35 @@ import {getRuleForIndex, getRulesForFeature} from "./lib/getRuleForIndex";
 
 const legendsOfAllStyles = [];
 let legendInformationLength = 0;
+const warnedLayerIdsWithDefaultStyleFallback = new Set();
+
+/**
+ * Warns once per layer when no styling rule matches and default styles are used.
+ * @param {object} [warningContext={}] context for the warning
+ * @param {string} [warningContext.layerId] id of the affected layer
+ * @returns {void}
+ */
+function warnAboutDefaultStyleFallback (warningContext = {}) {
+    const {layerId} = warningContext;
+
+    if (typeof layerId === "string" && layerId.length > 0) {
+        if (warnedLayerIdsWithDefaultStyleFallback.has(layerId)) {
+            return;
+        }
+        warnedLayerIdsWithDefaultStyleFallback.add(layerId);
+        console.warn(`No valid styling rule found for layer "${layerId}". Falling back to defaults.`);
+        return;
+    }
+    console.warn("No valid styling rule found. Falling back to defaults");
+}
+
+/**
+ * Clears cached default-style fallback warnings.
+ * @returns {void}
+ */
+function clearDefaultStyleFallbackWarnings () {
+    warnedLayerIdsWithDefaultStyleFallback.clear();
+}
 
 /**
  * Returns true if feature contains some kind of MultiGeometry
@@ -152,9 +181,10 @@ function getMultiGeometryStyle (geometryType, feature, rules, isClustered, wfsIm
  * @param   {object[]}  rules       styling rules to check. Array can be empty.
  * @param   {Boolean} isClustered Flag to show if feature is clustered.
  * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
+ * @param   {object} [warningContext={}] context for warning deduplication
  * @returns {ol/style/Style}    style is always returned
  */
-function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
+function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig, warningContext = {}) {
     const geometryType = feature ? feature.getGeometry().getType() : "cesium";
 
     // For simple geometries the first styling rule is used.
@@ -168,7 +198,7 @@ function getGeometryStyle (feature, rules, isClustered, wfsImgPathFromConfig) {
     }
 
     // fall back to default styles as configured in geomType specific styles, if no rule is matched
-    console.warn("No valid styling rule found. Falling back to defaults");
+    warnAboutDefaultStyleFallback(warningContext);
     return isMultiGeometry(geometryType)
         ? getMultiGeometryStyle(geometryType, feature, undefined, isClustered, wfsImgPathFromConfig)
         : getSimpleGeometryStyle(geometryType, feature, undefined, isClustered, wfsImgPathFromConfig);
@@ -224,14 +254,15 @@ function captureLegendFromFeature (styleId, legendInformation) {
      * @param   {ol/feature}  feature     the feature to style
      * @param   {Boolean} isClustered is feature clustered
      * @param   {String} wfsImgPathFromConfig path to wfsImg from Config
-     * @returns {ol/style/Style} style used in layer model
+    * @param   {object} [warningContext={}] context for warning deduplication
+    * @returns {ol/style/Style} style used in layer model
      */
-function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig) {
+function createStyle (styleObject, feature, isClustered, wfsImgPathFromConfig, warningContext = {}) {
     const rules = getRulesForFeature(styleObject, feature),
         // Takes first rule in array for labeling so that is giving precedence to the order in the style.json
         style = Array.isArray(rules) && rules.length > 0 ? rules[0].style : null,
         hasLabelField = style?.labelField,
-        geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig),
+        geometryStyle = getGeometryStyle(feature, rules, isClustered, wfsImgPathFromConfig, warningContext),
         legendInformation = Array.isArray(geometryStyle) ? geometryStyle[0].legendInfos : geometryStyle.legendInfos;
     let styleObjectGeometry = null;
 
@@ -327,5 +358,6 @@ export default {
     getGeometryStyle,
     getLabelStyle,
     createStyle,
+    clearDefaultStyleFallbackWarnings,
     returnLegendByStyleId
 };
