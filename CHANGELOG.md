@@ -26,6 +26,7 @@
     - core-js: 3.33.1 to 3.49.0
     - dayjs: 1.11.10 to 1.11.21
     - proj4: 2.10.0 to 2.20.9
+    - ol-mapbox-style: 13.3.0 to 13.4.1
   - devDependencies:
     - @parcel/config-default: 2.15.4 to 2.16.4
     - @parcel/transformer-sass: 2.15.4 to 2.16.4
