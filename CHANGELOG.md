@@ -3,10 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
  
-## Unreleased - in development
-### __Breaking Changes__
-
-### Added
+## 2.63.0 - 2026-07-17
 
 ### Changed
 - The following packages have been updated:
@@ -25,10 +22,6 @@
     - sass: 1.69.4 to 1.101.0
     - url: 0.11.3 to 0.11.4
     - @cesium/engine: 23.0.0 to 26.0.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - Issue \#1623: fix label for configuration of style properties as array of objects.
