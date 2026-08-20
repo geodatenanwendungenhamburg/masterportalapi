@@ -25,3 +25,11 @@ Both methods may be required for useful user feedback. For example, a WMS may an
 |``npm run generate-jsdoc``|Generates the project documentation within the folder ``./docs``.|
 |``npm test``|Runs all tests. Prints code coverage to console.|
 |``npm run test:watch``|Runs all tests in watch mode. Good practive to let this run during development in a separate terminal. |
+
+## Community
+
+The Bitbucket issue tracker is being removed on August 20, 2026. All issues have been migrated to openCode. You can access them via the link listed below, where you can also create new issues.
+
+* [Issue tracker](https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi/-/work_items)
+
+**Please do not report security vulnerabilities via the public issue tracker.** Instead, report them privately by email as described in our [Security Policy](./SECURITY.md).

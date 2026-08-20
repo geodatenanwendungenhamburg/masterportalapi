@@ -7,6 +7,7 @@
 ### __Breaking Changes__
 
 ### Added
+- Readme: Information and link to issues in opencode added.
 
 ### Changed
 
