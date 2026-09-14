@@ -10,6 +10,11 @@
 - Readme: Information and link to issues in opencode added.
 
 ### Changed
+- The following packages have been updated:
+  - dependencies:
+    - ol: 10.9.0 to 10.10.0
+    - ol-mapbox-style: 13.4.1 to 13.5.0
+    - olcs: 2.23.0 to 2.23.1
 
 ### Deprecated
 
