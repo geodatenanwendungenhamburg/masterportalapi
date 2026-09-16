@@ -54,6 +54,16 @@ describe("src/utils/attributeMapper.js", () => {
                 result: 123
             });
         });
+        it("should map object with 0 as valid numeric value", () => {
+            const mappingObj = {
+                random_int: "count"
+            };
+            const propsWithZero = Object.assign({}, props, {random_int: 0});
+
+            expect(mapAttributes(propsWithZero, mappingObj)).toEqual({
+                count: 0
+            });
+        });
         it("should map object with multiple attributes", () => {
             const mappingObj = {
                 random_text: "text",

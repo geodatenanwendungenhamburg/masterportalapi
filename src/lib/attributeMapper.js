@@ -266,7 +266,7 @@ function mapAttributes (properties, mappingObject, isNested = true) {
                 value = prepareValueFromObject(key, newKey, properties);
                 newKey = newKey.name;
             }
-            if (value && value !== "undefined") {
+            if (value !== undefined && value !== null && value !== "undefined") {
                 mappedProperties[newKey] = value;
             }
         });
