@@ -15,6 +15,8 @@
     - ol: 10.9.0 to 10.10.0
     - ol-mapbox-style: 13.4.1 to 13.5.0
     - olcs: 2.23.0 to 2.23.1
+  - peerDependencies:
+    - @cesium/engine: 26.0.0 to 26.3.0
 
 ### Deprecated
 
