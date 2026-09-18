@@ -8,6 +8,8 @@
 
 ### Added
 - Readme: Information and link to issues in opencode added.
+- Draw: Added functions to draw and modify features: write text and draw square. Integrated wfsImgPath to apply configured styles.
+- Export: Added functions to export drawn features in kml, geojson, gpx and csv formats.
 
 ### Changed
 - The following packages have been updated:

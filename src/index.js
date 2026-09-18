@@ -16,6 +16,8 @@ import {search, setGazetteerUrl} from "./searchAddress";
 import setBackgroundImage from "./lib/setBackgroundImage";
 import ping from "./lib/ping";
 import ogcApiProcesses from "./api/ogcApiProcesses";
+import * as exportItem from "./shared/exportItem";
+import * as kmlExport from "./shared/kmlExport";
 
 export {
     createMapView,
@@ -36,5 +38,7 @@ export {
     search,
     crs,
     webgl,
-    ogcApiProcesses
+    ogcApiProcesses,
+    exportItem,
+    kmlExport
 };
