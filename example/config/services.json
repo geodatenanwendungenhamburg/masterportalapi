@@ -58,7 +58,7 @@
   {
     "id": "4001",
     "name": "Gelaende",
-    "url": "https://daten-hamburg.de/gdi3d/datasource-data/Gelaende",
+    "url": "https://www.daten-hamburg.de/gdi3d/datasource-data/Gelaende",
     "typ": "Terrain3D",
     "cesiumTerrainProviderOptions": {
       "requestVertexNormals": true
@@ -67,7 +67,7 @@
   {
     "id": "4002",
     "name": "Gebäude LoD2",
-    "url": "https://daten-hamburg.de/gdi3d/datasource-data/LoD2",
+    "url": "https://www.daten-hamburg.de/gdi3d/datasource-data/LoD2",
     "typ": "TileSet3D",
     "styleId": "3DTileSetStyle",
     "cesium3DTilesetOptions": {
@@ -80,7 +80,7 @@
     "typ": "Entities3D",
     "entities": [
       {
-        "url": "https://daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
+        "url": "https://www.daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
         "attributes": {
           "name": "einfaches Haus in Planten und Blomen"
         },
@@ -95,7 +95,7 @@
         "show": true
       },
       {
-        "url": "https://daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
+        "url": "https://www.daten-hamburg.de/gdi3d/datasource-data/Simple_Building.glb",
         "attributes": {
           "name": "einfaches Haus im See"
         },
