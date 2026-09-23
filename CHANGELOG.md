@@ -25,6 +25,7 @@
 ### Removed
 
 ### Fixed
+- AttributeMapper: prevented mapping of empty strings for GFI.
 
 ---
  
