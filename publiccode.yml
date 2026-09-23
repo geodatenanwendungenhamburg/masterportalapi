@@ -7,7 +7,7 @@ categories:
   - geographic-information-systems, api
 description:
   de:
-    apiDocumentation: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/README.md'
+    apiDocumentation: 'https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi/-/tree/master/README.md'
     documentation: 'https://www.masterportal.org/dokumentation'
     features:
       - OGC-konform
@@ -82,7 +82,7 @@ name: Masterportal
 platforms:
   - web
 releaseDate: '2026-07-17'
-roadmap: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi/src/master/'
+roadmap: 'https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi/-/tree/master/'
 softwareType: api
 softwareVersion: 2.63.0
-url: 'https://bitbucket.org/geowerkstatt-hamburg/masterportalapi.git'
+url: 'https://gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi.git'
