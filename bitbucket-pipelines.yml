@@ -8,15 +8,15 @@ pipelines:
     tags:
         'v2.*.*':
             -   step:
-                    name: deploy on openCode
+                    name: deploy on new openCode
                     script:
-                        - echo 'deploy to opencode:'$BITBUCKET_TAG
+                        - echo 'deploy to new opencode:'$BITBUCKET_TAG
                         - git fetch --all --tags
                         - git checkout tags/$BITBUCKET_TAG
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git $BITBUCKET_TAG
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi.git $BITBUCKET_TAG
                         - git clone --single-branch --branch master https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportalapi.git
                         - cd masterportalapi
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git -f
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi.git -f
     custom: # Pipelines that are triggered manually
         npm audit:
             -   step:
@@ -26,18 +26,18 @@ pipelines:
                     script:
                         - npm install
                         - npm audit --json
-        deploy last tag on openCode:
+        deploy last tag on new openCode:
             - variables:
                 - name: BITBUCKET_TAG
                   description: tag to publish docs for
             -   step:
-                    name: deploy last tag on openCode
+                    name: deploy last tag on new openCode
                     script:
                         - apt-get update && apt-get install -y curl wput jq
                         - git fetch --all --tags
-                        - echo 'deply to opencode:'$BITBUCKET_TAG
+                        - echo 'deploy to new opencode:'$BITBUCKET_TAG
                         - git checkout tags/$BITBUCKET_TAG
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git $BITBUCKET_TAG
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi.git $BITBUCKET_TAG
                         - git clone --single-branch --branch master https://geowerkstatt@bitbucket.org/geowerkstatt-hamburg/masterportalapi.git
                         - cd masterportalapi
-                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/geowerkstatt-hamburg/masterportalapi.git -f
+                        - git push https://$OpenCode_User:$OpenCode_Password@gitlab.opencode.de/lgvhh/urban-data-solutions/masterportalapi.git -f
