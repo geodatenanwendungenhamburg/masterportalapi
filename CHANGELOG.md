@@ -3,8 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
  
-## Unreleased - in development
-### __Breaking Changes__
+## 2.64.0 - 2026-09-23
 
 ### Added
 - Readme: Information and link to issues in opencode added.
@@ -19,10 +18,6 @@
     - olcs: 2.23.0 to 2.23.1
   - peerDependencies:
     - @cesium/engine: 26.0.0 to 26.3.0
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 - AttributeMapper: prevented mapping of empty strings for GFI.
