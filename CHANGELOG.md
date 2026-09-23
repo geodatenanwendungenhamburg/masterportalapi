@@ -2,6 +2,22 @@
  All important changes in this project are stored in this file.
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
+
+## Unreleased - in development
+
+### __Breaking Changes__
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+---
  
 ## 2.64.0 - 2026-09-23
 
