@@ -57,6 +57,30 @@ describe("wms.js", function () {
             expect(extendedParams.STYLES).toEqual("The style");
             expect(extendedParams.TIME).not.toBeDefined();
         });
+        it("adds the parameter SLD", () => {
+            const extendedParams = wms.addOptionalParams(params, {SLD: "sld"});
+
+            expect(extendedParams.CACHEID).toEqual("yeah");
+            expect(extendedParams.FORMAT).toEqual("a");
+            expect(extendedParams.LAYERS).toEqual("b");
+            expect(extendedParams.VERSION).toEqual("c");
+            expect(extendedParams.TRANSPARENT).toEqual("d");
+            expect(extendedParams.SINGLETILE).toEqual("e");
+            expect(extendedParams.CQL_FILTER).toEqual("f");
+            expect(extendedParams.SLD).toEqual("sld");
+        });
+        it("adds the parameter GFI_TEMPLATE", () => {
+            const extendedParams = wms.addOptionalParams(params, {GFI_TEMPLATE: "GFI_TEMPLATE"});
+
+            expect(extendedParams.CACHEID).toEqual("yeah");
+            expect(extendedParams.FORMAT).toEqual("a");
+            expect(extendedParams.LAYERS).toEqual("b");
+            expect(extendedParams.VERSION).toEqual("c");
+            expect(extendedParams.TRANSPARENT).toEqual("d");
+            expect(extendedParams.SINGLETILE).toEqual("e");
+            expect(extendedParams.CQL_FILTER).toEqual("f");
+            expect(extendedParams.GFI_TEMPLATE).toEqual("GFI_TEMPLATE");
+        });
     });
 
     describe("makeParams", function () {

@@ -53,6 +53,7 @@ describe("src/shared/kmlExport.js", () => {
         });
 
         it("returns an empty array for unsupported geometry types", () => {
+            console.warn = jest.fn();
             const geometry = {
                 getCoordinates: () => [],
                 getType: () => "GeometryCollection"

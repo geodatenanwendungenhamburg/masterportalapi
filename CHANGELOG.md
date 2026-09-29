@@ -8,6 +8,7 @@
 ### __Breaking Changes__
 
 ### Added
+- WMS-Layer: Added additional request parameter `SLD` and `GFI_TEMPLATE`.
 
 ### Changed
 

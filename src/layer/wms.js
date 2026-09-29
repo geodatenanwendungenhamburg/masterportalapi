@@ -25,23 +25,19 @@ export function generateSessionId () {
  */
 export function addOptionalParams (params, rawLayer) {
     const extendedParams = {...params},
-        rawLayerParams = {},
         optionalParams = [
             "STYLES",
             "TIME",
-            "CRS"
+            "CRS",
+            "SLD",
+            "GFI_TEMPLATE"
         ];
-
-    Object.keys(rawLayer).forEach(key => {
-        rawLayerParams[key.toUpperCase()] = rawLayer[key];
-    });
 
     optionalParams.forEach(optionalParam => {
         if (rawLayer[optionalParam]) {
             extendedParams[optionalParam] = rawLayer[optionalParam];
         }
     });
-
     return extendedParams;
 }
 
