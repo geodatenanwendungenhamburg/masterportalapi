@@ -13,6 +13,7 @@ import {getBottomLeft, getBottomRight, getTopRight, getTopLeft} from "ol/extent.
 import {transformExtent} from "ol/proj.js";
 import StaticImageSource from "ol/source/ImageStatic";
 import proj4 from "proj4";
+import ReprojectedWmtsTilingScheme, {matrixSizesDoubleCleanly} from "./reprojectedWmtsTilingScheme.js";
 
 /**
  * Represents a WMSRasterSynchronizer.
@@ -130,8 +131,11 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
             else if (wmtsProjCode === "EPSG:3857") {
                 tilingScheme = new Cesium.WebMercatorTilingScheme();
             }
+            else if (wmtsProjCode && Array.isArray(source.matrixSizes) && matrixSizesDoubleCleanly(source.matrixSizes)) {
+                tilingScheme = new ReprojectedWmtsTilingScheme(wmtsProjCode, source.getTileGrid(), source.matrixSizes);
+            }
             else {
-                console.warn(`WMTS layer "${olLayer.get("name")}" (id "${olLayer.get("id")}") uses unsupported projection ${wmtsProjCode}; skipping 3D rendering.`);
+                console.warn(`WMTS layer "${olLayer.get("name")}" (id "${olLayer.get("id")}") uses projection ${wmtsProjCode} with a tile matrix set Cesium cannot render; skipping 3D rendering.`);
                 return null;
             }
             provider = new Cesium.WebMapTileServiceImageryProvider({
@@ -142,7 +146,8 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
                 tileMatrixSetID: source.getMatrixSet(),
                 tileMatrixLabels: source.getTileGrid().getMatrixIds(),
                 credit: source.getAttributions(),
-                tilingScheme
+                tilingScheme,
+                ...tilingScheme instanceof ReprojectedWmtsTilingScheme && {maximumLevel: source.matrixSizes.length - 1}
             });
         }
         else {
