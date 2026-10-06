@@ -121,6 +121,19 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
             if (typeof source.getUrls !== "function" || !Array.isArray(source.getUrls())) {
                 return null;
             }
+            const wmtsProjCode = source.getProjection()?.getCode();
+            let tilingScheme;
+
+            if (wmtsProjCode === "EPSG:4326") {
+                tilingScheme = new Cesium.GeographicTilingScheme();
+            }
+            else if (wmtsProjCode === "EPSG:3857") {
+                tilingScheme = new Cesium.WebMercatorTilingScheme();
+            }
+            else {
+                console.warn(`WMTS layer "${olLayer.get("name")}" (id "${olLayer.get("id")}") uses unsupported projection ${wmtsProjCode}; skipping 3D rendering.`);
+                return null;
+            }
             provider = new Cesium.WebMapTileServiceImageryProvider({
                 url: source.getUrls()[0],
                 format: source.getFormat(),
@@ -128,7 +141,8 @@ class WMSRasterSynchronizer extends AbstractSynchronizer {
                 style: source.getStyle(),
                 tileMatrixSetID: source.getMatrixSet(),
                 tileMatrixLabels: source.getTileGrid().getMatrixIds(),
-                credit: source.getAttributions()
+                credit: source.getAttributions(),
+                tilingScheme
             });
         }
         else {

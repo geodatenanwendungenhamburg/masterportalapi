@@ -50,11 +50,13 @@ function getWMTSCapabilities (url) {
 }
 
 /**
-* Creates the LayerSource from definitions in the service.json for this WMTSLayer.
-* @param {Object} attrs attributes of the layer
-* @param {WMTS} tileLayer layer object
-* @returns {void}
-*/
+ * Creates the LayerSource from definitions in the service.json for this WMTSLayer.
+ * For layers configured directly without capabilities metadata, missing matrixSizes and
+ * scales values are derived from the generated tile pyramid.
+ * @param {Object} attrs attributes of the layer.
+ * @param {WMTS} tileLayer layer object.
+ * @returns {void}
+ */
 function createLayerSourceByDefinitions (attrs, tileLayer) {
     const projection = getProjection(attrs.coordinateSystem),
         extent = projection.getExtent(),
@@ -91,9 +93,18 @@ function createLayerSourceByDefinitions (attrs, tileLayer) {
 
     if (size) {
         generateArrays(resolutions, matrixIds, resLength, size);
+
+        if (!attrs.matrixSizes) {
+            attrs.matrixSizes = matrixIds.map((_, i) => [Math.pow(2, i), Math.pow(2, i)]);
+        }
+        if (!attrs.scales) {
+            const metersPerUnit = projection.getMetersPerUnit() || 1;
+
+            attrs.scales = resolutions.map(res => res * metersPerUnit / 0.00028);
+        }
     }
     else {
-        showErrorMessage(attrs.name, `${projection.getCode()} has been given as projection to wmts.js for layer with id ${attrs.id}, but only "EPSG:4326" and "EPSG:3857" are supported. Please use the "capabilitiesUrl" and "optionsFromCapabilities" configuration parameters on this layer.`);
+        showErrorMessage(`${projection.getCode()} has been given as projection to wmts.js for layer with id ${attrs.id}, but no extent is defined for it, so the resolutions cannot be derived. Please register an extent for this projection or use the "capabilitiesUrl" and "optionsFromCapabilities" configuration parameters on this layer.`, attrs.name);
     }
 
     source.matrixSizes = attrs.matrixSizes;

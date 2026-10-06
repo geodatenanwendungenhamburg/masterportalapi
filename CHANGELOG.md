@@ -9,6 +9,7 @@
 
 ### Added
 - WMS-Layer: Added additional request parameter `SLD` and `GFI_TEMPLATE`.
+- Issue #1646: Derive missing tile matrix metadata for directly configured WMTS layers and select the matching Cesium tiling scheme for EPSG:4326 and EPSG:3857. Skip unsupported projected WMTS layers in 3D.
 
 ### Changed
 
