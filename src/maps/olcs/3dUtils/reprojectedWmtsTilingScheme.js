@@ -45,15 +45,24 @@ class ReprojectedWmtsTilingScheme {
     }
 
     /**
+     * Returns the tile width and height at the given level.
+     * @param {number} level The tile matrix level.
+     * @returns {[number, number]} The tile dimensions.
+     */
+    getTileSizeAtLevel (level) {
+        const tileSize = this.tileGrid.getTileSize(level);
+
+        return Array.isArray(tileSize) ? tileSize : [tileSize, tileSize];
+    }
+
+    /**
      * Calculates the geographic rectangle covered by all tiles of level 0.
      * @returns {Cesium.Rectangle} The rectangle in EPSG:4326 (radians).
      */
     createRectangleForWholeExtent () {
         const origin = this.tileGrid.getOrigin(0),
             resolution = this.tileGrid.getResolution(0),
-            tileSize = this.tileGrid.getTileSize(0),
-            tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize,
-            tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize,
+            [tileWidth, tileHeight] = this.getTileSizeAtLevel(0),
             matrixWidth = this.matrixSizes[0][0],
             matrixHeight = this.matrixSizes[0][1],
             west = origin[0],
@@ -132,9 +141,7 @@ class ReprojectedWmtsTilingScheme {
     tileXYToNativeRectangle (x, y, level) {
         const origin = this.tileGrid.getOrigin(level),
             resolution = this.tileGrid.getResolution(level),
-            tileSize = this.tileGrid.getTileSize(level),
-            tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize,
-            tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize,
+            [tileWidth, tileHeight] = this.getTileSizeAtLevel(level),
             west = origin[0] + (x * tileWidth * resolution),
             east = west + (tileWidth * resolution),
             north = origin[1] - (y * tileHeight * resolution),
@@ -193,9 +200,7 @@ class ReprojectedWmtsTilingScheme {
 
         const origin = this.tileGrid.getOrigin(level),
             resolution = this.tileGrid.getResolution(level),
-            tileSize = this.tileGrid.getTileSize(level),
-            tileWidth = Array.isArray(tileSize) ? tileSize[0] : tileSize,
-            tileHeight = Array.isArray(tileSize) ? tileSize[1] : tileSize,
+            [tileWidth, tileHeight] = this.getTileSizeAtLevel(level),
             x = Cesium.Math.toDegrees(position.longitude),
             y = Cesium.Math.toDegrees(position.latitude),
             projected = proj4("EPSG:4326", this.code, [x, y]),

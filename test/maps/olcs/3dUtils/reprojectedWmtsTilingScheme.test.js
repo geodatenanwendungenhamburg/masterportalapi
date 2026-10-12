@@ -31,6 +31,26 @@ describe("reprojectedWmtsTilingScheme.js", function () {
         expect(matrixSizesDoubleCleanly([[1, 1], [2, 4]])).toBe(false);
     });
 
+    it("normalizes scalar and two-dimensional tile sizes", function () {
+        const scalarTileGrid = new WMTSTileGrid({
+                origin: [0, 90],
+                resolutions: [1],
+                matrixIds: ["0"],
+                tileSize: 256
+            }),
+            arrayTileGrid = new WMTSTileGrid({
+                origin: [0, 90],
+                resolutions: [1],
+                matrixIds: ["0"],
+                tileSize: [128, 256]
+            }),
+            scalarScheme = new ReprojectedWmtsTilingScheme("EPSG:4326", scalarTileGrid, [[1, 1]]),
+            arrayScheme = new ReprojectedWmtsTilingScheme("EPSG:4326", arrayTileGrid, [[1, 1]]);
+
+        expect(scalarScheme.getTileSizeAtLevel(0)).toEqual([256, 256]);
+        expect(arrayScheme.getTileSizeAtLevel(0)).toEqual([128, 256]);
+    });
+
     it("returns the configured tile counts and locates a projected tile center", function () {
         proj4.defs("EPSG:25832", "+proj=utm +zone=32 +ellps=GRS80 +units=m +no_defs");
 
