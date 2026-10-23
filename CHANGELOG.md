@@ -3,21 +3,11 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## Unreleased - in development
-
-### __Breaking Changes__
+## 2.65.0 - 2026-10-23
 
 ### Added
 - WMS-Layer: Added additional request parameter `SLD` and `GFI_TEMPLATE`.
 - Issue #1646: Derive missing tile matrix metadata for directly configured WMTS layers and add a Cesium tiling scheme for supported projected WMTS matrix sets.
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
 
 ---
  
