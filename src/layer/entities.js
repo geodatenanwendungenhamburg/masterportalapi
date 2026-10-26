@@ -145,7 +145,6 @@ export function createDataSource (rawLayer, map, callback) {
     return null;
 }
 
-
 /**
  * Creates an entities layer to use in ol-Cesium map.
  * @param {Object} rawLayer layer specification as in services.json
@@ -154,26 +153,23 @@ export function createDataSource (rawLayer, map, callback) {
  * @param {string} [rawLayer.typ] typ of the layer, passed to help identification in services.json
  * @param {Array} [rawLayer.entities] array of entities to add
  * @param {OLCesium} map ol cesium map
- * @returns {Object} layer
+ * @returns {Object} layer instance
  */
 export function createLayer (rawLayer, map) {
     createDataSource(rawLayer, map);
-    this.values = {
-        name: rawLayer.name,
-        id: rawLayer.id,
-        typ: rawLayer.typ
-    };
-    return this;
-}
 
-/**
- * Returns the value for the given key of the rawlayer.
- * @param {String} key to get the value for
- * @returns {*} the value to the key
- */
-export function get (key) {
-    if (!this.values) {
-        return undefined;
-    }
-    return this.values[key];
+    const layerInstance = {
+        values: {
+            name: rawLayer?.name,
+            id: rawLayer?.id,
+            typ: rawLayer?.typ
+        },
+        get (key) {
+            return this.values[key];
+        },
+        createDataSource,
+        setVisible
+    };
+
+    return layerInstance;
 }

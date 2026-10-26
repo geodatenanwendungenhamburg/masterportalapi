@@ -17,6 +17,7 @@
 ### Removed
 
 ### Fixed
+- Issue \#1671: fix Entities3D layer initialization in production builds.
 
 ---
 
