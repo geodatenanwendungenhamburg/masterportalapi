@@ -10,6 +10,7 @@
 ### Added
 
 ### Changed
+- Changed Node.js support: Minimum supported versions are now Node.js **22.23.4** (LTS) and **24.22.1** (LTS). This update is required to address known security vulnerabilities in older Node.js versions.
 
 ### Deprecated
 
