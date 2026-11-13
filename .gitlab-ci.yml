@@ -1,8 +1,5 @@
 image: node:24.22.1
 
-clone:
-  depth: 5000
-
 stages:
   - audit
   - release
