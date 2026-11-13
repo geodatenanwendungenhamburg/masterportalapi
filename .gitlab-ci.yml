@@ -47,8 +47,6 @@ deploy last tag on Github:
     - git config --global user.name "$GIT_USER_NAME"
     - git config --global user.email "$GIT_USER_EMAIL"
     - git fetch --unshallow --tags origin || git fetch --depth=10000 --tags origin
-    - export GITHUB_DEPLOY_TAG="${GITHUB_DEPLOY_TAG:-$(git tag --sort=-v:refname | head -n 1)}"
-    - echo "deploy to GitHub tag: $GITHUB_DEPLOY_TAG"
     - git checkout "tags/$GITHUB_DEPLOY_TAG"
     - git remote add github https://x-access-token:${GITHUB_TOKEN}@github.com/geodatenanwendungenhamburg/masterportalapi.git
     - FORCE=""; if [ "$GITHUB_DEPLOY_TAG" = "latest" ]; then FORCE="--force"; fi
