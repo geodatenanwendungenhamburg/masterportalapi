@@ -38,6 +38,7 @@ deploy on Github:
       git checkout master
       git push --force github HEAD:refs/heads/master
 
+# ===== Custom Pipelines (triggered manually) =====
 deploy last tag on Github:
   stage: release
   image: alpine:3.20
