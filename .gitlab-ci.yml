@@ -6,6 +6,9 @@ stages:
 
 variables:
   GIT_DEPTH: "5000"
+  GITHUB_DEPLOY_TAG:
+    value: ""
+    description: "Tag to deploy to GitHub (e.g. v2.67.0 or latest). Only used when running the pipeline manually via CI/CD > Pipelines > New pipeline."
 
 npm audit:
   stage: audit
@@ -84,9 +87,8 @@ create_github_release:
 deploy last tag on Github:
   stage: release
   image: alpine:3.20
-  when: manual
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - if: '$CI_PIPELINE_SOURCE == "web" && $GITHUB_DEPLOY_TAG != ""'
   script:
     - apk add --no-cache git
     - git config --global user.name "$GIT_USER_NAME"
