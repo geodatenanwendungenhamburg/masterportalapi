@@ -3,7 +3,7 @@
 
  The [Semantic Versioning](https://semver.org/spec/v2.0.0.html) is used.
 
-## 2.66.0 - 2026-11-13
+## 2.67.0 - 2026-11-13
 
 ### Changed
 - Changed Node.js support: Minimum supported versions are now Node.js **22.23.4** (LTS) and **24.22.1** (LTS). This update is required to address known security vulnerabilities in older Node.js versions.
