@@ -16,11 +16,27 @@ npm audit:
     - npm install
     - npm audit --json
 
+create_release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/cli:latest
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v2\.\d+\.\d+$/'
+  script:
+    - echo "Creating release $CI_COMMIT_TAG"
+    - chmod +x devtools/ci/write-release-description.sh
+    - sh ./devtools/ci/write-release-description.sh
+    - echo "Release description:"
+    - cat release-description.md
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "Release $CI_COMMIT_TAG"
+    description: "./release-description.md"
+
 deploy on Github:
   stage: release
   image: alpine:3.20
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^v2\.\d+\.\d+$/'
   script:
     - apk add --no-cache git
     - git config --global user.name "$GIT_USER_NAME"
@@ -34,6 +50,35 @@ deploy on Github:
       git fetch origin master
       git checkout master
       git push --force github HEAD:refs/heads/master
+
+create_github_release:
+  stage: release
+  image: alpine:3.20
+  needs:
+    - deploy on Github
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v2\.\d+\.\d+$/'
+  script:
+    - apk add --no-cache curl jq
+    - chmod +x devtools/ci/write-release-description.sh
+    - sh ./devtools/ci/write-release-description.sh
+    - echo "Release description:" && cat release-description.md
+    - |
+      jq -n \
+        --arg tag "$CI_COMMIT_TAG" \
+        --arg name "Release $CI_COMMIT_TAG" \
+        --arg body "$(cat release-description.md)" \
+        '{tag_name: $tag, name: $name, body: $body, draft: false, prerelease: false}' \
+        > release-payload.json
+    - |
+      curl --fail --show-error --location \
+        --request POST \
+        --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+        --header "Accept: application/vnd.github+json" \
+        --header "X-GitHub-Api-Version: 2022-11-28" \
+        --header "Content-Type: application/json" \
+        --data @release-payload.json \
+        "https://api.github.com/repos/geodatenanwendungenhamburg/masterportalapi/releases"
 
 # ===== Custom Pipelines (triggered manually) =====
 deploy last tag on Github:
